@@ -1,4 +1,4 @@
-const CACHE="stackup-academy-v16";
+const CACHE="stackup-academy-v17";
 const ASSETS=["./","./index.html","./manifest.webmanifest","./engine.js","./positions-table.js","./fundamentals-details.js","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();const clients=await self.clients.matchAll({type:"window"});await Promise.all(clients.map(client=>client.navigate(client.url).catch(()=>null)));})())});
@@ -10,7 +10,7 @@ self.addEventListener("fetch",event=>{
       if(!type.includes("text/html"))return resp;
       let html=await resp.text();
       if(!html.includes("positions-table.js"))html=html.replace("</body>",'<script src="./positions-table.js?v=3"></script></body>');
-      if(!html.includes("fundamentals-details.js"))html=html.replace("</body>",'<script src="./fundamentals-details.js?v=2"></script></body>');
+      if(!html.includes("fundamentals-details.js"))html=html.replace("</body>",'<script src="./fundamentals-details.js?v=3"></script></body>');
       const headers=new Headers(resp.headers);
       headers.set("content-type","text/html; charset=utf-8");
       return new Response(html,{status:resp.status,statusText:resp.statusText,headers});
