@@ -3,25 +3,25 @@
   @import url('https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght,GRAD@6..144,100..1000,-200..150&family=Google+Sans:wght@400&display=swap');
 
   :root{
-    --bg:#eef1e9;
+    --bg:#f6f1e3;
     --surface:#ffffff;
-    --surface-2:#e2e7db;
-    --surface-3:#d7ddce;
-    --ink:#1b2b23;
-    --ink-soft:#4b5b50;
-    --ink-faint:#7c8a7f;
+    --surface-2:#efe6cd;
+    --surface-3:#e3d7b3;
+    --ink:#231c11;
+    --ink-soft:#5c5138;
+    --ink-faint:#8c8062;
     --accent:#1f6f54;
-    --accent-strong:#14503b;
-    --accent-wash:#dfeae3;
-    --gold:#a4762e;
-    --gold-wash:#f3e6cd;
-    --wine:#93393a;
-    --wine-wash:#f3dcdb;
-    --line:#cdd6c7;
+    --accent-strong:#0f4a37;
+    --accent-wash:#e1eadf;
+    --gold:#a5782a;
+    --gold-wash:#f2e3bd;
+    --wine:#8c3335;
+    --wine-wash:#f2dcd8;
+    --line:#e1d4ac;
     --felt:#1c5c46;
     --felt-dark:#124637;
     --felt-rail:#0e3226;
-    --shadow:0 1px 2px rgba(20,30,25,.06), 0 8px 24px -12px rgba(20,30,25,.18);
+    --shadow:0 1px 2px rgba(35,28,17,.07), 0 10px 28px -14px rgba(35,28,17,.24);
     --radius-s:8px;
     --radius-m:14px;
     --radius-l:22px;
@@ -34,21 +34,21 @@
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#0e1712;
-      --surface:#16221c;
-      --surface-2:#1d2b23;
-      --surface-3:#25352b;
-      --ink:#eef1e9;
-      --ink-soft:#9db3a5;
-      --ink-faint:#6c8177;
+      --bg:#14100a;
+      --surface:#1e1810;
+      --surface-2:#251e13;
+      --surface-3:#2e2517;
+      --ink:#f2ecd9;
+      --ink-soft:#b7ab88;
+      --ink-faint:#89795f;
       --accent:#52c299;
       --accent-strong:#7fdab7;
-      --accent-wash:#173629;
-      --gold:#dcae66;
-      --gold-wash:#3a2e18;
-      --wine:#e08a8a;
-      --wine-wash:#3a2020;
-      --line:#2a3a31;
+      --accent-wash:#17291f;
+      --gold:#dfb166;
+      --gold-wash:#392c17;
+      --wine:#e2908f;
+      --wine-wash:#3a2220;
+      --line:#332a1a;
       --felt:#153f31;
       --felt-dark:#0f2e24;
       --felt-rail:#081c15;
@@ -58,21 +58,21 @@
     }
   }
   :root[data-theme="dark"]{
-    --bg:#0e1712;
-    --surface:#16221c;
-    --surface-2:#1d2b23;
-    --surface-3:#25352b;
-    --ink:#eef1e9;
-    --ink-soft:#9db3a5;
-    --ink-faint:#6c8177;
+    --bg:#14100a;
+    --surface:#1e1810;
+    --surface-2:#251e13;
+    --surface-3:#2e2517;
+    --ink:#f2ecd9;
+    --ink-soft:#b7ab88;
+    --ink-faint:#89795f;
     --accent:#52c299;
     --accent-strong:#7fdab7;
-    --accent-wash:#173629;
-    --gold:#dcae66;
-    --gold-wash:#3a2e18;
-    --wine:#e08a8a;
-    --wine-wash:#3a2020;
-    --line:#2a3a31;
+    --accent-wash:#17291f;
+    --gold:#dfb166;
+    --gold-wash:#392c17;
+    --wine:#e2908f;
+    --wine-wash:#3a2220;
+    --line:#332a1a;
     --felt:#153f31;
     --felt-dark:#0f2e24;
     --felt-rail:#081c15;
@@ -125,13 +125,33 @@
   }
   .masthead{
     text-align:center;
-    padding:20px 16px 18px;
-    background:var(--surface);
-    border-bottom:1px solid var(--line);
+    padding:18px 16px;
+    background:linear-gradient(180deg, var(--felt) 0%, var(--felt-dark) 100%);
+    border-bottom:3px solid var(--gold);
+    box-shadow:0 6px 18px -10px rgba(0,0,0,.4);
   }
+  .masthead-inner{
+    display:inline-flex; align-items:center; gap:11px; cursor:pointer;
+  }
+  .masthead-mark{width:30px; height:30px; flex:none;}
+  .masthead-text{text-align:left;}
   .masthead-title{
-    font-family:var(--font-display); font-weight:800; font-size:clamp(1.05rem,2.6vw,1.5rem);
-    letter-spacing:.08em; color:var(--accent-strong); text-transform:uppercase; cursor:pointer;
+    font-family:var(--font-display); font-weight:800; font-size:clamp(1rem,2.4vw,1.4rem);
+    letter-spacing:.09em; color:#f6efdc; text-transform:uppercase; line-height:1.1;
+  }
+  .masthead-sub{
+    font-family:var(--font-mono); font-size:.62rem; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--gold); margin-top:2px;
+  }
+
+  /* ---------- rail groups ---------- */
+  .rail-group-label{
+    font-family:var(--font-mono); font-size:.64rem; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--ink-faint); padding:16px 10px 5px;
+  }
+  .rail-group-label:first-child{padding-top:2px;}
+  @media (max-width:880px){
+    .rail-group-label{display:none;}
   }
 
   .rail-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
@@ -140,6 +160,7 @@
     .rail-list::-webkit-scrollbar{display:none;}
   }
   .rail-item{
+    position:relative;
     display:flex; align-items:center; gap:10px;
     padding:9px 10px; border-radius:var(--radius-s);
     cursor:pointer; border:1px solid transparent;
@@ -155,6 +176,12 @@
     width:20px; flex:none; text-align:center;
   }
   .rail-item.active .num{color:var(--accent-strong);}
+  @media (min-width:881px){
+    .rail-item.active::before{
+      content:''; position:absolute; left:-14px; top:8px; bottom:8px; width:3px;
+      background:var(--gold); border-radius:0 3px 3px 0;
+    }
+  }
   .rail-foot{margin-top:18px; padding:12px 10px 4px; border-top:1px solid var(--line);}
   .theme-btn{
     display:inline-flex; align-items:center; gap:6px;
@@ -271,7 +298,10 @@
   }
   .btn:hover{border-color:var(--accent);}
   .btn:active{transform:scale(.97);}
-  .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+  .btn.primary{
+    background:var(--accent); border-color:var(--accent); color:#fff;
+    box-shadow:0 1px 0 rgba(255,255,255,.22) inset, 0 3px 8px -3px rgba(15,74,55,.55);
+  }
   .btn.primary:hover{background:var(--accent-strong); border-color:var(--accent-strong);}
   .btn.danger{background:var(--wine-wash); border-color:var(--wine); color:var(--wine);}
   .btn.gold{background:var(--gold-wash); border-color:var(--gold); color:var(--gold);}
@@ -412,7 +442,18 @@
 </style>
 
 <header class="masthead">
-  <div class="masthead-title" id="mastheadTitle">StackUp Hold'em Academy</div>
+  <div class="masthead-inner" id="mastheadTitle">
+    <svg class="masthead-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="20" cy="20" r="18" fill="none" stroke="#c99a42" stroke-width="2"/>
+      <circle cx="20" cy="20" r="13.2" fill="none" stroke="#c99a42" stroke-width="1" stroke-dasharray="2.2 3.4"/>
+      <path d="M20 9.5c-4.3 5.3-9.4 8.4-9.4 13.1A5.9 5.9 0 0020 26.3a5.9 5.9 0 009.4-3.7c0-4.7-5.1-7.8-9.4-13.1z" fill="#f6efdc"/>
+      <rect x="18.4" y="24.3" width="3.2" height="6.4" rx="1.2" fill="#f6efdc"/>
+    </svg>
+    <div class="masthead-text">
+      <div class="masthead-title">StackUp Hold'em Academy</div>
+      <div class="masthead-sub">Curso interativo de poker</div>
+    </div>
+  </div>
 </header>
 <div class="app">
   <nav class="rail" id="rail">
@@ -1580,16 +1621,16 @@ window.__pokerUI = { seatPositions, buildTableDOM, renderSeats, renderBoard, run
 'use strict';
 
 const CHAPTERS = [
-  {id:'fundamentos', num:'00', title:'Fundamentos universais', short:'Fundamentos'},
-  {id:'holdem', num:'01', title:"Texas Hold'em", short:"Hold'em"},
-  {id:'omaha', num:'02', title:'Omaha — PLO4, PLO5 e PLO6', short:'Omaha'},
-  {id:'stud', num:'03', title:'Seven Card Stud', short:'Seven Card Stud'},
-  {id:'draw', num:'04', title:'Poker Tradicional — 5-Card Draw', short:'Poker Tradicional'},
-  {id:'caribbean', num:'05', title:'Caribbean Stud Poker', short:'Caribbean Stud'},
-  {id:'horse', num:'06', title:'HORSE — o jogo misto', short:'HORSE'},
-  {id:'outs', num:'07', title:'Outs e probabilidades', short:'Outs & Probabilidades'},
-  {id:'quiz', num:'08', title:'Quiz: quem ganha a mão?', short:'Quiz: quem ganha?'},
-  {id:'outras', num:'09', title:'Outras variantes', short:'Outras variantes'},
+  {id:'fundamentos', num:'00', title:'Fundamentos universais', short:'Fundamentos', group:'Base'},
+  {id:'holdem', num:'01', title:"Texas Hold'em", short:"Hold'em", group:'Modalidades'},
+  {id:'omaha', num:'02', title:'Omaha — PLO4, PLO5 e PLO6', short:'Omaha', group:'Modalidades'},
+  {id:'stud', num:'03', title:'Seven Card Stud', short:'Seven Card Stud', group:'Modalidades'},
+  {id:'draw', num:'04', title:'Poker Tradicional — 5-Card Draw', short:'Poker Tradicional', group:'Modalidades'},
+  {id:'caribbean', num:'05', title:'Caribbean Stud Poker', short:'Caribbean Stud', group:'Modalidades'},
+  {id:'horse', num:'06', title:'HORSE — o jogo misto', short:'HORSE', group:'Modalidades'},
+  {id:'outs', num:'07', title:'Outs e probabilidades', short:'Outs & Probabilidades', group:'Prática'},
+  {id:'quiz', num:'08', title:'Quiz: quem ganha a mão?', short:'Quiz: quem ganha?', group:'Prática'},
+  {id:'outras', num:'09', title:'Outras variantes', short:'Outras variantes', group:'Prática'},
 ];
 
 const CHAPTER_HTML = {};
@@ -1952,7 +1993,14 @@ function buildChapters(){
   const railList=document.getElementById('railList');
   const heroPath=document.getElementById('heroPath');
   const chaptersEl=document.getElementById('chapters');
+  let lastGroup=null;
   CHAPTERS.forEach(ch=>{
+    if(ch.group && ch.group!==lastGroup){
+      lastGroup=ch.group;
+      const gl=document.createElement('li');
+      gl.className='rail-group-label'; gl.textContent=ch.group;
+      railList.appendChild(gl);
+    }
     const li=document.createElement('li');
     li.className='rail-item'; li.dataset.ch=ch.id;
     li.innerHTML='<span class="num">'+ch.num+'</span><span>'+ch.short+'</span>';
