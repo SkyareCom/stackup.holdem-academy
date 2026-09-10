@@ -1,4 +1,4 @@
-const CACHE="stackup-academy-v24";
+const CACHE="stackup-academy-v25";
 const ASSETS=["./","./index.html","./manifest.webmanifest","./engine.js","./positions-table.js","./fundamentals-details.js","./misdeal-staff-details.js","./terminology-profiles-details.js","./strategic-concepts-details.js","./terminology-extra-terms.js","./cash-tournament-details.js","./highlight-card-style.js","./etiquette-details.js","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();const clients=await self.clients.matchAll({type:"window"});await Promise.all(clients.map(client=>client.navigate(client.url).catch(()=>null)));})())});
@@ -17,7 +17,7 @@ self.addEventListener("fetch",event=>{
       if(!html.includes("terminology-extra-terms.js"))html=html.replace("</body>",'<script src="./terminology-extra-terms.js?v=1"></script></body>');
       if(!html.includes("cash-tournament-details.js"))html=html.replace("</body>",'<script src="./cash-tournament-details.js?v=1"></script></body>');
       if(!html.includes("highlight-card-style.js"))html=html.replace("</body>",'<script src="./highlight-card-style.js?v=1"></script></body>');
-      if(!html.includes("etiquette-details.js"))html=html.replace("</body>",'<script src="./etiquette-details.js?v=1"></script></body>');
+      if(!html.includes("etiquette-details.js"))html=html.replace("</body>",'<script src="./etiquette-details.js?v=2"></script></body>');
       const headers=new Headers(resp.headers);
       headers.set("content-type","text/html; charset=utf-8");
       return new Response(html,{status:resp.status,statusText:resp.statusText,headers});
