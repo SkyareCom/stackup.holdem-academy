@@ -1,207 +1,41 @@
-<!doctype html>
-<html lang="pt-BR">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#0e4b3b">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>StackUp Hold'em Academy</title>
-<link rel="manifest" href="./manifest.webmanifest">
-<style>
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#0e4b3b"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><title>StackUp Hold'em Academy</title><link rel="manifest" href="./manifest.webmanifest"><style>
 @import url('https://fonts.googleapis.com/css2?family=Love+Ya+Like+A+Sister&display=swap');
-:root{
-  --green:#0e4b3b;
-  --green-deep:#08372d;
-  --green-soft:#195f4c;
-  --brown:#211008;
-  --brown-2:#2a160d;
-  --cream:#f2ead8;
-  --cream-2:#e7dcc2;
-  --ink:#25170f;
-  --muted:#725f4d;
-  --gold:#d4aa58;
-  --gold-deep:#a87c32;
-  --white:#f8f0df;
-  --radius:24px;
-  --shadow:0 14px 34px rgba(0,0,0,.24);
-  font-family:'Love Ya Like A Sister',cursive;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;min-height:100%;background:var(--brown);color:var(--white)}
-body{overscroll-behavior-y:none}
-button{font:inherit}
-.app-shell{min-height:100dvh;max-width:560px;margin:0 auto;background:var(--brown);position:relative;overflow-x:hidden}
-.brand-header{
-  cursor:pointer;
-  background:linear-gradient(180deg,var(--green-soft) 0%,var(--green) 56%,var(--green-deep) 100%);
-  border-bottom:4px solid var(--gold);
-  padding:calc(18px + env(safe-area-inset-top)) 22px 17px;
-  box-shadow:0 8px 24px rgba(0,0,0,.22);
-}
-.brand-inner{display:flex;align-items:center;gap:15px;max-width:480px;margin:0 auto}
-.brand-mark{width:56px;height:56px;flex:none}
-.brand-copy{min-width:0}
-.brand-name{font-size:25px;line-height:1.02;letter-spacing:.045em;color:var(--white);text-transform:uppercase}
-.brand-sub{margin-top:5px;font-size:15px;line-height:1.1;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}
-.nav-bar{position:sticky;top:0;z-index:50;min-height:54px;padding:14px 18px;background:rgba(33,16,8,.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(212,170,88,.25)}
-.nav-bar.home{display:none}
-.nav-title{text-align:center;color:var(--white);font-size:21px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
-.screen{padding:22px 18px calc(34px + env(safe-area-inset-bottom))}
-.home-intro{padding:4px 2px 18px;text-align:center}
-.home-intro h1{font-size:28px;line-height:1.12;margin:0;color:var(--white);text-transform:uppercase}
-.home-intro p{margin:7px auto 0;max-width:390px;color:#cfbda7;font-size:16px;line-height:1.45}
-.stage-list,.topic-list{display:grid;gap:16px}
-.stage-card,.topic-card,.sim-card{
-  width:100%;border:2px solid var(--gold);background:linear-gradient(180deg,var(--cream) 0%,#eee4ce 100%);
-  color:var(--ink);border-radius:var(--radius);text-align:left;cursor:pointer;box-shadow:var(--shadow)
-}
-.stage-card{padding:20px 20px 17px}
-.stage-card:active,.topic-card:active,.sim-card:active{transform:scale(.985)}
-.stage-top{display:flex;align-items:flex-start;gap:14px}
-.stage-copy{flex:1;min-width:0}
-.stage-kicker{font-size:15px;letter-spacing:.08em;color:var(--gold-deep);text-transform:uppercase;margin-bottom:2px}
-.stage-title{font-size:28px;line-height:1.06;text-transform:uppercase}
-.stage-desc{font-size:16px;line-height:1.42;color:var(--muted);margin-top:8px}
-.stage-foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid rgba(168,124,50,.30)}
-.stage-count{font-size:14px;color:var(--muted);text-transform:uppercase}.chev{font-size:30px;color:var(--gold-deep)}
-.screen-head{padding:2px 2px 18px}
-.eyebrow{font-size:15px;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:6px}
-.screen-head h2{font-size:34px;line-height:1.02;margin:0;color:var(--white);text-transform:uppercase}
-.screen-head p{margin:8px 0 0;color:#cfbda7;font-size:16px;line-height:1.45}
-.topic-card{display:flex;gap:14px;align-items:center;padding:16px 16px;border-radius:19px}
-.topic-index{width:42px;height:42px;border-radius:13px;background:var(--brown);display:grid;place-items:center;color:var(--gold);font-size:20px;flex:none}
-.topic-copy{flex:1;min-width:0}.topic-title{font-size:20px;line-height:1.18;text-transform:uppercase;display:block}.topic-note{font-size:15px;color:var(--muted);margin-top:4px;line-height:1.35;display:block}.topic-arrow{font-size:27px;color:var(--gold-deep)}
-.lesson-card{border:2px solid var(--gold);background:var(--cream);color:var(--ink);border-radius:24px;padding:21px;box-shadow:var(--shadow)}
-.lesson-number{display:inline-flex;border:1px solid var(--gold-deep);background:rgba(212,170,88,.15);color:var(--gold-deep);border-radius:999px;padding:7px 11px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:15px}
-.lesson-card h2{font-size:34px;line-height:1.05;margin:0 0 12px;text-transform:uppercase}.lesson-card p{color:var(--muted);font-size:17px;line-height:1.5;margin:0 0 17px}
-.tip{margin-top:14px;padding:14px 15px;border-radius:16px;background:#e8dcc2;border:1px solid rgba(168,124,50,.32);color:var(--muted);font-size:14px;line-height:1.45}
-.lesson-content{display:grid;gap:12px;margin-top:8px}.lesson-block{padding:15px 16px;border-radius:17px;background:#eadfc8;border:1px solid rgba(168,124,50,.28)}.lesson-block h3{margin:0 0 7px;font-size:21px;color:var(--green-deep);text-transform:uppercase}.lesson-block p{margin:0;color:var(--muted);font-size:16px;line-height:1.5}.lesson-list{margin:0;padding-left:22px;color:var(--muted);font-size:16px;line-height:1.55}.lesson-list li+li{margin-top:5px}.sim-grid{display:grid;gap:11px;margin-top:14px}.sim-card{padding:16px;border-radius:17px;display:flex;align-items:center;justify-content:space-between;font-size:18px;text-transform:uppercase}.ranking-list{display:grid;gap:12px;margin-top:10px}.ranking-row{background:var(--cream-2);border:1px solid rgba(168,124,50,.34);border-radius:18px;padding:14px}.ranking-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}.ranking-pos{width:34px;height:34px;border-radius:11px;background:var(--brown);color:var(--gold);display:grid;place-items:center;font-size:17px;flex:none}.ranking-name{font-size:20px;color:var(--green-deep);text-transform:uppercase;line-height:1.1}.poker-hand{display:flex;gap:5px;flex-wrap:nowrap}.playing-card{width:45px;height:62px;border-radius:8px;background:#fffdf7;border:1px solid #cdbf9d;box-shadow:0 2px 5px rgba(37,23,15,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;color:#17120f}.playing-card.red{color:#a32929}.playing-rank{font-family:Arial,sans-serif;font-weight:800;font-size:17px}.playing-suit{font-family:Arial,sans-serif;font-size:18px;margin-top:1px}.ranking-note{margin-top:9px;color:var(--muted);font-size:14px;line-height:1.35}
-@media(max-width:380px){.playing-card{width:40px;height:57px}.playing-rank{font-size:15px}.playing-suit{font-size:16px}.brand-name{font-size:21px}.brand-sub{font-size:13px}.stage-title{font-size:25px}.home-intro h1{font-size:24px}}
-@media(min-width:700px){body{background:#120904}.app-shell{box-shadow:0 0 70px rgba(0,0,0,.55)}}
-</style>
-</head>
-<body>
-<div class="app-shell">
-  <header class="brand-header" id="brandHeader">
-    <div class="brand-inner">
-      <svg class="brand-mark" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <circle cx="20" cy="20" r="18" fill="none" stroke="#d4aa58" stroke-width="2"/>
-        <circle cx="20" cy="20" r="13.2" fill="none" stroke="#d4aa58" stroke-width="1" stroke-dasharray="2.2 3.4"/>
-        <path d="M20 9.5c-4.3 5.3-9.4 8.4-9.4 13.1A5.9 5.9 0 0020 26.3a5.9 5.9 0 009.4-3.7c0-4.7-5.1-7.8-9.4-13.1z" fill="#f8f0df"/>
-        <rect x="18.4" y="24.3" width="3.2" height="6.4" rx="1.2" fill="#f8f0df"/>
-      </svg>
-      <div class="brand-copy">
-        <div class="brand-name">STACKUP HOLD'EM<br>ACADEMY</div>
-        <div class="brand-sub">CURSO INTERATIVO DE POKER</div>
-      </div>
-    </div>
-  </header>
-  <div class="nav-bar home" id="navBar">
-    <div class="nav-title" id="navTitle">Hold'em Academy</div>
-  </div>
-  <main id="root"></main>
-</div>
-<script>
-const DATA={
-fundamentos:{etapa:"ETAPA 01",title:"FUNDAMENTOS",desc:"Aprenda primeiro como o poker funciona: mãos, mesa, apostas, regras e comportamento.",items:[
-["Ranking de mãos","Da mão mais forte à mais fraca.","fundamentos"],
-["Posições na mesa","BTN, blinds, posições iniciais, médias e finais.","fundamentos"],
-["Small Blind, Big Blind e Ante","Apostas obrigatórias e formação inicial do pote.","fundamentos"],
-["Streets","Pré-flop, flop, turn e river.","fundamentos"],
-["Sequência de apostas","Quem age primeiro, ordem das ações e fechamento da rodada.","fundamentos"],
-["Embaralhando as cartas","Preparação do baralho, corte e distribuição.","fundamentos"],
-["Misdeal","Quando uma distribuição é inválida e como proceder.","fundamentos"],
-["Funções do staff","Dealer, floor, direção e responsabilidades na mesa.","fundamentos"],
-["Terminologias básicas","Vocabulário essencial para entender mesa, ação e estratégia.","fundamentos"],
-["Perfis de jogadores","Tight, loose, agressivo, passivo e combinações comuns.","fundamentos"],
-["Cash game e tipos","Estrutura, blinds, buy-in, mesas e formatos de cash.","fundamentos"],
-["Torneio e tipos","Estruturas, fases, stacks, blinds e formatos de torneio.","fundamentos"],
-["Bons modos","Etiqueta, ritmo de jogo e respeito às regras da mesa.","fundamentos"],
-["Outras regras básicas","Showdown, muck, ação verbal, fichas e situações comuns.","fundamentos"]]},
-modalidades:{etapa:"ETAPA 02",title:"MODALIDADES",desc:"Depois da base, aprenda como as regras mudam entre as principais modalidades.",items:[
-["Texas Hold'em","2 cartas na mão e 5 comunitárias.","holdem"],
-["Poker de 5 cartas","5-Card Draw e lógica de troca de cartas.","draw"],
-["PLO 4 / PLO 5 / PLO 6","Omaha com quatro, cinco ou seis cartas fechadas.","omaha"],
-["5 & 7 Card Stud","Jogos Stud com cartas próprias abertas e fechadas.","stud"],
-["Razz","Stud lowball: vence a melhor mão baixa.","horse"],
-["H.O.R.S.E.","Rotação de Hold'em, Omaha Hi/Lo, Razz, Stud e Stud Hi/Lo.","horse"],
-["Poker Caribenho","Modalidade de cassino jogada contra a casa.","caribbean"],
-["Outras modalidades","Outras variantes para ampliar o repertório.","outras"]]},
-pratica:{etapa:"ETAPA 03",title:"PRÁTICA",desc:"Fixe o aprendizado tomando decisões, resolvendo perguntas e treinando matemática.",items:[
-["Simulador","Treine mãos e regras das principais modalidades.","simulador"],
-["Quiz","Teste leitura de mãos, vencedores e conceitos.","quiz"],
-["Matemática do poker simplificada","Outs, probabilidades e cálculos essenciais.","outs"]]}}
-const LESSONS={
-fundamentos:[
-  ["Ranking de mãos","Da mão mais forte à mais fraca.",[["Ordem padrão","Royal Flush, Straight Flush, Quadra, Full House, Flush, Sequência, Trinca, Dois Pares, Um Par e Carta Alta."],["Como comparar","Primeiro compare a categoria da mão. Em empate, compare as cartas da combinação e depois os kickers."]]],
-  ["Posições na mesa","Entender posição é entender quem fala primeiro e quem recebe mais informação.",[["Posições","SB, BB, UTG, posições médias, HJ, CO e BTN."],["Princípio","Quanto mais tarde você age, mais informação possui sobre as decisões dos adversários."]]],
-  ["Small Blind, Big Blind e Ante","São apostas obrigatórias que colocam fichas em jogo antes da primeira decisão.",[["Blinds","Small Blind e Big Blind giram a cada mão e iniciam o pote."],["Ante","Quando existe, adiciona fichas ao pote antes da ação e é muito comum em torneios."]]],
-  ["Streets","Uma mão é dividida em etapas de decisão.",[["Sequência","Pré-flop → Flop → Turn → River → Showdown, quando necessário."],["Board","No Hold'em e Omaha, flop traz 3 cartas, turn 1 e river 1."]]],
-  ["Sequência de apostas","Cada rodada segue uma ordem e termina quando todos os jogadores ativos igualaram a aposta ou desistiram.",[["Ações","Check, bet, call, raise e fold."],["Fechamento","A rodada termina quando não há ação pendente entre os jogadores que continuam na mão."]]],
-  ["Embaralhando as cartas","O objetivo é randomizar o baralho antes da distribuição.",[["Fluxo","Embaralhar → cortar, quando aplicável → distribuir conforme a modalidade."],["Integridade","O procedimento deve impedir previsibilidade e preservar a ordem correta de distribuição."]]],
-  ["Misdeal","Misdeal é uma distribuição inválida que precisa ser corrigida segundo a regra da casa ou do torneio.",[["Exemplos","Quantidade errada de cartas, carta exposta em situação prevista pela regra ou distribuição iniciada de forma incorreta."],["Procedimento","Em ambiente organizado, dealer e floor determinam se a mão continua ou é redistribuída."]]],
-  ["Funções do staff","O staff mantém o jogo correto, seguro e organizado.",[["Dealer","Distribui cartas, controla o pote e conduz a ação."],["Floor","Resolve dúvidas, interpreta regras e toma decisões quando há disputa ou irregularidade."]]],
-  ["Terminologias básicas","Dominar o vocabulário acelera o aprendizado.",[["Termos de ação","Check, bet, call, raise, fold, all-in, limp e 3-bet."],["Termos de mesa","Pot, stack, board, showdown, muck, dealer button e blinds."]]],
-  ["Perfis de jogadores","Perfis descrevem tendências, não regras fixas.",[["Eixos principais","Tight × loose e agressivo × passivo."],["Uso correto","Observe frequência de mãos, apostas e respostas à pressão antes de classificar alguém."]]],
-  ["Cash game e tipos","No cash, as fichas representam dinheiro e o jogador normalmente pode entrar ou sair dentro das regras da mesa.",[["Características","Blinds estáveis, buy-in mínimo/máximo e possibilidade de recomprar fichas."],["Formatos","Mesas full ring, 6-max, heads-up e diferentes limites de aposta."]]],
-  ["Torneio e tipos","Em torneios, fichas não equivalem diretamente a dinheiro e os blinds aumentam com o tempo.",[["Características","Eliminação ao perder todas as fichas, níveis de blinds e premiação por colocação."],["Formatos","MTT, Sit & Go, turbo, bounty, freezeout, re-entry e outros."]]],
-  ["Bons modos","Etiqueta melhora o ritmo e evita conflitos.",[["Na mesa","Aja na sua vez, proteja suas cartas, mantenha fichas visíveis e não revele informação de mão ativa."],["Convivência","Respeite dealer e jogadores; dúvidas de regra devem ser resolvidas sem alterar a ação indevidamente."]]],
-  ["Outras regras básicas","Algumas regras aparecem em praticamente todas as mesas.",[["Showdown e muck","Cartas devem ser mostradas quando exigido para disputar o pote; mãos descartadas podem perder direito ao pote conforme a situação."],["Ação verbal","Em muitos ambientes, declarações claras como call, raise e all-in são vinculantes."]]]
-],
-modalidades:[
-  ["Texas Hold'em","Cada jogador recebe 2 cartas próprias e usa o board comunitário.",[["Objetivo","Formar a melhor mão de 5 cartas usando qualquer combinação entre suas 2 cartas e as 5 comunitárias."],["Streets","Pré-flop, flop, turn e river."]]],
-  ["Poker de 5 cartas","No 5-Card Draw, cada jogador recebe 5 cartas fechadas e pode trocar cartas.",[["Fluxo","Distribuição → rodada de apostas → troca → nova rodada → showdown."],["Leitura","Não há board comunitário; a informação vem principalmente das apostas e da quantidade de cartas trocadas."]]],
-  ["PLO 4 / PLO 5 / PLO 6","Omaha usa mais cartas próprias, mas a mão final obedece à regra 2 + 3.",[["Regra central","Use exatamente 2 cartas da mão e exatamente 3 do board."],["Variações","PLO4, PLO5 e PLO6 mudam a quantidade de cartas próprias recebidas."]]],
-  ["5 & 7 Card Stud","Stud não usa board comunitário como Hold'em.",[["Estrutura","Cada jogador recebe cartas próprias; parte delas fica aberta para todos verem."],["Apostas","A ordem pode depender das cartas expostas e da street."]]],
-  ["Razz","Razz é uma variante de Stud em que vence a melhor mão baixa.",[["Objetivo","Formar a menor combinação de 5 cartas possível segundo a regra da modalidade."],["Ponto-chave","Sequências e flushes normalmente não prejudicam a mão baixa no Razz."]]],
-  ["H.O.R.S.E.","H.O.R.S.E. é uma rotação de cinco modalidades.",[["Rotação","Hold'em, Omaha Hi/Lo, Razz, Seven Card Stud e Stud Eight-or-Better."],["Competência","Exige adaptação rápida de regras, seleção de mãos e leitura de cada formato."]]],
-  ["Poker Caribenho","Caribbean Stud é jogado contra a casa, não contra os demais jogadores.",[["Estrutura","O jogador recebe uma mão e decide continuar ou desistir conforme as regras da mesa."],["Importante","Pagamentos e qualificação da mão da casa variam conforme a tabela do cassino."]]],
-  ["Outras modalidades","O poker possui dezenas de variantes além das principais.",[["Exemplos","Badugi, 2-7 Triple Draw, Omaha Hi/Lo, Short Deck e mixed games."],["Método de estudo","Aprenda primeiro ranking, distribuição, ordem de apostas e regra de construção da mão."]]]
-],
-pratica:[
-  ["Simulador","O simulador será reconstruído dentro desta interface nova.",[["Diretriz","Nenhuma tela do app antigo será aberta. O treino será integrado diretamente neste front."],["Próximo passo","Implementar um motor visual próprio para Hold'em, Omaha, Stud e demais modalidades."]]],
-  ["Quiz","O quiz também passa a fazer parte do novo front.",[["Objetivo","Treinar reconhecimento de mãos, regras, posições e decisões."],["Formato","Pergunta → resposta → correção imediata → explicação curta."]]],
-  ["Matemática do poker simplificada","Comece pelos cálculos que mais aparecem na prática.",[["Base","Outs, odds, pot odds, equity necessária e relação entre aposta e pote."],["Princípio","Primeiro entenda a lógica; depois automatize o cálculo com exercícios curtos."]]]
-]};
-const stageOrder=["fundamentos","modalidades","pratica"],root=document.getElementById("root"),navBar=document.getElementById("navBar"),navTitle=document.getElementById("navTitle");
-function esc(s){return String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-function setNav(title,show=true){navTitle.textContent=title;navBar.classList.toggle("home",!show)}
-function push(v){history.pushState(v,"","#"+v.type+(v.stage?"-"+v.stage:""))}
-function renderHome(){setNav("",false);root.innerHTML=`<section class="screen"><div class="home-intro"><h1>APRENDA POKER EM 3 ETAPAS</h1><p>Fundamentos, modalidades e prática — em uma ordem lógica de aprendizado.</p></div><div class="stage-list">${stageOrder.map((key,i)=>{const s=DATA[key];return `<button class="stage-card" onclick="openStage('${key}',true)"><div class="stage-top"><div class="stage-copy"><div class="stage-kicker">${s.etapa}</div><div class="stage-title">${s.title}</div><div class="stage-desc">${s.desc}</div></div></div><div class="stage-foot"><span class="stage-count">${s.items.length} CONTEÚDOS</span><span class="chev">›</span></div></button>`}).join("")}</div></section>`}
-function openStage(key,p=false){const s=DATA[key];setNav(s.title,true);root.innerHTML=`<section class="screen"><div class="screen-head"><div class="eyebrow">${s.etapa}</div><h2>${s.title}</h2><p>${s.desc}</p></div><div class="topic-list">${s.items.map((it,i)=>`<button class="topic-card" onclick="openTopic('${key}',${i},true)"><span class="topic-index">${String(i+1).padStart(2,"0")}</span><span class="topic-copy"><span class="topic-title">${esc(it[0])}</span><span class="topic-note">${esc(it[1])}</span></span><span class="topic-arrow">›</span></button>`).join("")}</div></section>`;if(p)push({type:"stage",stage:key})}
-const RANKING=[
-  ["Royal Flush",[["A","♠"],["K","♠"],["Q","♠"],["J","♠"],["10","♠"]],"A-K-Q-J-10 do mesmo naipe."],
-  ["Straight Flush",[["9","♥"],["8","♥"],["7","♥"],["6","♥"],["5","♥"]],"Cinco cartas sequenciais do mesmo naipe."],
-  ["Quadra",[["Q","♠"],["Q","♥"],["Q","♦"],["Q","♣"],["2","♠"]],"Quatro cartas do mesmo valor."],
-  ["Full House",[["J","♠"],["J","♥"],["J","♦"],["8","♣"],["8","♥"]],"Uma trinca mais um par."],
-  ["Flush",[["A","♦"],["J","♦"],["9","♦"],["6","♦"],["3","♦"]],"Cinco cartas do mesmo naipe, sem sequência."],
-  ["Sequência",[["10","♠"],["9","♥"],["8","♦"],["7","♣"],["6","♠"]],"Cinco valores consecutivos, com naipes variados."],
-  ["Trinca",[["7","♠"],["7","♥"],["7","♦"],["K","♣"],["2","♥"]],"Três cartas do mesmo valor."],
-  ["Dois Pares",[["A","♠"],["A","♥"],["5","♦"],["5","♣"],["9","♠"]],"Dois pares diferentes mais um kicker."],
-  ["Um Par",[["K","♠"],["K","♥"],["10","♦"],["6","♣"],["3","♠"]],"Duas cartas do mesmo valor."],
-  ["Carta Alta",[["A","♠"],["J","♥"],["9","♦"],["6","♣"],["3","♠"]],"Quando nenhuma combinação acima é formada."]
-];
-function cardHTML(card){const red=card[1]==="♥"||card[1]==="♦";return `<span class="playing-card${red?" red":""}"><span class="playing-rank">${card[0]}</span><span class="playing-suit">${card[1]}</span></span>`}
-function renderRanking(stage,index,p=false){
-  const s=DATA[stage];setNav("Ranking de mãos",true);
-  root.innerHTML=`<section class="screen"><div class="lesson-card"><span class="lesson-number">${s.etapa} · 01</span><h2>RANKING DE MÃOS</h2><p>Da combinação mais forte para a mais fraca. As cartas abaixo mostram um exemplo visual de cada mão.</p><div class="ranking-list">${RANKING.map((r,i)=>`<div class="ranking-row"><div class="ranking-head"><span class="ranking-pos">${String(i+1).padStart(2,"0")}</span><span class="ranking-name">${r[0]}</span></div><div class="poker-hand">${r[1].map(cardHTML).join("")}</div><div class="ranking-note">${r[2]}</div></div>`).join("")}</div></div></section>`;
-  if(p)push({type:"topic",stage,index});
-}
-function openTopic(stage,index,p=false){
-  if(stage==="fundamentos" && index===0) return renderRanking(stage,index,p);
-  const s=DATA[stage],it=s.items[index],lesson=LESSONS[stage][index];
-  setNav(it[0],true);
-  const blocks=lesson[2].map(b=>`<div class="lesson-block"><h3>${esc(b[0])}</h3><p>${esc(b[1])}</p></div>`).join("");
-  root.innerHTML=`<section class="screen"><div class="lesson-card"><span class="lesson-number">${s.etapa} · ${String(index+1).padStart(2,"0")}</span><h2>${esc(lesson[0])}</h2><p>${esc(lesson[1])}</p><div class="lesson-content">${blocks}</div></div></section>`;
-  if(p)push({type:"topic",stage,index});
-}
-function restore(v){if(!v||v.type==="home")return renderHome();if(v.type==="stage")return openStage(v.stage,false);if(v.type==="topic")return openTopic(v.stage,v.index,false);renderHome()}
-window.onpopstate=e=>restore(e.state);
-document.getElementById("brandHeader").addEventListener("click",()=>{history.pushState({type:"home"},"",location.pathname);renderHome()});
-history.replaceState({type:"home"},"",location.pathname+location.search);renderHome();
-if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js?v=7").catch(()=>{}))}
-</script>
-</body>
-</html>
+:root{--g:#0e4b3b;--gd:#08372d;--gs:#195f4c;--b:#211008;--b2:#2a160d;--c:#f2ead8;--c2:#e7dcc2;--ink:#25170f;--m:#725f4d;--gold:#d4aa58;--gold2:#a87c32;--w:#f8f0df;font-family:'Love Ya Like A Sister',cursive}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:var(--b);color:var(--w)}button{font:inherit}.app{min-height:100dvh;max-width:560px;margin:auto;background:var(--b)}.brand{cursor:pointer;background:linear-gradient(180deg,var(--gs),var(--g) 58%,var(--gd));border-bottom:4px solid var(--gold);padding:calc(18px + env(safe-area-inset-top)) 22px 17px;box-shadow:0 8px 24px #0004}.brandin{display:flex;align-items:center;gap:15px}.logo{width:56px;height:56px;flex:none}.name{font-size:25px;line-height:1.02;letter-spacing:.045em;text-transform:uppercase}.sub{margin-top:5px;font-size:15px;letter-spacing:.12em;color:var(--gold);text-transform:uppercase}.screen{padding:22px 18px calc(36px + env(safe-area-inset-bottom))}.intro{text-align:center;padding:4px 2px 18px}.intro h1{margin:0;font-size:28px;line-height:1.12;text-transform:uppercase}.intro p,.head p{color:#cfbda7;font-size:16px;line-height:1.45}.list{display:grid;gap:16px}.card{width:100%;border:2px solid var(--gold);background:linear-gradient(180deg,var(--c),#eee4ce);color:var(--ink);border-radius:24px;text-align:left;box-shadow:0 14px 34px #0004;cursor:pointer}.stage{padding:20px}.kicker,.eyebrow{font-size:15px;letter-spacing:.08em;color:var(--gold2);text-transform:uppercase}.stitle{font-size:28px;line-height:1.06;text-transform:uppercase}.desc{font-size:16px;line-height:1.42;color:var(--m);margin-top:7px}.foot{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:12px;border-top:1px solid #a87c324d;font-size:14px;color:var(--m);text-transform:uppercase}.arrow{font-size:29px;color:var(--gold2)}.head{padding:2px 2px 18px}.head h2{font-size:34px;line-height:1.02;margin:4px 0 0;text-transform:uppercase}.topic{display:flex;gap:14px;align-items:center;padding:16px}.idx{width:42px;height:42px;border-radius:13px;background:var(--b);display:grid;place-items:center;color:var(--gold);font-size:20px;flex:none}.tcopy{flex:1}.ttitle{display:block;font-size:20px;line-height:1.18;text-transform:uppercase}.tnote{display:block;font-size:15px;color:var(--m);margin-top:4px;line-height:1.35}.lesson{padding:21px}.badge{display:inline-flex;border:1px solid var(--gold2);background:#d4aa5826;color:var(--gold2);border-radius:999px;padding:7px 11px;font-size:14px;letter-spacing:.06em;text-transform:uppercase;margin-bottom:15px}.lesson h2{font-size:34px;line-height:1.05;margin:0 0 12px;text-transform:uppercase}.lead{color:var(--m);font-size:17px;line-height:1.5;margin:0 0 17px}.blocks{display:grid;gap:12px}.block{padding:15px 16px;border-radius:17px;background:var(--c2);border:1px solid #a87c324d}.block h3{margin:0 0 7px;font-size:21px;color:var(--gd);text-transform:uppercase}.block p{margin:0;color:var(--m);font-size:16px;line-height:1.5}.ranking{display:grid;gap:12px;margin-top:10px}.rrow{background:var(--c2);border:1px solid #a87c3257;border-radius:18px;padding:14px}.rhead{display:flex;align-items:center;gap:10px;margin-bottom:10px}.rpos{width:34px;height:34px;border-radius:11px;background:var(--b);color:var(--gold);display:grid;place-items:center;font-size:17px}.rname{font-size:20px;color:var(--gd);text-transform:uppercase}.hand{display:flex;gap:5px}.pc{width:45px;height:62px;border-radius:8px;background:#fffdf7;border:1px solid #cdbf9d;box-shadow:0 2px 5px #25170f22;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;color:#17120f}.pc.red{color:#a32929}.rank{font-family:Arial,sans-serif;font-weight:800;font-size:17px}.suit{font-family:Arial,sans-serif;font-size:18px;margin-top:1px}.rnote{margin-top:9px;color:var(--m);font-size:14px;line-height:1.35}.compare{margin-top:18px;padding:17px;border-radius:18px;background:var(--b2);border:1px solid var(--gold);color:var(--w)}.compare h3{margin:0 0 12px;color:var(--gold);font-size:23px;text-transform:uppercase}.ci{padding:12px 0;border-top:1px solid #d4aa583d}.ci:first-of-type{border-top:0;padding-top:0}.ci:last-child{padding-bottom:0}.ci strong{display:block;color:var(--c);font-size:18px;text-transform:uppercase;margin-bottom:4px}.ci p{margin:0;color:#d8c6ad;font-size:15px;line-height:1.5}@media(max-width:380px){.pc{width:40px;height:57px}.name{font-size:21px}.sub{font-size:13px}.stitle{font-size:25px}.intro h1{font-size:24px}}@media(min-width:700px){body{background:#120904}.app{box-shadow:0 0 70px #0008}}
+</style></head><body><div class="app"><header class="brand" id="brand"><div class="brandin"><svg class="logo" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20" cy="20" r="18" stroke="#d4aa58" stroke-width="2"/><circle cx="20" cy="20" r="13.2" stroke="#d4aa58" stroke-width="1" stroke-dasharray="2.2 3.4"/><path d="M20 9.5c-4.3 5.3-9.4 8.4-9.4 13.1A5.9 5.9 0 0020 26.3a5.9 5.9 0 009.4-3.7c0-4.7-5.1-7.8-9.4-13.1z" fill="#f8f0df"/><rect x="18.4" y="24.3" width="3.2" height="6.4" rx="1.2" fill="#f8f0df"/></svg><div><div class="name">STACKUP HOLD'EM<br>ACADEMY</div><div class="sub">CURSO INTERATIVO DE POKER</div></div></div></header><main id="root"></main></div><script>
+const D={fundamentos:{e:'ETAPA 01',t:'FUNDAMENTOS',d:'Aprenda primeiro como o poker funciona: mãos, mesa, apostas, regras e comportamento.',i:[['Ranking de mãos','Da mão mais forte à mais fraca.'],['Posições na mesa','BTN, blinds, posições iniciais, médias e finais.'],['Small Blind, Big Blind e Ante','Apostas obrigatórias e formação inicial do pote.'],['Streets','Pré-flop, flop, turn e river.'],['Sequência de apostas','Quem age primeiro, ordem das ações e fechamento da rodada.'],['Embaralhando as cartas','Preparação do baralho, corte e distribuição.'],['Misdeal','Quando uma distribuição é inválida e como proceder.'],['Funções do staff','Dealer, floor, direção e responsabilidades na mesa.'],['Terminologias básicas','Vocabulário essencial para entender mesa, ação e estratégia.'],['Perfis de jogadores','Tight, loose, agressivo, passivo e combinações comuns.'],['Cash game e tipos','Estrutura, blinds, buy-in, mesas e formatos de cash.'],['Torneio e tipos','Estruturas, fases, stacks, blinds e formatos de torneio.'],['Bons modos','Etiqueta, ritmo de jogo e respeito às regras da mesa.'],['Outras regras básicas','Showdown, muck, ação verbal, fichas e situações comuns.']]},modalidades:{e:'ETAPA 02',t:'MODALIDADES',d:'Depois da base, aprenda como as regras mudam entre as principais modalidades.',i:[["Texas Hold'em",'2 cartas na mão e 5 comunitárias.'],['Poker de 5 cartas','5-Card Draw e lógica de troca de cartas.'],['PLO 4 / PLO 5 / PLO 6','Omaha com quatro, cinco ou seis cartas fechadas.'],['5 & 7 Card Stud','Jogos Stud com cartas próprias abertas e fechadas.'],['Razz','Stud lowball: vence a melhor mão baixa.'],['H.O.R.S.E.','Rotação de Hold’em, Omaha Hi/Lo, Razz, Stud e Stud Hi/Lo.'],['Poker Caribenho','Modalidade de cassino jogada contra a casa.'],['Outras modalidades','Outras variantes para ampliar o repertório.']]},pratica:{e:'ETAPA 03',t:'PRÁTICA',d:'Fixe o aprendizado tomando decisões, resolvendo perguntas e treinando matemática.',i:[['Simulador','Treine mãos e regras das principais modalidades.'],['Quiz','Teste leitura de mãos, vencedores e conceitos.'],['Matemática do poker simplificada','Outs, probabilidades e cálculos essenciais.']]}};
+const L={
+'Posições na mesa':[['POSIÇÕES','SB, BB, UTG, posições médias, HJ, CO e BTN.'],['PRINCÍPIO','Quanto mais tarde você age, mais informação possui sobre as decisões dos adversários.']],
+'Small Blind, Big Blind e Ante':[['BLINDS','Small Blind e Big Blind são apostas obrigatórias que giram a cada mão.'],['ANTE','Quando existe, adiciona fichas ao pote antes da ação e é comum em torneios.']],
+'Streets':[['SEQUÊNCIA','Pré-flop → Flop → Turn → River → Showdown, quando necessário.'],['BOARD','No Hold’em e Omaha, flop traz 3 cartas, turn 1 e river 1.']],
+'Sequência de apostas':[['AÇÕES','Check, bet, call, raise e fold.'],['FECHAMENTO','A rodada termina quando não há ação pendente entre os jogadores que continuam na mão.']],
+'Embaralhando as cartas':[['OBJETIVO','Randomizar o baralho e impedir previsibilidade.'],['FLUXO','Embaralhar, cortar quando aplicável e distribuir conforme a modalidade.']],
+'Misdeal':[['DEFINIÇÃO','Distribuição inválida que precisa ser corrigida conforme a regra da casa ou do torneio.'],['DECISÃO','Dealer e floor aplicam o procedimento correto em ambiente organizado.']],
+'Funções do staff':[['DEALER','Distribui cartas, controla o pote e conduz a ação.'],['FLOOR','Resolve dúvidas, interpreta regras e decide em situações irregulares.']],
+'Terminologias básicas':[['AÇÃO','Check, bet, call, raise, fold, all-in, limp e 3-bet.'],['MESA','Pot, stack, board, showdown, muck, dealer button e blinds.']],
+'Perfis de jogadores':[['EIXOS','Tight × loose e agressivo × passivo.'],['USO','Perfis descrevem tendências. Observe frequências antes de classificar alguém.']],
+'Cash game e tipos':[['ESTRUTURA','Fichas representam dinheiro; blinds costumam ser estáveis e há regras de buy-in.'],['FORMATOS','Full ring, 6-max, heads-up e diferentes limites de aposta.']],
+'Torneio e tipos':[['ESTRUTURA','Blinds aumentam, jogadores podem ser eliminados e a premiação depende da colocação.'],['FORMATOS','MTT, Sit & Go, turbo, bounty, freezeout, re-entry e outros.']],
+'Bons modos':[['ETIQUETA','Aja na sua vez, proteja suas cartas e mantenha fichas visíveis.'],['CONVIVÊNCIA','Respeite dealer e jogadores e não revele informação de mão ativa.']],
+'Outras regras básicas':[['SHOWDOWN','Mostre as cartas quando necessário para disputar o pote e respeite as regras de muck.'],['AÇÃO VERBAL','Declarações claras como call, raise e all-in podem ser vinculantes.']],
+"Texas Hold'em":[['REGRAS','Cada jogador recebe 2 cartas próprias e há 5 cartas comunitárias.'],['MÃO FINAL','A melhor combinação de 5 cartas pode usar qualquer combinação entre mão e board.']],
+'Poker de 5 cartas':[['FLUXO','Distribuição → apostas → troca → nova rodada → showdown.'],['CARACTERÍSTICA','Não há board comunitário; cada jogador trabalha com suas próprias 5 cartas.']],
+'PLO 4 / PLO 5 / PLO 6':[['REGRA 2 + 3','Use exatamente 2 cartas da mão e exatamente 3 cartas do board.'],['VARIAÇÕES','PLO4, PLO5 e PLO6 mudam a quantidade de cartas próprias recebidas.']],
+'5 & 7 Card Stud':[['ESTRUTURA','Não usa board comunitário como Hold’em; cada jogador recebe cartas próprias abertas e fechadas.'],['AÇÃO','A ordem de aposta pode depender das cartas expostas.']],
+'Razz':[['OBJETIVO','Formar a melhor mão baixa possível.'],['PONTO-CHAVE','Sequências e flushes normalmente não prejudicam a mão baixa.']],
+'H.O.R.S.E.':[['ROTAÇÃO','Hold’em, Omaha Hi/Lo, Razz, Seven Card Stud e Stud Eight-or-Better.'],['COMPETÊNCIA','Exige adaptação rápida entre regras e estruturas diferentes.']],
+'Poker Caribenho':[['ESTRUTURA','O jogador enfrenta a casa, não os demais jogadores.'],['PAGAMENTO','Qualificação da casa e pagamentos seguem a tabela do cassino.']],
+'Outras modalidades':[['EXEMPLOS','Badugi, 2-7 Triple Draw, Omaha Hi/Lo, Short Deck e mixed games.'],['MÉTODO','Aprenda ranking, distribuição, ordem de apostas e regra de construção da mão.']],
+'Simulador':[['NOVO FRONT','O simulador será integrado diretamente nesta interface.'],['SEM LEGADO','Nenhuma tela ou iframe do aplicativo antigo é aberto.']],
+'Quiz':[['FORMATO','Pergunta → resposta → correção imediata → explicação curta.'],['OBJETIVO','Fixar mãos, posições, regras e decisões.']],
+'Matemática do poker simplificada':[['BASE','Outs, odds, pot odds, equity necessária e relação entre aposta e pote.'],['PRINCÍPIO','Primeiro entenda a lógica; depois automatize o cálculo com exercícios curtos.']]};
+const R=[['Royal Flush',[['A','♠'],['K','♠'],['Q','♠'],['J','♠'],['10','♠']],'A-K-Q-J-10 do mesmo naipe.'],['Straight Flush',[['9','♥'],['8','♥'],['7','♥'],['6','♥'],['5','♥']],'Cinco cartas sequenciais do mesmo naipe.'],['Quadra',[['Q','♠'],['Q','♥'],['Q','♦'],['Q','♣'],['2','♠']],'Quatro cartas do mesmo valor.'],['Full House',[['J','♠'],['J','♥'],['J','♦'],['8','♣'],['8','♥']],'Uma trinca mais um par.'],['Flush',[['A','♦'],['J','♦'],['9','♦'],['6','♦'],['3','♦']],'Cinco cartas do mesmo naipe, sem sequência.'],['Sequência',[['10','♠'],['9','♥'],['8','♦'],['7','♣'],['6','♠']],'Cinco valores consecutivos.'],['Trinca',[['7','♠'],['7','♥'],['7','♦'],['K','♣'],['2','♥']],'Três cartas do mesmo valor.'],['Dois Pares',[['A','♠'],['A','♥'],['5','♦'],['5','♣'],['9','♠']],'Dois pares diferentes mais um kicker.'],['Um Par',[['K','♠'],['K','♥'],['10','♦'],['6','♣'],['3','♠']],'Duas cartas do mesmo valor.'],['Carta Alta',[['A','♠'],['J','♥'],['9','♦'],['6','♣'],['3','♠']],'Quando nenhuma combinação acima é formada.']];
+const root=document.getElementById('root'),order=['fundamentos','modalidades','pratica'];
+const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function push(v){history.pushState(v,'','#'+v.type+(v.stage?'-'+v.stage:''))}
+function home(){root.innerHTML=`<section class="screen"><div class="intro"><h1>APRENDA POKER EM 3 ETAPAS</h1><p>Fundamentos, modalidades e prática — em uma ordem lógica de aprendizado.</p></div><div class="list">${order.map(k=>{let s=D[k];return `<button class="card stage" onclick="stage('${k}',1)"><div class="kicker">${s.e}</div><div class="stitle">${s.t}</div><div class="desc">${s.d}</div><div class="foot"><span>${s.i.length} CONTEÚDOS</span><span class="arrow">›</span></div></button>`}).join('')}</div></section>`}
+function stage(k,p=0){let s=D[k];root.innerHTML=`<section class="screen"><div class="head"><div class="eyebrow">${s.e}</div><h2>${s.t}</h2><p>${s.d}</p></div><div class="list">${s.i.map((x,i)=>`<button class="card topic" onclick="lesson('${k}',${i},1)"><span class="idx">${String(i+1).padStart(2,'0')}</span><span class="tcopy"><span class="ttitle">${esc(x[0])}</span><span class="tnote">${esc(x[1])}</span></span><span class="arrow">›</span></button>`).join('')}</div></section>`;if(p)push({type:'stage',stage:k})}
+const pc=c=>`<span class="pc${c[1]=='♥'||c[1]=='♦'?' red':''}"><span class="rank">${c[0]}</span><span class="suit">${c[1]}</span></span>`;
+function ranking(k,i,p=0){let s=D[k];root.innerHTML=`<section class="screen"><div class="card lesson"><span class="badge">${s.e} · 01</span><h2>RANKING DE MÃOS</h2><p class="lead">Da combinação mais forte para a mais fraca. As cartas abaixo mostram um exemplo visual de cada mão.</p><div class="ranking">${R.map((r,n)=>`<div class="rrow"><div class="rhead"><span class="rpos">${String(n+1).padStart(2,'0')}</span><span class="rname">${r[0]}</span></div><div class="hand">${r[1].map(pc).join('')}</div><div class="rnote">${r[2]}</div></div>`).join('')}</div><div class="compare"><h3>COMO SABER QUEM VENCEU?</h3><div class="ci"><strong>MÃOS DIFERENTES</strong><p>Compare primeiro o tipo da mão. A combinação que aparece mais acima neste ranking vence. Exemplo: um Flush sempre vence uma Sequência.</p></div><div class="ci"><strong>MESMO TIPO DE MÃO</strong><p>Compare as cartas que formam a combinação, da maior para a menor. Se ainda houver empate, entram os kickers. Exemplo: um par de Reis vence um par de Damas; com o mesmo par, compare o maior kicker, depois o seguinte.</p></div><div class="ci"><strong>REGRAS DE DESEMPATE</strong><p>Na Sequência e no Straight Flush, vence a sequência mais alta. Na Quadra, vence a quadra maior. No Full House, compare primeiro a trinca. No Flush e na Carta Alta, compare as cartas da maior para a menor. Em Dois Pares, compare o par mais alto, o segundo par e depois o kicker.</p></div><div class="ci"><strong>EMPATE REAL</strong><p>Se as melhores 5 cartas forem exatamente iguais, o pote é dividido. No poker padrão, o naipe não é usado para desempatar.</p></div></div></div></section>`;if(p)push({type:'lesson',stage:k,index:i})}
+function lesson(k,i,p=0){if(k==='fundamentos'&&i===0)return ranking(k,i,p);let s=D[k],x=s.i[i],blocks=L[x[0]]||[['CONTEÚDO','Conteúdo em desenvolvimento dentro do novo front.']];root.innerHTML=`<section class="screen"><div class="card lesson"><span class="badge">${s.e} · ${String(i+1).padStart(2,'0')}</span><h2>${esc(x[0])}</h2><p class="lead">${esc(x[1])}</p><div class="blocks">${blocks.map(b=>`<div class="block"><h3>${esc(b[0])}</h3><p>${esc(b[1])}</p></div>`).join('')}</div></div></section>`;if(p)push({type:'lesson',stage:k,index:i})}
+function restore(v){if(!v||v.type==='home')return home();if(v.type==='stage')return stage(v.stage);if(v.type==='lesson')return lesson(v.stage,v.index);home()}window.onpopstate=e=>restore(e.state);document.getElementById('brand').onclick=()=>{history.pushState({type:'home'},'',location.pathname);home()};history.replaceState({type:'home'},'',location.pathname+location.search);home();if('serviceWorker'in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js?v=9').catch(()=>{}));
+</script></body></html>
