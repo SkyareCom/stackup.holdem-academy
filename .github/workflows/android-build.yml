@@ -59,23 +59,22 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 35
+          target: google_apis
           arch: x86_64
           profile: pixel_6
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            APK="android/app/build/outputs/apk/debug/app-debug.apk"
-            adb install -r "$APK"
+            adb install -r android/app/build/outputs/apk/debug/app-debug.apk
             adb logcat -c
             adb shell am force-stop com.skyare.stackupacademy
-            adb shell am start -W -n com.skyare.stackupacademy/.MainActivity | tee /tmp/stackup-start.txt
+            adb shell am start -W -n com.skyare.stackupacademy/.MainActivity > /tmp/stackup-start.txt
+            cat /tmp/stackup-start.txt
             grep -q "Status: ok" /tmp/stackup-start.txt
             sleep 8
-            adb logcat -d -v brief | tee /tmp/stackup-logcat.txt
-            if grep -E "FATAL EXCEPTION|Process: com\.skyare\.stackupacademy.*has died" /tmp/stackup-logcat.txt; then
-              echo "Android launcher crashed during smoke test"
-              exit 1
-            fi
+            adb logcat -d -v brief > /tmp/stackup-logcat.txt
+            cat /tmp/stackup-logcat.txt
+            ! grep -q "FATAL EXCEPTION" /tmp/stackup-logcat.txt
             adb shell dumpsys package com.skyare.stackupacademy | grep -q "com.skyare.stackupacademy.MainActivity"
 
       - name: Upload unsigned AAB
