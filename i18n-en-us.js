@@ -59,6 +59,14 @@
       state[attr]=next;
       if(next!==current)el.setAttribute(attr,next);
     }
+    if(el instanceof HTMLInputElement && /^(button|submit|reset)$/i.test(el.type)){
+      const current=el.value||'';
+      if(state.value!==current){
+        const next=translateString(current);
+        state.value=next;
+        if(next!==current)el.value=next;
+      }
+    }
     translatedAttrs.set(el,state);
   }
 
@@ -89,12 +97,13 @@
     const observer=new MutationObserver(records=>{
       for(const record of records){
         if(record.type==='characterData'){translateTextNode(record.target);continue;}
+        if(record.type==='attributes'){translateAttributes(record.target);continue;}
         for(const node of record.addedNodes)schedule(node);
       }
     });
-    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','placeholder']});
+    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','placeholder','value']});
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  window.StackupI18n={translate:translateString,language};
+  window.StackupI18n={translate:translateString,language,translateTree};
 })();
