@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v67';
-const SW_VERSION=67;
+const CACHE='stackup-academy-v68';
+const SW_VERSION=68;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -29,7 +29,7 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',26],
+  ['highlight-card-style.js',27],
   ['etiquette-details.js',2],
   ['other-rules-details.js',1],
   ['fundamentals-learning-flow.js',1],
@@ -48,7 +48,7 @@ const SCRIPTS=[
   ['portuguese-corrections.js',1],
   ['cover-layout.js',8],
   ['release-compliance.js',1],
-  ['typography-standard.js',1]
+  ['typography-standard.js',2]
 ];
 
 self.addEventListener('install',event=>{
@@ -77,6 +77,9 @@ function enhanceHtml(source){
   }
   if(!html.includes('stackup-header-logo-size')){
     html=html.replace('</head>','<style id="stackup-header-logo-size">.brandin .logo[data-stackup-logo="1"]{width:80px!important;height:80px!important;flex:0 0 80px!important;object-fit:contain!important;background:transparent!important}</style></head>');
+  }
+  if(!html.includes('stackup-font-lock')){
+    html=html.replace('</head>','<style id="stackup-font-lock">html,body,body *{font-family:\'Love Ya Like A Sister\',cursive!important}.navicon,.rank,.suit,.fv-rank,.fv-suit{font-family:Arial,sans-serif!important}</style></head>');
   }
   for(const [name,version] of SCRIPTS){
     if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=${version}"></script></body>`);

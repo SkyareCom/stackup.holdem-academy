@@ -40,6 +40,9 @@ jobs:
       - name: Audit English translation
         run: node test-i18n.js
 
+      - name: Protect Academy typography
+        run: node test-typography.js
+
       - name: Validate web manifest
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest OK')"
 

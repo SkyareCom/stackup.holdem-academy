@@ -17,6 +17,18 @@
       --type-small:14px;
       --type-meta:12px;
       --type-micro:11px;
+      font-family:'Love Ya Like A Sister',cursive!important;
+    }
+
+    html,body,
+    body *{
+      font-family:'Love Ya Like A Sister',cursive!important;
+    }
+
+    .navicon,
+    .rank,.suit,
+    .fv-rank,.fv-suit{
+      font-family:Arial,sans-serif!important;
     }
 
     .name{font-size:24px!important;line-height:1.02!important}
