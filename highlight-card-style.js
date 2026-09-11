@@ -40,7 +40,7 @@
       if(!window.StackupFundamentalsSpotBank){
         await load('./fundamentals-interactive-bank.js?v=1','fundamentals-interactive-bank.js');
       }
-      await load('./fundamentals-visual-layer.js?v=1','fundamentals-visual-layer.js');
+      await load('./fundamentals-visual-layer.js?v=2','fundamentals-visual-layer.js');
       await load('./fundamentals-interactive.js?v=3','fundamentals-interactive.js');
       await load('./fundamentals-progress-panel.js?v=1','fundamentals-progress-panel.js');
     }catch(err){
