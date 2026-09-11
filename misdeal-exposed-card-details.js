@@ -45,27 +45,42 @@
   const prematureBoard=`
     <div class="rule-card rule-alert" data-mx-card="premature-board">
       <h3>CARTA DE STREET EXPOSTA ANTES DA HORA</h3>
-      <p>Quando flop, turn ou river é aberto <strong>antes de terminar a rodada de apostas anterior</strong>, a carta não é simplesmente aceita porque “já apareceu”. No procedimento TDA, ela é tratada como <strong>carta prematura</strong> e a aleatoriedade precisa ser restaurada.</p>
+      <p>Quando flop, turn ou river é aberto <strong>antes de terminar a rodada de apostas anterior</strong>, a carta não é simplesmente aceita porque já apareceu. Ela é uma <strong>carta prematura</strong> e o procedimento procura retirar a informação indevida da decisão pendente e restaurar a aleatoriedade do restante da mão.</p>
       <div class="mx-seq">
-        <div class="mx-step"><span class="mx-n">F</span><span><strong>FLOP PREMATURO:</strong> a burn do flop permanece como burn. As 3 cartas do flop prematuro voltam para o stub. O stub inteiro é reembaralhado fechado. Depois, abre-se um novo flop de 3 cartas <strong>sem queimar outra carta</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">T</span><span><strong>TURN PREMATURO:</strong> a burn do turn permanece. A carta de turn exposta volta para o stub. O stub é reembaralhado fechado e um novo turn é aberto <strong>sem nova burn</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">R</span><span><strong>RIVER PREMATURO:</strong> a burn do river permanece. A carta de river exposta volta para o stub. O stub é reembaralhado fechado e um novo river é aberto <strong>sem nova burn</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">F</span><span><strong>FLOP PREMATURO:</strong> a burn do flop permanece como burn. As 3 cartas do flop prematuro voltam para o stub, o stub é reembaralhado e um novo flop de 3 cartas é aberto <strong>sem outra burn</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">T</span><span><strong>TURN PREMATURO — PADRÃO TDA:</strong> a carta de turn mostrada antes da hora é <strong>colocada de lado</strong>; ela não volta imediatamente ao stub. A ação pendente do flop é concluída. Depois o dealer <strong>queima uma nova carta</strong> e usa a carta que normalmente seria o river como o <strong>novo turn</strong>. A rodada de apostas do turn é então concluída. Só depois disso a carta do turn prematuro é devolvida ao stub, o stub é reembaralhado e o <strong>river é dado sem nova burn</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">R</span><span><strong>RIVER PREMATURO:</strong> a carta de river prematura volta ao stub e a burn já feita para o river permanece. Depois que a ação do turn termina, o stub é reembaralhado e um novo river é aberto <strong>sem outra burn</strong>.</span></div>
       </div>
-      <div class="mx-key"><strong>NÃO ENTRA NO REEMBARALHAMENTO:</strong> muck, cartas dos jogadores e burns anteriores. Reembaralha-se o <strong>stub</strong> junto com a carta ou board prematuro que voltou para ele.</div>
+      <div class="mx-key"><strong>ATENÇÃO NO TURN:</strong> ele é a exceção importante. Não se pega simplesmente o turn exposto, mistura de volta e abre outro turn. Primeiro ele fica separado; conclui-se a ação do flop; queima-se outra carta; a carta que seria o river vira o novo turn; e somente antes do river a carta prematura volta ao stub para o reembaralhamento.</div>
+    </div>`;
+
+  const turnExample=`
+    <div class="rule-card rule-note" data-mx-card="premature-turn-example">
+      <h3>EXEMPLO — TURN VIRADO COM AÇÃO AINDA NO FLOP</h3>
+      <div class="mx-seq">
+        <div class="mx-step"><span class="mx-n">01</span><span>O flop está na mesa e ainda há um jogador para agir, mas o dealer queima e abre o <strong>turn por engano</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">02</span><span>A carta revelada não pode permanecer como turn. Ela é retirada do board e fica <strong>separada, identificada e fora do stub</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">03</span><span>A ação do flop volta ao ponto correto e todos os jogadores pendentes terminam suas decisões.</span></div>
+        <div class="mx-step"><span class="mx-n">04</span><span>Para formar o novo turn, o dealer <strong>queima uma carta</strong> e abre a próxima carta do stub — a carta que, sem o erro, ocuparia a sequência destinada ao river.</span></div>
+        <div class="mx-step"><span class="mx-n">05</span><span>Com o novo turn na mesa, ocorre normalmente toda a rodada de apostas do turn.</span></div>
+        <div class="mx-step"><span class="mx-n">06</span><span>Terminada a ação do turn, a carta prematura que estava separada volta para o stub. O stub é <strong>reembaralhado</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">07</span><span>O dealer abre o river a partir do stub reembaralhado <strong>sem queimar outra carta</strong>.</span></div>
+      </div>
+      <div class="mx-key"><strong>POR QUÊ?</strong> Assim a carta vista antes da hora não influencia a decisão pendente no flop e ainda conserva a possibilidade de aparecer mais tarde no river após o reembaralhamento.</div>
     </div>`;
 
   const why=`
     <div class="rule-card" data-mx-card="why-no-extra-burn">
-      <h3>POR QUE NÃO QUEIMAR OUTRA CARTA?</h3>
-      <p>A burn já usada naquela street continua cumprindo sua função. Queimar uma segunda carta apenas para “compensar” o erro mudaria novamente a composição aleatória do stub. Por isso, depois do reembaralhamento, a street é redistribuída <strong>sem uma burn adicional</strong>.</p>
-      <p>A regra prática para memorizar é: <strong>burn válida permanece; carta prematura volta; stub reembaralha; street é dada novamente sem outra burn.</strong></p>
+      <h3>BURN E REEMBARALHAMENTO — NÃO USE UMA REGRA ÚNICA PARA TODAS AS STREETS</h3>
+      <p><strong>Flop e river prematuros</strong> seguem a lógica de manter a burn já válida e redistribuir a street sem outra burn após o reembaralhamento.</p>
+      <p><strong>Turn prematuro</strong> tem procedimento próprio no padrão TDA: a carta prematura fica de lado, depois há <strong>uma nova burn</strong> e a carta que seria o river vira o novo turn. Após a ação do turn, a carta prematura retorna ao stub; reembaralha-se e dá-se o river sem burn adicional.</p>
     </div>`;
 
   const normalExposure=`
     <div class="rule-card" data-mx-card="normal-board-exposure">
       <h3>EXPOSIÇÃO ACIDENTAL × CARTA PREMATURA</h3>
       <p>Uma carta comunitária do board é naturalmente aberta quando chega sua street. O problema ocorre quando ela é mostrada <strong>antes da hora</strong>, com ação ainda pendente na street anterior, ou quando o dealer expõe uma carta que deveria permanecer fechada no stub.</p>
-      <p>O jogador não deve tentar “resolver” a situação escolhendo aceitar a carta. O dealer preserva as cartas e o Floor aplica o procedimento. Regras locais podem diferir em detalhes, então a decisão oficial da casa prevalece.</p>
+      <p>O jogador não deve tentar resolver a situação escolhendo aceitar a carta. O dealer preserva as cartas e o Floor aplica o procedimento. Regras locais podem diferir em detalhes, então a decisão oficial da casa prevalece.</p>
     </div>`;
 
   function apply(){
@@ -78,7 +93,7 @@
     const exposed=[...grid.querySelectorAll('.rule-card')].find(el=>el.querySelector('h3')?.textContent.includes('CARTA EXPOSTA PELO DEALER'));
     if(exposed){exposed.insertAdjacentHTML('afterend',initialDeal+endSeat);}else{grid.insertAdjacentHTML('beforeend',initialDeal+endSeat);}
     const premature=[...grid.querySelectorAll('.rule-card')].find(el=>el.querySelector('h3')?.textContent.includes('TURN OU RIVER ABERTO ANTES DA HORA'));
-    if(premature){premature.insertAdjacentHTML('afterend',prematureBoard+why+normalExposure);}else{grid.insertAdjacentHTML('beforeend',prematureBoard+why+normalExposure);}
+    if(premature){premature.insertAdjacentHTML('afterend',prematureBoard+turnExample+why+normalExposure);}else{grid.insertAdjacentHTML('beforeend',prematureBoard+turnExample+why+normalExposure);}
   }
 
   let queued=false;
