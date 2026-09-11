@@ -45,6 +45,13 @@
     renderLanguageScreen();
   }
 
+  function reloadHome(){
+    const url=new URL(location.href);
+    url.hash='';
+    url.searchParams.delete('_fresh');
+    location.replace(url.href);
+  }
+
   document.addEventListener('click',event=>{
     const card=event.target.closest?.('[data-stackup-language-card]');
     if(card){
@@ -55,9 +62,14 @@
     const choice=event.target.closest?.('[data-stackup-language]');
     if(!choice)return;
     event.preventDefault();
-    saveLanguage(choice.dataset.stackupLanguage);
+    const next=choice.dataset.stackupLanguage;
+    if(next!==getLanguage()){
+      saveLanguage(next);
+      reloadHome();
+      return;
+    }
     if(history.length>1)history.back();
-    else if(typeof window.home==='function')window.home();
+    else reloadHome();
   });
 
   applyDocumentLanguage(getLanguage());
