@@ -37,7 +37,6 @@
 
   (async()=>{
     try{
-      await load('./misdeal-exposed-card-details.js?v=4','misdeal-exposed-card-details.js');
       if(!window.StackupFundamentalsSpotBank){
         await load('./fundamentals-interactive-bank.js?v=1','fundamentals-interactive-bank.js');
       }
@@ -45,7 +44,7 @@
       await load('./fundamentals-interactive.js?v=3','fundamentals-interactive.js');
       await load('./fundamentals-progress-panel.js?v=1','fundamentals-progress-panel.js');
     }catch(err){
-      console.error('[STACKUP] Falha ao carregar modulos complementares.',err);
+      console.error('[STACKUP] Falha ao carregar treino interativo de Fundamentos.',err);
     }
   })();
 })();
