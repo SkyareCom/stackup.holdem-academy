@@ -8,6 +8,8 @@
   ];
   const SESSION_FLAG='stackup-test-session-active-v1';
   const RETURN_FLAG='stackup-test-return-pending-v1';
+  const AWAY_AT='stackup-test-away-at-v1';
+  const MIN_AWAY_MS=3000;
   let reloading=false;
 
   function isTestKey(key){
@@ -25,15 +27,19 @@
     }catch(_){ }
   }
 
+  function clearAwayState(){
+    try{sessionStorage.removeItem(RETURN_FLAG);sessionStorage.removeItem(AWAY_AT);}catch(_){ }
+  }
+
   function resetAndReload(){
     if(reloading)return;
     reloading=true;
     clearTestProgress();
-    try{sessionStorage.removeItem(RETURN_FLAG);}catch(_){ }
+    clearAwayState();
     const url=new URL(location.href);
     url.hash='';
     url.searchParams.set('_fresh',Date.now().toString(36));
-    location.replace(url.href);
+    setTimeout(()=>location.replace(url.href),0);
   }
 
   try{
@@ -41,14 +47,24 @@
     const active=sessionStorage.getItem(SESSION_FLAG)==='1';
     if(!active || returning)clearTestProgress();
     sessionStorage.setItem(SESSION_FLAG,'1');
-    sessionStorage.removeItem(RETURN_FLAG);
+    clearAwayState();
   }catch(_){
     clearTestProgress();
   }
 
   const markAway=()=>{
-    try{sessionStorage.setItem(RETURN_FLAG,'1');}catch(_){ }
+    try{
+      sessionStorage.setItem(RETURN_FLAG,'1');
+      sessionStorage.setItem(AWAY_AT,String(Date.now()));
+    }catch(_){ }
   };
+
+  function awayDuration(){
+    try{
+      const at=Number(sessionStorage.getItem(AWAY_AT)||0);
+      return at?Math.max(0,Date.now()-at):0;
+    }catch(_){return MIN_AWAY_MS;}
+  }
 
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='hidden'){
@@ -57,7 +73,9 @@
     }
     let shouldReset=false;
     try{shouldReset=sessionStorage.getItem(RETURN_FLAG)==='1';}catch(_){shouldReset=true;}
-    if(shouldReset)resetAndReload();
+    if(!shouldReset)return;
+    if(awayDuration()>=MIN_AWAY_MS)resetAndReload();
+    else clearAwayState();
   });
 
   window.addEventListener('pagehide',markAway,{passive:true});
