@@ -5,8 +5,25 @@
   const translatedAttrs=new WeakMap();
   let queued=false;
 
-  const phrasePairs=(window.StackupI18nPhrases||[]).slice().sort((a,b)=>b[0].length-a[0].length);
-  const words=window.StackupI18nWords||{};
+  const runtimePhrases=[
+    ['MÃO VIVA','LIVE HAND'],['MÃOS VIVAS','LIVE HANDS'],
+    ['QUEM AGE PRIMEIRO','WHO ACTS FIRST'],['QUEM AGE POR ÚLTIMO','WHO ACTS LAST'],
+    ['AGE PRIMEIRO','ACTS FIRST'],['AGE POR ÚLTIMO','ACTS LAST'],['AGE ANTES','ACTS BEFORE'],['AGE DEPOIS','ACTS AFTER'],
+    ['DEALER CONFERE','DEALER CHECKS'],['O DEALER CONFERE','THE DEALER CHECKS'],
+    ['BLINDS/ANTES','BLINDS/ANTES'],['BLINDS / ANTES','BLINDS / ANTES'],['BLINDS E ANTES','BLINDS AND ANTES'],
+    ['BLINDS E, QUANDO APLICÁVEL, ANTES','BLINDS AND, WHEN APPLICABLE, ANTES'],
+    ['OS NÍVEIS ELEVAM BLINDS/ANTES AO LONGO DO EVENTO.','THE LEVELS INCREASE BLINDS/ANTES THROUGHOUT THE EVENT.'],
+    ['ANTES JÁ FORMAM O POTE','ANTES ALREADY FORM THE POT'],
+    ['ANTES SÃO DEVOLVIDOS','ANTES ARE RETURNED']
+  ];
+  const phrasePairs=runtimePhrases.concat(window.StackupI18nPhrases||[]).slice().sort((a,b)=>b[0].length-a[0].length);
+  const words=Object.assign({},window.StackupI18nWords||{}, {
+    protege:'protects',protegem:'protect',cassino:'casino',cassinos:'casinos',
+    dupla:'pair',duplas:'pairs',ajustar:'adjust',ajusta:'adjusts',ajuste:'adjustment',
+    decisao:'decision','decisão':'decision',decisoes:'decisions','decisões':'decisions',
+    resultado:'result',resultados:'results',confere:'checks',conferem:'check',
+    viva:'live',vivas:'live',vivo:'live',vivos:'live'
+  });
 
   function language(){
     try{return localStorage.getItem(STORAGE)||'pt-BR';}catch(_){return 'pt-BR';}
@@ -19,24 +36,18 @@
     return target;
   }
 
-  // Poker notation must never be treated as natural-language text.
   function protectPokerNotation(input){
     const slots=[];
     const hold=value=>{const i=slots.push(value)-1;return `\uE100${i}\uE101`;};
     let out=String(input);
-    // Individual cards such as A♠, 10♥, Q♦.
     out=out.replace(/(?:10|[2-9AKQJ])[♠♥♦♣]/g,hold);
-    // Rank chains such as A-K-Q-J-10 and A-2-3-4-5.
     out=out.replace(/\b(?:10|[2-9AKQJ])(?:-(?:10|[2-9AKQJ])){1,8}\b/g,hold);
-    // Compact common hole-card notation such as AK, AQ, KQ, AKs, AKo.
     out=out.replace(/\b(?:[AKQJT2-9]{2})(?:s|o)?\b/g,hold);
     return {out,restore:value=>value.replace(/\uE100(\d+)\uE101/g,(_,i)=>slots[Number(i)]||'')};
   }
 
   function phraseRegex(pt){
     const body=escapeRegExp(pt);
-    // Do not replace a phrase inside a larger lexical token (the old runtime
-    // could turn INFORMAÇÃO into INFORMAction by matching AÇÃO internally).
     const startsWord=/^[\p{L}\p{M}\p{N}]/u.test(pt);
     const endsWord=/[\p{L}\p{M}\p{N}]$/u.test(pt);
     return new RegExp(`${startsWord?'(?<![\\p{L}\\p{M}\\p{N}])':''}${body}${endsWord?'(?![\\p{L}\\p{M}\\p{N}])':''}`,'giu');
@@ -44,7 +55,6 @@
 
   function translateString(input){
     if(language()!==EN || !input || !/[A-Za-zÀ-ÿ]/.test(input))return input;
-    // A standalone card rank (especially Ace = A) is notation, not the Portuguese article 'a'.
     if(/^(?:10|[2-9AKQJ])$/.test(String(input).trim()))return input;
     const protectedText=protectPokerNotation(input);
     let out=protectedText.out,slots=[];
