@@ -2,16 +2,21 @@ package com.skyare.stackupacademy;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.view.WindowInsets;
+import android.view.Gravity;
+import android.view.ViewGroup;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 
 public class MainActivity extends Activity {
     private static final String APP_URL = "https://skyarecom.github.io/stackup.holdem-academy/";
@@ -19,8 +24,8 @@ public class MainActivity extends Activity {
     private static final String APP_PATH = "/stackup.holdem-academy/";
 
     private WebView webView;
+    private FrameLayout root;
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,21 +33,47 @@ public class MainActivity extends Activity {
         getWindow().setStatusBarColor(Color.rgb(5, 72, 37));
         getWindow().setNavigationBarColor(Color.rgb(44, 32, 20));
 
-        webView = new WebView(this);
+        root = new FrameLayout(this);
+        root.setBackgroundColor(Color.rgb(7, 20, 13));
+        setContentView(root);
+
+        showLoadingMessage();
+
+        try {
+            createAndLoadWebView(savedInstanceState);
+        } catch (Throwable error) {
+            openExternalBrowserOrShowError();
+        }
+    }
+
+    private void showLoadingMessage() {
+        TextView loading = new TextView(this);
+        loading.setText("STACKUP HOLD'EM ACADEMY\n\nCarregando...");
+        loading.setTextColor(Color.WHITE);
+        loading.setTextSize(18f);
+        loading.setGravity(Gravity.CENTER);
+        loading.setPadding(32, 32, 32, 32);
+        root.addView(loading, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
+    @SuppressLint("SetJavaScriptEnabled")
+    private void createAndLoadWebView(Bundle savedInstanceState) {
+        webView = new WebView(getApplicationContext());
         webView.setBackgroundColor(Color.rgb(7, 20, 13));
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
-        settings.setDatabaseEnabled(true);
-        settings.setAllowFileAccess(false);
-        settings.setAllowContentAccess(false);
-        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
-        settings.setMediaPlaybackRequiresUserGesture(true);
+        settings.setLoadWithOverviewMode(false);
+        settings.setUseWideViewPort(false);
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
 
+        webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -54,25 +85,30 @@ public class MainActivity extends Activity {
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return handleNavigation(Uri.parse(url));
             }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                if (request != null && request.isForMainFrame()) {
+                    openExternalBrowserOrShowError();
+                }
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if (root != null && webView != null && webView.getParent() == null) {
+                    root.removeAllViews();
+                    root.addView(webView, new FrameLayout.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT));
+                }
+            }
         });
 
-        webView.setOnApplyWindowInsetsListener((View v, WindowInsets insets) -> {
-            v.setPadding(
-                insets.getSystemWindowInsetLeft(),
-                insets.getSystemWindowInsetTop(),
-                insets.getSystemWindowInsetRight(),
-                insets.getSystemWindowInsetBottom()
-            );
-            return insets;
-        });
-
-        setContentView(webView);
-
-        if (savedInstanceState == null) {
-            webView.loadUrl(APP_URL);
-        } else {
-            webView.restoreState(savedInstanceState);
+        if (savedInstanceState != null && webView.restoreState(savedInstanceState) != null) {
+            return;
         }
+        webView.loadUrl(APP_URL);
     }
 
     private boolean handleNavigation(Uri uri) {
@@ -88,16 +124,45 @@ public class MainActivity extends Activity {
             try {
                 startActivity(new Intent(Intent.ACTION_VIEW, uri));
                 return true;
-            } catch (Exception ignored) {
+            } catch (ActivityNotFoundException ignored) {
                 return false;
             }
         }
         return false;
     }
 
+    private void openExternalBrowserOrShowError() {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_URL));
+            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+            startActivity(intent);
+            finish();
+        } catch (Throwable ignored) {
+            showPermanentError();
+        }
+    }
+
+    private void showPermanentError() {
+        if (root == null) {
+            return;
+        }
+        root.removeAllViews();
+        TextView error = new TextView(this);
+        error.setText("STACKUP HOLD'EM ACADEMY\n\nNao foi possivel abrir o aplicativo.\nVerifique sua conexao com a internet.");
+        error.setTextColor(Color.WHITE);
+        error.setTextSize(17f);
+        error.setGravity(Gravity.CENTER);
+        error.setPadding(40, 40, 40, 40);
+        root.addView(error, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+    }
+
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        webView.saveState(outState);
+        if (webView != null) {
+            webView.saveState(outState);
+        }
         super.onSaveInstanceState(outState);
     }
 
@@ -114,9 +179,14 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         if (webView != null) {
-            webView.stopLoading();
-            webView.setWebViewClient(null);
-            webView.destroy();
+            try {
+                webView.stopLoading();
+                webView.loadUrl("about:blank");
+                webView.removeAllViews();
+                webView.destroy();
+            } catch (Throwable ignored) {
+                // Never let WebView cleanup crash the test launcher.
+            }
             webView = null;
         }
         super.onDestroy();
