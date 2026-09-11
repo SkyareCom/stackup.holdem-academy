@@ -49,6 +49,7 @@
       await load('./modalities-depth-details.js?v=1','modalities-depth-details.js');
       await load('./mixed-games-module.js?v=2','mixed-games-module.js');
       await load('./practice-module.js?v=1','practice-module.js');
+      await load('./practice-table.js?v=1','practice-table.js');
       await load('./typography-standard.js?v=1','typography-standard.js');
     }catch(err){
       console.error('[STACKUP] Falha ao carregar módulos interativos.',err);
