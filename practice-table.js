@@ -14,31 +14,40 @@
       .positions-table:after{content:'♠';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:82px;height:82px;border:2px solid #1a7b53;border-radius:50%;display:grid;place-items:center;color:#58a87599;font:42px Arial,sans-serif}
       .seat{position:absolute;z-index:3;transform:translate(-50%,-50%)}
       .seat-label{display:block;min-width:62px;padding:7px 10px;border-radius:12px;background:linear-gradient(180deg,#0c3c2d,#031b15);border:1.5px solid #d4aa58;color:#f8f0df;text-align:center;font-size:16px;line-height:1;box-shadow:0 4px 10px #0008,0 0 8px #0c8e5855;text-transform:uppercase;white-space:nowrap}
-      .s-utg1{left:50%;top:10%}.s-utg2{left:68.9%;top:16.3%}.s-mp1{left:81.8%;top:33.4%}.s-mp2{left:84.6%;top:55.7%}.s-hj{left:76.5%;top:76.2%}.s-lj{left:59.9%;top:88.4%}.s-co{left:40.1%;top:88.4%}.s-btn{left:23.5%;top:76.2%}.s-dealer{left:15.4%;top:55.7%}.s-sb{left:18.2%;top:33.4%}.s-bb{left:31.1%;top:16.3%}
-      .s-dealer .seat-label{min-width:72px;background:linear-gradient(180deg,#f0d48c,#c99539);border-color:#fff0c8;color:#2b170a;box-shadow:0 4px 12px #0009,0 0 14px #d4aa5888;font-weight:700}
+      .s-utg1{left:50%;top:10%}
+      .s-utg2{left:70.5%;top:17.6%}
+      .s-mp1{left:83.3%;top:37.6%}
+      .s-mp2{left:83.3%;top:62.4%}
+      .s-lj{left:70.5%;top:82.4%}
+      .s-hj{left:50%;top:90%}
+      .s-co{left:29.5%;top:82.4%}
+      .s-btn{left:16.7%;top:62.4%}
+      .s-sb{left:16.7%;top:37.6%}
+      .s-bb{left:29.5%;top:17.6%}
+      .dealer-button{position:absolute;z-index:4;left:30%;top:68.5%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff4c9,#d4aa58);border:2px solid #fff0c8;color:#2b170a;box-shadow:0 4px 10px #0009,0 0 10px #d4aa5870;font:700 14px Arial,sans-serif}
       .position-key{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
       .position-key .block{margin:0}
       .position-key .block h3{font-size:17px}
       .position-key .block p{font-size:14px}
       .position-key .dealer-info{grid-column:1/-1;background:#e6d8b9;border-color:#c99539}
-      @media(max-width:390px){.positions-board{min-height:470px}.seat-label{min-width:54px;padding:6px 7px;font-size:14px}.s-dealer .seat-label{min-width:64px}.position-key{grid-template-columns:1fr}.position-key .dealer-info{grid-column:auto}}
+      @media(max-width:390px){.positions-board{min-height:470px}.seat-label{min-width:54px;padding:6px 7px;font-size:14px}.dealer-button{width:27px;height:27px;font-size:12px}.position-key{grid-template-columns:1fr}.position-key .dealer-info{grid-column:auto}}
     `;
     document.head.appendChild(style);
   }
 
   function tableMarkup(){
     return `<div class="p3-simulator-table positions-visual">
-      <div class="positions-board" role="img" aria-label="Mesa de poker com posições UTG1, UTG2, MP1, MP2, HJ, LJ, CO, BTN, Dealer, SB e BB">
+      <div class="positions-board" role="img" aria-label="Mesa de poker com 10 posições de jogador: UTG1, UTG2, MP1, MP2, LJ, HJ, CO, BTN, SB e BB. O botão do dealer está junto ao BTN.">
         <div class="positions-table"></div>
         <div class="seat s-utg1"><span class="seat-label">UTG1</span></div>
         <div class="seat s-utg2"><span class="seat-label">UTG2</span></div>
         <div class="seat s-mp1"><span class="seat-label">MP1</span></div>
         <div class="seat s-mp2"><span class="seat-label">MP2</span></div>
-        <div class="seat s-hj"><span class="seat-label">HJ</span></div>
         <div class="seat s-lj"><span class="seat-label">LJ</span></div>
+        <div class="seat s-hj"><span class="seat-label">HJ</span></div>
         <div class="seat s-co"><span class="seat-label">CO</span></div>
         <div class="seat s-btn"><span class="seat-label">BTN</span></div>
-        <div class="seat s-dealer"><span class="seat-label">DEALER</span></div>
+        <div class="dealer-button" aria-label="Botão do dealer junto ao BTN">D</div>
         <div class="seat s-sb"><span class="seat-label">SB</span></div>
         <div class="seat s-bb"><span class="seat-label">BB</span></div>
       </div>
