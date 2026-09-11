@@ -1,5 +1,5 @@
-const CACHE="stackup-academy-v43";
-const ASSETS=["./","./index.html","./manifest.webmanifest","./engine.js","./positions-table.js","./fundamentals-details.js","./misdeal-staff-details.js","./terminology-profiles-details.js","./strategic-concepts-details.js","./terminology-extra-terms.js","./cash-tournament-details.js","./highlight-card-style.js","./etiquette-details.js","./other-rules-details.js","./fundamentals-learning-flow.js","./fundamentals-interactive-bank.js","./fundamentals-visual-layer.js","./fundamentals-interactive.js","./fundamentals-progress-panel.js","./modalities-module.js","./modalities-depth-details.js","./typography-standard.js","./icon-192.png","./icon-512.png"];
+const CACHE="stackup-academy-v44";
+const ASSETS=["./","./index.html","./manifest.webmanifest","./engine.js","./positions-table.js","./fundamentals-details.js","./misdeal-staff-details.js","./terminology-profiles-details.js","./strategic-concepts-details.js","./terminology-extra-terms.js","./cash-tournament-details.js","./highlight-card-style.js","./etiquette-details.js","./other-rules-details.js","./fundamentals-learning-flow.js","./fundamentals-interactive-bank.js","./fundamentals-visual-layer.js","./fundamentals-interactive.js","./fundamentals-progress-panel.js","./modalities-module.js","./modalities-depth-details.js","./mixed-games-module.js","./typography-standard.js","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",event=>{event.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting()))});
 self.addEventListener("activate",event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();const clients=await self.clients.matchAll({type:"window"});await Promise.all(clients.map(client=>client.navigate(client.url).catch(()=>null)));})())});
 self.addEventListener("fetch",event=>{
@@ -9,15 +9,16 @@ self.addEventListener("fetch",event=>{
       const type=resp.headers.get("content-type")||"";
       if(!type.includes("text/html"))return resp;
       let html=await resp.text();
-      html=html.replace(/sw\.js\?v=\d+/g,"sw.js?v=43");
+      html=html.replace(/sw\.js\?v=\d+/g,"sw.js?v=44");
       html=html.replace(/terminology-extra-terms\.js\?v=\d+/g,"terminology-extra-terms.js?v=2");
-      html=html.replace(/highlight-card-style\.js\?v=\d+/g,"highlight-card-style.js?v=14");
+      html=html.replace(/highlight-card-style\.js\?v=\d+/g,"highlight-card-style.js?v=15");
       html=html.replace(/fundamentals-interactive-bank\.js\?v=\d+/g,"fundamentals-interactive-bank.js?v=1");
       html=html.replace(/fundamentals-visual-layer\.js\?v=\d+/g,"fundamentals-visual-layer.js?v=2");
       html=html.replace(/fundamentals-interactive\.js\?v=\d+/g,"fundamentals-interactive.js?v=3");
       html=html.replace(/fundamentals-progress-panel\.js\?v=\d+/g,"fundamentals-progress-panel.js?v=1");
       html=html.replace(/modalities-module\.js\?v=\d+/g,"modalities-module.js?v=1");
       html=html.replace(/modalities-depth-details\.js\?v=\d+/g,"modalities-depth-details.js?v=1");
+      html=html.replace(/mixed-games-module\.js\?v=\d+/g,"mixed-games-module.js?v=1");
       if(!html.includes("positions-table.js"))html=html.replace("</body>",'<script src="./positions-table.js?v=3"></script></body>');
       if(!html.includes("fundamentals-details.js"))html=html.replace("</body>",'<script src="./fundamentals-details.js?v=3"></script></body>');
       if(!html.includes("misdeal-staff-details.js"))html=html.replace("</body>",'<script src="./misdeal-staff-details.js?v=1"></script></body>');
@@ -25,7 +26,7 @@ self.addEventListener("fetch",event=>{
       if(!html.includes("strategic-concepts-details.js"))html=html.replace("</body>",'<script src="./strategic-concepts-details.js?v=1"></script></body>');
       if(!html.includes("terminology-extra-terms.js"))html=html.replace("</body>",'<script src="./terminology-extra-terms.js?v=2"></script></body>');
       if(!html.includes("cash-tournament-details.js"))html=html.replace("</body>",'<script src="./cash-tournament-details.js?v=1"></script></body>');
-      if(!html.includes("highlight-card-style.js"))html=html.replace("</body>",'<script src="./highlight-card-style.js?v=14"></script></body>');
+      if(!html.includes("highlight-card-style.js"))html=html.replace("</body>",'<script src="./highlight-card-style.js?v=15"></script></body>');
       if(!html.includes("etiquette-details.js"))html=html.replace("</body>",'<script src="./etiquette-details.js?v=2"></script></body>');
       if(!html.includes("other-rules-details.js"))html=html.replace("</body>",'<script src="./other-rules-details.js?v=1"></script></body>');
       if(!html.includes("fundamentals-interactive-bank.js"))html=html.replace("</body>",'<script src="./fundamentals-interactive-bank.js?v=1"></script></body>');
@@ -34,6 +35,7 @@ self.addEventListener("fetch",event=>{
       if(!html.includes("fundamentals-progress-panel.js"))html=html.replace("</body>",'<script src="./fundamentals-progress-panel.js?v=1"></script></body>');
       if(!html.includes("modalities-module.js"))html=html.replace("</body>",'<script src="./modalities-module.js?v=1"></script></body>');
       if(!html.includes("modalities-depth-details.js"))html=html.replace("</body>",'<script src="./modalities-depth-details.js?v=1"></script></body>');
+      if(!html.includes("mixed-games-module.js"))html=html.replace("</body>",'<script src="./mixed-games-module.js?v=1"></script></body>');
       if(!html.includes("typography-standard.js"))html=html.replace("</body>",'<script src="./typography-standard.js?v=1"></script></body>');
       const headers=new Headers(resp.headers);headers.set("content-type","text/html; charset=utf-8");
       return new Response(html,{status:resp.status,statusText:resp.statusText,headers});
