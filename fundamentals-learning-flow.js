@@ -30,20 +30,31 @@
   if('scrollRestoration' in history) history.scrollRestoration='manual';
 
   const root=document.getElementById('root');
+  const navtools=document.getElementById('navtools');
   let frame=0;
+
+  function scrollElementToTop(el,offset=0){
+    if(!el){window.scrollTo({top:0,left:0,behavior:'auto'});return;}
+    const y=window.scrollY+el.getBoundingClientRect().top-offset;
+    window.scrollTo({top:Math.max(0,y),left:0,behavior:'auto'});
+  }
+
   function alignScreenStart(){
     cancelAnimationFrame(frame);
     frame=requestAnimationFrame(()=>{
       frame=requestAnimationFrame(()=>{
-        const lessonTitle=root?.querySelector('.card.lesson h2');
-        const menuTitle=root?.querySelector('.head h2');
-        const target=lessonTitle||menuTitle;
-        if(target){
-          const y=window.scrollY+target.getBoundingClientRect().top-10;
-          window.scrollTo({top:Math.max(0,y),left:0,behavior:'auto'});
-        }else{
-          window.scrollTo({top:0,left:0,behavior:'auto'});
+        const lesson=root?.querySelector('.card.lesson');
+        if(lesson){
+          // Nas telas de conteúdo, os botões de navegação ficam no topo da leitura.
+          // Logo abaixo aparecem título e início do conteúdo, sem herdar o scroll anterior.
+          const navVisible=navtools && getComputedStyle(navtools).display!=='none';
+          scrollElementToTop(navVisible?navtools:lesson,0);
+          return;
         }
+
+        const menuHead=root?.querySelector('.head');
+        if(menuHead){scrollElementToTop(menuHead,10);return;}
+        window.scrollTo({top:0,left:0,behavior:'auto'});
       });
     });
   }
