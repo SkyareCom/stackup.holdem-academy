@@ -11,22 +11,28 @@
     const style=document.createElement('style');
     style.id=STYLE_ID;
     style.textContent=`
-      .positions-visual{
-        width:100%;
-        max-width:100%;
-        margin:8px auto 0;
+      .card.lesson.positions-lesson-active{overflow-x:hidden}
+      .card.lesson.positions-lesson-active>.blocks{width:auto;min-width:0;margin:0;padding:0}
+      .positions-lesson-visual{
+        width:auto;
+        max-width:none;
+        min-width:0;
+        margin:8px 0 0;
         padding:0;
         box-sizing:border-box;
         display:flex;
         flex-direction:column;
         align-items:center;
-        justify-self:center;
+        align-self:stretch;
+        justify-self:stretch;
       }
-      .positions-board{
+      .positions-lesson-visual .positions-lesson-board{
         position:relative;
-        width:100%;
-        max-width:100%;
-        margin:0 auto;
+        width:auto!important;
+        max-width:none!important;
+        min-width:0;
+        margin:0!important;
+        align-self:stretch;
         box-sizing:border-box;
         aspect-ratio:9/14.2;
         min-height:520px;
@@ -53,9 +59,11 @@
       .s-sb{left:16.7%;top:37.6%}
       .s-bb{left:29.5%;top:17.6%}
       .dealer-button{position:absolute;z-index:4;left:30%;top:68.5%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff4c9,#d4aa58);border:2px solid #fff0c8;color:#2b170a;box-shadow:0 4px 10px #0009,0 0 10px #d4aa5870;font:700 14px Arial,sans-serif}
-      .position-key{
-        width:100%;
-        max-width:100%;
+      .positions-lesson-key{
+        width:auto!important;
+        max-width:none!important;
+        min-width:0;
+        align-self:stretch;
         box-sizing:border-box;
         display:grid;
         grid-template-columns:1fr 1fr;
@@ -64,21 +72,21 @@
         padding:0;
         justify-items:stretch;
       }
-      .position-key .block{
+      .positions-lesson-key .block{
         width:100%;
         max-width:100%;
         box-sizing:border-box;
         margin:0 auto;
       }
-      .position-key .block h3{font-size:17px}
-      .position-key .block p{font-size:14px}
-      .position-key .dealer-info{grid-column:1/-1;background:#e6d8b9;border-color:#c99539}
+      .positions-lesson-key .block h3{font-size:17px}
+      .positions-lesson-key .block p{font-size:14px}
+      .positions-lesson-key .dealer-info{grid-column:1/-1;background:#e6d8b9;border-color:#c99539}
       @media(max-width:390px){
-        .positions-board{min-height:470px}
+        .positions-lesson-visual .positions-lesson-board{min-height:470px}
         .seat-label{min-width:54px;padding:6px 7px;font-size:14px}
         .dealer-button{width:27px;height:27px;font-size:12px}
-        .position-key{grid-template-columns:1fr}
-        .position-key .dealer-info{grid-column:auto}
+        .positions-lesson-key{grid-template-columns:1fr}
+        .positions-lesson-key .dealer-info{grid-column:auto}
       }
     `;
     document.head.appendChild(style);
@@ -115,14 +123,15 @@
     if(!lesson || !title) return;
     const normalized=title.textContent.trim().toUpperCase();
     if(normalized!=='POSIÇÕES NA MESA' && normalized!=='TABLE POSITIONS') return;
-    if(lesson.querySelector('.positions-visual')) return;
+    if(lesson.querySelector('.positions-lesson-visual')) return;
+    lesson.classList.add('positions-lesson-active');
     addStyles();
     const blocks=lesson.querySelector('.blocks');
     if(!blocks) return;
     const text=copy();
     blocks.innerHTML=`
-      <div class="positions-visual">
-        <div class="positions-board" role="img" aria-label="${text.boardLabel}">
+      <div class="positions-visual positions-lesson-visual">
+        <div class="positions-board positions-lesson-board" role="img" aria-label="${text.boardLabel}">
           <div class="positions-table"></div>
           <div class="seat s-utg1"><span class="seat-label">UTG1</span></div>
           <div class="seat s-utg2"><span class="seat-label">UTG2</span></div>
@@ -136,7 +145,7 @@
           <div class="seat s-sb"><span class="seat-label">SB</span></div>
           <div class="seat s-bb"><span class="seat-label">BB</span></div>
         </div>
-        <div class="position-key">${text.blocks}</div>
+        <div class="position-key positions-lesson-key">${text.blocks}</div>
       </div>`;
   }
 
