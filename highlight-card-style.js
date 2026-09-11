@@ -51,7 +51,7 @@
       await load('./practice-module.js?v=1','practice-module.js');
       await load('./practice-table.js?v=2','practice-table.js');
       await load('./practice-advanced-bank.js?v=1','practice-advanced-bank.js');
-      await load('./practice-advanced.js?v=1','practice-advanced.js');
+      await load('./practice-advanced.js?v=2','practice-advanced.js');
       await load('./typography-standard.js?v=1','typography-standard.js');
     }catch(err){
       console.error('[STACKUP] Falha ao carregar módulos interativos.',err);
