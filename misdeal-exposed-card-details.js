@@ -44,43 +44,56 @@
 
   const prematureBoard=`
     <div class="rule-card rule-alert" data-mx-card="premature-board">
-      <h3>CARTA DE STREET EXPOSTA ANTES DA HORA</h3>
-      <p>Quando flop, turn ou river é aberto <strong>antes de terminar a rodada de apostas anterior</strong>, a carta não é simplesmente aceita porque já apareceu. Ela é uma <strong>carta prematura</strong> e o procedimento procura retirar a informação indevida da decisão pendente e restaurar a aleatoriedade do restante da mão.</p>
+      <h3>TURN OU RIVER REVELADO ANTES DA HORA — PADRÃO TDA</h3>
+      <p>Se o dealer revela o <strong>turn</strong> ou o <strong>river</strong> antes de toda a ação da street anterior terminar, a carta é <strong>prematura</strong>. O jogador não pode escolher mantê-la e ela não permanece no board.</p>
       <div class="mx-seq">
-        <div class="mx-step"><span class="mx-n">F</span><span><strong>FLOP PREMATURO:</strong> a burn do flop permanece como burn. As 3 cartas do flop prematuro voltam para o stub, o stub é reembaralhado e um novo flop de 3 cartas é aberto <strong>sem outra burn</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">T</span><span><strong>TURN PREMATURO — PADRÃO TDA:</strong> a carta de turn mostrada antes da hora é <strong>colocada de lado</strong>; ela não volta imediatamente ao stub. A ação pendente do flop é concluída. Depois o dealer <strong>queima uma nova carta</strong> e usa a carta que normalmente seria o river como o <strong>novo turn</strong>. A rodada de apostas do turn é então concluída. Só depois disso a carta do turn prematuro é devolvida ao stub, o stub é reembaralhado e o <strong>river é dado sem nova burn</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">R</span><span><strong>RIVER PREMATURO:</strong> a carta de river prematura volta ao stub e a burn já feita para o river permanece. Depois que a ação do turn termina, o stub é reembaralhado e um novo river é aberto <strong>sem outra burn</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">01</span><span><strong>PARE A AÇÃO.</strong> O dealer preserva a situação e chama o Floor quando necessário. A ação que ainda faltava na street anterior deve ser concluída.</span></div>
+        <div class="mx-step"><span class="mx-n">02</span><span><strong>A BURN JÁ FEITA PERMANECE.</strong> Se a carta prematura foi aberta depois de uma burn correta, essa burn continua fora do stub como a burn daquela street.</span></div>
+        <div class="mx-step"><span class="mx-n">03</span><span><strong>A CARTA PREMATURA VOLTA AO STUB.</strong> Seja turn ou river, a carta revelada antes da hora é devolvida ao restante do baralho.</span></div>
+        <div class="mx-step"><span class="mx-n">04</span><span><strong>REEMBARALHE O STUB.</strong> O stub inteiro restante, agora incluindo a carta prematura, é reembaralhado fechado. Não entram as cartas dos jogadores, o muck nem as burns anteriores.</span></div>
+        <div class="mx-step"><span class="mx-n">05</span><span><strong>REDISTRIBUA A MESMA STREET SEM NOVA BURN.</strong> Para turn prematuro, abre-se um novo turn. Para river prematuro, abre-se um novo river. Não se queima outra carta.</span></div>
       </div>
-      <div class="mx-key"><strong>ATENÇÃO NO TURN:</strong> ele é a exceção importante. Não se pega simplesmente o turn exposto, mistura de volta e abre outro turn. Primeiro ele fica separado; conclui-se a ação do flop; queima-se outra carta; a carta que seria o river vira o novo turn; e somente antes do river a carta prematura volta ao stub para o reembaralhamento.</div>
+      <div class="mx-key"><strong>MEMORIZE:</strong> burn permanece → carta prematura volta ao stub → ação anterior termina → stub é reembaralhado → mesma street é aberta novamente sem nova burn.</div>
     </div>`;
 
   const turnExample=`
     <div class="rule-card rule-note" data-mx-card="premature-turn-example">
       <h3>EXEMPLO — TURN VIRADO COM AÇÃO AINDA NO FLOP</h3>
       <div class="mx-seq">
-        <div class="mx-step"><span class="mx-n">01</span><span>O flop está na mesa e ainda há um jogador para agir, mas o dealer queima e abre o <strong>turn por engano</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">02</span><span>A carta revelada não pode permanecer como turn. Ela é retirada do board e fica <strong>separada, identificada e fora do stub</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">03</span><span>A ação do flop volta ao ponto correto e todos os jogadores pendentes terminam suas decisões.</span></div>
-        <div class="mx-step"><span class="mx-n">04</span><span>Para formar o novo turn, o dealer <strong>queima uma carta</strong> e abre a próxima carta do stub — a carta que, sem o erro, ocuparia a sequência destinada ao river.</span></div>
-        <div class="mx-step"><span class="mx-n">05</span><span>Com o novo turn na mesa, ocorre normalmente toda a rodada de apostas do turn.</span></div>
-        <div class="mx-step"><span class="mx-n">06</span><span>Terminada a ação do turn, a carta prematura que estava separada volta para o stub. O stub é <strong>reembaralhado</strong>.</span></div>
-        <div class="mx-step"><span class="mx-n">07</span><span>O dealer abre o river a partir do stub reembaralhado <strong>sem queimar outra carta</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">01</span><span>O flop está na mesa e ainda há jogador para agir, mas o dealer queima uma carta e abre o <strong>turn cedo demais</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">02</span><span>A burn do turn fica onde está; ela continua sendo a burn válida daquela street.</span></div>
+        <div class="mx-step"><span class="mx-n">03</span><span>O turn prematuro é retirado do board e devolvido ao stub.</span></div>
+        <div class="mx-step"><span class="mx-n">04</span><span>A ação pendente do flop é concluída.</span></div>
+        <div class="mx-step"><span class="mx-n">05</span><span>O stub, incluindo a carta de turn prematura, é reembaralhado fechado.</span></div>
+        <div class="mx-step"><span class="mx-n">06</span><span>Abre-se um <strong>novo turn diretamente do stub reembaralhado, sem outra burn</strong>.</span></div>
       </div>
-      <div class="mx-key"><strong>POR QUÊ?</strong> Assim a carta vista antes da hora não influencia a decisão pendente no flop e ainda conserva a possibilidade de aparecer mais tarde no river após o reembaralhamento.</div>
+    </div>`;
+
+  const riverExample=`
+    <div class="rule-card" data-mx-card="premature-river-example">
+      <h3>EXEMPLO — RIVER VIRADO COM AÇÃO AINDA NO TURN</h3>
+      <div class="mx-seq">
+        <div class="mx-step"><span class="mx-n">01</span><span>Há ação pendente no turn, mas o dealer queima e abre o <strong>river cedo demais</strong>.</span></div>
+        <div class="mx-step"><span class="mx-n">02</span><span>A burn do river permanece como a burn válida.</span></div>
+        <div class="mx-step"><span class="mx-n">03</span><span>O river prematuro volta para o stub.</span></div>
+        <div class="mx-step"><span class="mx-n">04</span><span>A ação pendente do turn é concluída.</span></div>
+        <div class="mx-step"><span class="mx-n">05</span><span>O stub é reembaralhado fechado, incluindo a carta de river prematura.</span></div>
+        <div class="mx-step"><span class="mx-n">06</span><span>Abre-se o <strong>novo river sem queimar outra carta</strong>.</span></div>
+      </div>
     </div>`;
 
   const why=`
     <div class="rule-card" data-mx-card="why-no-extra-burn">
-      <h3>BURN E REEMBARALHAMENTO — NÃO USE UMA REGRA ÚNICA PARA TODAS AS STREETS</h3>
-      <p><strong>Flop e river prematuros</strong> seguem a lógica de manter a burn já válida e redistribuir a street sem outra burn após o reembaralhamento.</p>
-      <p><strong>Turn prematuro</strong> tem procedimento próprio no padrão TDA: a carta prematura fica de lado, depois há <strong>uma nova burn</strong> e a carta que seria o river vira o novo turn. Após a ação do turn, a carta prematura retorna ao stub; reembaralha-se e dá-se o river sem burn adicional.</p>
+      <h3>POR QUE NÃO HÁ OUTRA BURN?</h3>
+      <p>A burn daquela street já foi feita corretamente. Ela protegeu o topo do stub naquele momento e continua válida. O objetivo do reembaralhamento é devolver aleatoriedade depois da exposição prematura; fazer uma segunda burn acrescentaria uma alteração desnecessária.</p>
+      <p>No padrão TDA atual, <strong>turn e river prematuros usam a mesma lógica</strong>: manter a burn, devolver a carta prematura, reembaralhar o stub e redistribuir a street sem outra burn.</p>
     </div>`;
 
   const normalExposure=`
     <div class="rule-card" data-mx-card="normal-board-exposure">
       <h3>EXPOSIÇÃO ACIDENTAL × CARTA PREMATURA</h3>
-      <p>Uma carta comunitária do board é naturalmente aberta quando chega sua street. O problema ocorre quando ela é mostrada <strong>antes da hora</strong>, com ação ainda pendente na street anterior, ou quando o dealer expõe uma carta que deveria permanecer fechada no stub.</p>
-      <p>O jogador não deve tentar resolver a situação escolhendo aceitar a carta. O dealer preserva as cartas e o Floor aplica o procedimento. Regras locais podem diferir em detalhes, então a decisão oficial da casa prevalece.</p>
+      <p>Uma carta comunitária é naturalmente aberta quando chega sua street. O erro é mostrá-la <strong>antes de terminar a ação da street anterior</strong>. Nesse caso, ela é prematura e segue o procedimento acima.</p>
+      <p>Regras de uma casa específica ou órgão regulador podem estabelecer procedimento diferente. Em jogo organizado, o jogador não deve corrigir o baralho por conta própria: pare e deixe Dealer/Floor aplicar a regra vigente.</p>
     </div>`;
 
   function apply(){
@@ -93,7 +106,7 @@
     const exposed=[...grid.querySelectorAll('.rule-card')].find(el=>el.querySelector('h3')?.textContent.includes('CARTA EXPOSTA PELO DEALER'));
     if(exposed){exposed.insertAdjacentHTML('afterend',initialDeal+endSeat);}else{grid.insertAdjacentHTML('beforeend',initialDeal+endSeat);}
     const premature=[...grid.querySelectorAll('.rule-card')].find(el=>el.querySelector('h3')?.textContent.includes('TURN OU RIVER ABERTO ANTES DA HORA'));
-    if(premature){premature.insertAdjacentHTML('afterend',prematureBoard+turnExample+why+normalExposure);}else{grid.insertAdjacentHTML('beforeend',prematureBoard+turnExample+why+normalExposure);}
+    if(premature){premature.insertAdjacentHTML('afterend',prematureBoard+turnExample+riverExample+why+normalExposure);}else{grid.insertAdjacentHTML('beforeend',prematureBoard+turnExample+riverExample+why+normalExposure);}
   }
 
   let queued=false;
