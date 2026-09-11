@@ -11,8 +11,8 @@ const ASSETS=[
   './header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
-  ['session-reset.js',1],
-  ['language-selector.js',3],
+  ['session-reset.js',2],
+  ['language-selector.js',4],
   ['i18n-en-us-phrases-1.js',2],
   ['i18n-en-us-phrases-2.js',2],
   ['i18n-en-us-phrases-3.js',1],
@@ -21,7 +21,7 @@ const SCRIPTS=[
   ['i18n-en-us-words-extra-2.js',1],
   ['i18n-en-us-words-extra-3.js',1],
   ['i18n-en-us-words-extra-4.js',1],
-  ['i18n-en-us.js',4],
+  ['i18n-en-us.js',5],
   ['positions-table.js',4],
   ['fundamentals-details.js',3],
   ['misdeal-staff-details.js',1],
@@ -46,7 +46,7 @@ const SCRIPTS=[
   ['practice-advanced.js',2],
   ['practice-math-odds.js',2],
   ['portuguese-corrections.js',1],
-  ['cover-layout.js',8],
+  ['cover-layout.js',9],
   ['release-compliance.js',1],
   ['typography-standard.js',2]
 ];
