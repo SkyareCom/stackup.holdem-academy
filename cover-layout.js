@@ -1,7 +1,7 @@
 (() => {
   const TITLE_HTML='APRENDA POKER<br>EM 3 ETAPAS.';
   const TITLE_LABEL='APRENDA POKER EM 3 ETAPAS.';
-  const DESCRIPTION='Estude de forma interativa em uma ordem lógica de aprendizado.';
+  const DESCRIPTION='Estude de forma interativa, seguindo uma sequência lógica e progressiva.';
 
   const apply=()=>{
     const root=document.getElementById('root');
