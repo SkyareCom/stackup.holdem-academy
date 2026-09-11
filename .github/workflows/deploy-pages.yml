@@ -40,6 +40,9 @@ jobs:
       - name: Audit English translation
         run: node test-i18n.js
 
+      - name: Protect Academy performance
+        run: node test-performance.js
+
       - name: Protect Academy typography
         run: node test-typography.js
 
