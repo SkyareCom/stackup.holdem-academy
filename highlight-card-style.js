@@ -44,9 +44,10 @@
       await load('./fundamentals-visual-layer.js?v=2','fundamentals-visual-layer.js');
       await load('./fundamentals-interactive.js?v=3','fundamentals-interactive.js');
       await load('./fundamentals-progress-panel.js?v=1','fundamentals-progress-panel.js');
+      await load('./modalities-module.js?v=1','modalities-module.js');
       await load('./typography-standard.js?v=1','typography-standard.js');
     }catch(err){
-      console.error('[STACKUP] Falha ao carregar treino interativo de Fundamentos.',err);
+      console.error('[STACKUP] Falha ao carregar módulos interativos.',err);
     }
   })();
 })();
