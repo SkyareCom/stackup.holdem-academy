@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v65';
-const SW_VERSION=65;
+const CACHE='stackup-academy-v66';
+const SW_VERSION=66;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-words.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -16,7 +16,7 @@ const SCRIPTS=[
   ['i18n-en-us-phrases-1.js',1],
   ['i18n-en-us-phrases-2.js',1],
   ['i18n-en-us-words.js',1],
-  ['i18n-en-us.js',1],
+  ['i18n-en-us.js',2],
   ['positions-table.js',4],
   ['fundamentals-details.js',3],
   ['misdeal-staff-details.js',1],
