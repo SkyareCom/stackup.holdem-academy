@@ -5,10 +5,8 @@
   const translatedAttrs=new WeakMap();
   let queued=false;
 
-  const phrasePairs=window.StackupI18nPhrases||[];
+  const phrasePairs=(window.StackupI18nPhrases||[]).slice().sort((a,b)=>b[0].length-a[0].length);
   const words=window.StackupI18nWords||{};
-
-  phrasePairs.sort((a,b)=>b[0].length-a[0].length);
 
   function language(){
     try{return localStorage.getItem(STORAGE)||'pt-BR';}catch(_){return 'pt-BR';}
@@ -20,11 +18,38 @@
     if(source[0]&&source[0]===source[0].toUpperCase())return target.charAt(0).toUpperCase()+target.slice(1);
     return target;
   }
+
+  // Poker notation must never be treated as natural-language text.
+  function protectPokerNotation(input){
+    const slots=[];
+    const hold=value=>{const i=slots.push(value)-1;return `\uE100${i}\uE101`;};
+    let out=String(input);
+    // Individual cards such as A♠, 10♥, Q♦.
+    out=out.replace(/(?:10|[2-9AKQJ])[♠♥♦♣]/g,hold);
+    // Rank chains such as A-K-Q-J-10 and A-2-3-4-5.
+    out=out.replace(/\b(?:10|[2-9AKQJ])(?:-(?:10|[2-9AKQJ])){1,8}\b/g,hold);
+    // Compact common hole-card notation such as AK, AQ, KQ, AKs, AKo.
+    out=out.replace(/\b(?:[AKQJT2-9]{2})(?:s|o)?\b/g,hold);
+    return {out,restore:value=>value.replace(/\uE100(\d+)\uE101/g,(_,i)=>slots[Number(i)]||'')};
+  }
+
+  function phraseRegex(pt){
+    const body=escapeRegExp(pt);
+    // Do not replace a phrase inside a larger lexical token (the old runtime
+    // could turn INFORMAÇÃO into INFORMAction by matching AÇÃO internally).
+    const startsWord=/^[\p{L}\p{M}\p{N}]/u.test(pt);
+    const endsWord=/[\p{L}\p{M}\p{N}]$/u.test(pt);
+    return new RegExp(`${startsWord?'(?<![\\p{L}\\p{M}\\p{N}])':''}${body}${endsWord?'(?![\\p{L}\\p{M}\\p{N}])':''}`,'giu');
+  }
+
   function translateString(input){
     if(language()!==EN || !input || !/[A-Za-zÀ-ÿ]/.test(input))return input;
-    let out=String(input),slots=[];
+    // A standalone card rank (especially Ace = A) is notation, not the Portuguese article 'a'.
+    if(/^(?:10|[2-9AKQJ])$/.test(String(input).trim()))return input;
+    const protectedText=protectPokerNotation(input);
+    let out=protectedText.out,slots=[];
     for(const [pt,en] of phrasePairs){
-      const re=new RegExp(escapeRegExp(pt),'gi');
+      const re=phraseRegex(pt);
       out=out.replace(re,match=>{const i=slots.push(matchCase(match,en))-1;return `\uE000${i}\uE001`;});
     }
     out=out.replace(/[\p{L}\p{M}]+(?:[-’'][\p{L}\p{M}]+)*/gu,token=>{
@@ -33,7 +58,7 @@
       return translated?matchCase(token,translated):token;
     });
     out=out.replace(/\uE000(\d+)\uE001/g,(_,i)=>slots[Number(i)]||'');
-    return out;
+    return protectedText.restore(out);
   }
 
   function translateTextNode(node){
@@ -50,22 +75,14 @@
 
   function translateAttributes(el){
     if(!(el instanceof Element))return;
-    let state=translatedAttrs.get(el)||{};
-    for(const attr of ['aria-label','title','placeholder']){
+    const state=translatedAttrs.get(el)||{};
+    for(const attr of ['aria-label','title','placeholder','alt']){
       if(!el.hasAttribute(attr))continue;
       const current=el.getAttribute(attr)||'';
       if(state[attr]===current)continue;
       const next=translateString(current);
       state[attr]=next;
       if(next!==current)el.setAttribute(attr,next);
-    }
-    if(el instanceof HTMLInputElement && /^(button|submit|reset)$/i.test(el.type)){
-      const current=el.value||'';
-      if(state.value!==current){
-        const next=translateString(current);
-        state.value=next;
-        if(next!==current)el.value=next;
-      }
     }
     translatedAttrs.set(el,state);
   }
@@ -101,9 +118,9 @@
         for(const node of record.addedNodes)schedule(node);
       }
     });
-    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','placeholder','value']});
+    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['aria-label','title','placeholder','alt']});
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-  window.StackupI18n={translate:translateString,language,translateTree};
+  window.StackupI18n={translate:translateString,language};
 })();

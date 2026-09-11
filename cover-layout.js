@@ -1,8 +1,9 @@
 (() => {
-  const TITLE_HTML='APRENDA POKER<br>EM 3 ETAPAS.';
-  const TITLE_LABEL='APRENDA POKER EM 3 ETAPAS.';
-  const DESCRIPTION='Estude de forma interativa, seguindo uma sequência lógica e progressiva.';
-  const HEADER_LOGO='./medalhão_heráldico_dourado_e_esmeralda.png?v=1';
+  const isEnglish=(()=>{try{return localStorage.getItem('stackup-language-v1')==='en-US';}catch(_){return false;}})();
+  const TITLE_HTML=isEnglish?'LEARN POKER<br>IN 3 STEPS.':'APRENDA POKER<br>EM 3 ETAPAS.';
+  const TITLE_LABEL=isEnglish?'LEARN POKER IN 3 STEPS.':'APRENDA POKER EM 3 ETAPAS.';
+  const DESCRIPTION=isEnglish?'Study interactively, following a logical and progressive learning path.':'Estude de forma interativa, seguindo uma sequência lógica e progressiva.';
+  const HEADER_LOGO='./header-logo-transparent.png?v=1';
 
   const scrollHeader=()=>{
     const go=()=>window.scrollTo({top:0,left:0,behavior:'auto'});

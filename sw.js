@@ -1,22 +1,27 @@
-const CACHE='stackup-academy-v66';
-const SW_VERSION=66;
+const CACHE='stackup-academy-v67';
+const SW_VERSION=67;
 const ASSETS=[
-  './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-words.js','./i18n-en-us.js',
+  './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
   './strategic-concepts-details.js','./terminology-extra-terms.js','./cash-tournament-details.js','./highlight-card-style.js',
   './etiquette-details.js','./other-rules-details.js','./fundamentals-learning-flow.js','./fundamentals-interactive-bank.js',
   './fundamentals-visual-layer.js','./fundamentals-interactive.js','./fundamentals-progress-panel.js','./modalities-module.js',
   './modalities-depth-details.js','./mixed-games-module.js','./practice-module.js','./practice-table.js','./practice-advanced-bank.js',
   './practice-advanced.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
-  './medalhão_heráldico_dourado_e_esmeralda.png','./typography-standard.js','./icon-192.png','./icon-512.png'
+  './header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
   ['session-reset.js',1],
-  ['language-selector.js',2],
-  ['i18n-en-us-phrases-1.js',1],
-  ['i18n-en-us-phrases-2.js',1],
-  ['i18n-en-us-words.js',1],
-  ['i18n-en-us.js',2],
+  ['language-selector.js',3],
+  ['i18n-en-us-phrases-1.js',2],
+  ['i18n-en-us-phrases-2.js',2],
+  ['i18n-en-us-phrases-3.js',1],
+  ['i18n-en-us-words.js',2],
+  ['i18n-en-us-words-extra-1.js',1],
+  ['i18n-en-us-words-extra-2.js',1],
+  ['i18n-en-us-words-extra-3.js',1],
+  ['i18n-en-us-words-extra-4.js',1],
+  ['i18n-en-us.js',3],
   ['positions-table.js',4],
   ['fundamentals-details.js',3],
   ['misdeal-staff-details.js',1],
@@ -41,7 +46,7 @@ const SCRIPTS=[
   ['practice-advanced.js',2],
   ['practice-math-odds.js',2],
   ['portuguese-corrections.js',1],
-  ['cover-layout.js',7],
+  ['cover-layout.js',8],
   ['release-compliance.js',1],
   ['typography-standard.js',1]
 ];
