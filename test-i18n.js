@@ -6,14 +6,9 @@ const ROOT=__dirname;
 const context={window:{}};
 vm.createContext(context);
 for(const file of [
-  'i18n-en-us-phrases-1.js',
-  'i18n-en-us-phrases-2.js',
-  'i18n-en-us-phrases-3.js',
-  'i18n-en-us-words.js',
-  'i18n-en-us-words-extra-1.js','i18n-en-us-words-extra-2.js','i18n-en-us-words-extra-3.js','i18n-en-us-words-extra-4.js'
-]){
-  vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{filename:file});
-}
+  'i18n-en-us-phrases-1.js','i18n-en-us-phrases-2.js','i18n-en-us-phrases-3.js',
+  'i18n-en-us-words.js','i18n-en-us-words-extra-1.js','i18n-en-us-words-extra-2.js','i18n-en-us-words-extra-3.js','i18n-en-us-words-extra-4.js'
+]) vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{filename:file});
 
 const phrasePairs=(context.window.StackupI18nPhrases||[]).slice().sort((a,b)=>b[0].length-a[0].length);
 const words=context.window.StackupI18nWords||{};
@@ -71,8 +66,6 @@ check('known sentence 1',translate('Compare as cinco melhores cartas.')==='Compa
 check('known sentence 2',translate('Procedimentos irregulares devem seguir regra da casa.')==='Irregular procedures must follow house rules.',translate('Procedimentos irregulares devem seguir regra da casa.'));
 check('known sentence 3',translate('Como as cartas são fechadas e não existe board, a informação vem principalmente do padrão de apostas e da quantidade de cartas trocadas.').startsWith('Because the cards are face down'),translate('Como as cartas são fechadas e não existe board, a informação vem principalmente do padrão de apostas e da quantidade de cartas trocadas.'));
 
-// Full word-level source sweep: every accented Portuguese token used anywhere in the app
-// must have an English word mapping, except the [aã] regex character class used to match "vilão".
 const sourceFiles=fs.readdirSync(ROOT).filter(file=>/\.(?:js|html)$/.test(file)&&!file.startsWith('i18n-en-us')&&!file.startsWith('test-')&&!file.startsWith('audit-'));
 const unmappedAccented=new Map();
 for(const file of sourceFiles){
@@ -88,33 +81,50 @@ for(const file of sourceFiles){
 }
 check('all accented Portuguese source words mapped',unmappedAccented.size===0,[...unmappedAccented].map(([w,f])=>`${w} (${[...f].join(',')})`).join('; '));
 
-// Rendered-string approximation: scan human-facing literals and ensure the English result
-// contains neither Portuguese diacritics nor high-confidence untranslated Portuguese words.
-const markers=new Set(`que uma para por sem depois como você vocês qual quais quem jogador jogadores mão mãos cartas carta pote fichas ficha aposta apostas regra regras rodada posição posições torneio torneios modalidade modalidades baralho distribuição deve devem pode podem mais menos mesmo mesma quando entre cada todos todas seu seus sua suas ninguém alguém muito muitas muitos outra outras outro outros então ainda apenas sempre conforme próprio próprias próprios adversário adversários decisão decisões conteúdo conteúdos capítulo capítulos pergunta perguntas resposta respostas exercício exercícios`.split(/\s+/));
+// Strict PT-BR residue dictionary. Terms here are deliberately words that should never
+// remain visible in an EN-US interface. Ambiguous English words (a, as, do, no, etc.) are excluded.
+const ptResidue=new Set(`
+aba abaixo aberta abertas aberto abertos acao acoes acima acerto acertos acompanha acompanham acompanhar acontece acontecendo acontece acontecem acordo ativa ativas ativo ativos adversario adversarios ajuda ajustar ainda aleatorio aleatoria aleatorios aleatorias alguem alguma algumas algum alguns analisar antes aposta apostas apostar apostado apostada apostando aprenda aprender aprendizado apresenta apresentado apresentada aqui area areas assim aumenta aumentam aumentar baixo baixa baixos baixas baralho base basta bem blinds botao botoes busca cada caixa caminho campo campos carta cartas caso casos cassino categoria categorias centro certo certa certos certas chave clique cobrar combina combinacao combinacoes combinar comeca comecar comecando comum comuns conceito conceitos confira confirmar continua continuar correto correta corretos corretas criterio criterios cuidado dados dealer decisao decisoes definir definicao definicoes depende depois descricao detalhes diferente diferentes dinheiro direto direita disponivel disponiveis distribuicao distribui distribuida distribuidas distribuido distribuidos dividir dupla duplas durante exemplo exemplos escolha escolher escolhido escolhida etapa etapas evita evitar exibida exibidas exibido exibidos explicacao explicacoes familia fase fases fecha fechar fechamento finaliza finalizar fichas fixa fixas fixo fixos fluxo forma formas forte fortes fraca fracas fraco fracos ganhar ganha ganham ganhou geral gira giram grande grandes hand historia ideal identifica identificar importante importantes inicio inicial inicia iniciar inteira inteiras inteiro inteiros intervencao invalida invalidas invalido invalidos jogador jogadores jogada jogadas jogar jogo jogos leitura limite limites logica logicas maior maiores menor menores mesa mesas mesma mesmas mesmo mesmos melhor melhores menu modalidade modalidades modo modos moeda moedas mostra mostrar mostrado mostrada necessidade necessario necessaria nenhuma nenhum nivel niveis nova novas novo novos objetivo objetivos observe observar ocorre ordem outras outros padrao padroes pagamento pagamentos palavra palavras parte partes passo passos pequena pequenas pequeno pequenos perfil perfis pergunta perguntas primeiro primeira primeiros primeiras pratica praticas precisa precisam premio premios preparacao principal principais procedimento procedimentos proxima proximas proximo proximos propria proprias proprio proprios protege proteger quando quantidade quantidades quem ranking regra regras regular resultado resultados rodada rodadas saber selecao selecionar sempre sequencia sequencias simulador simuladores situacao situacoes sobre somente sua suas seu seus tabela tabelas tamanho tamanhos todas todos torneio torneios treino treinos troca trocas trocar ultima ultimas ultimo ultimos usar uso valor valores vence vencem vencedor vencedores verdade verdadeira verdadeiras verdadeiro verdadeiros vez vezes visivel visiveis voltar voce voces
+acao ações ação acerto acertos adversário adversários alguém área áreas botão botões combinação combinações começar conteúdo conteúdos capítulo capítulos definição definições decisão decisões descrição distribuição explicação explicações família função funções início inválida inválidas inválido inválidos lógica lógicas matemática modalidade modalidades necessário necessária ninguém nível níveis opção opções padrão padrões posição posições prática práticas prêmio prêmios próxima próximas próximo próximos própria próprias próprio próprios questão questões sequência sequências situação situações só também título títulos última últimas último últimos você vocês
+`.trim().split(/\s+/).map(x=>x.toLocaleLowerCase('pt-BR')));
+
 const literal=/('(?:\\.|[^'\\])*'|"(?:\\.|[^"\\])*"|`(?:\\.|[^`\\])*`)/gs;
 const residue=[];
+const unchanged=[];
 for(const file of sourceFiles){
   const source=fs.readFileSync(path.join(ROOT,file),'utf8');
   for(const match of source.matchAll(literal)){
     let raw=match[0].slice(1,-1);
-    if(raw.length>3500)continue;
+    if(raw.length>5000)continue;
     raw=raw.replace(/\\n|\\t/g,' ').replace(/\$\{[^}]*\}/g,' ');
-    raw=raw.replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&(?:#\d+|\w+);/g,' ');
+    raw=raw.replace(/<style[\s\S]*?<\/style>/gi,' ').replace(/<script[\s\S]*?<\/script>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&(?:#\d+|\w+);/g,' ');
     if(!/[A-Za-zÀ-ÿ]/.test(raw))continue;
     const sourceTokens=raw.match(/[\p{L}\p{M}]+/gu)||[];
-    const likelyPortuguese=sourceTokens.some(token=>/[áàâãéêíóôõúç]/i.test(token)||markers.has(token.toLocaleLowerCase('pt-BR')));
+    const likelyPortuguese=sourceTokens.some(token=>/[áàâãéêíóôõúç]/i.test(token)||ptResidue.has(token.toLocaleLowerCase('pt-BR')));
     if(!likelyPortuguese)continue;
     const output=translate(raw);
     const outputTokens=output.match(/[\p{L}\p{M}]+/gu)||[];
-    const bad=outputTokens.filter(token=>{const k=token.toLocaleLowerCase('pt-BR');return k!=='aã'&&(/[áàâãéêíóôõúç]/i.test(token)||markers.has(k));});
-    if(bad.length)residue.push(`${file}: ${[...new Set(bad)].join(', ')} :: ${output.replace(/\s+/g,' ').slice(0,180)}`);
+    const bad=outputTokens.filter(token=>{
+      const k=token.toLocaleLowerCase('pt-BR');
+      return k!=='aã'&&(/[áàâãéêíóôõúç]/i.test(token)||ptResidue.has(k));
+    });
+    if(bad.length)residue.push(`${file}: ${[...new Set(bad)].join(', ')} :: ${output.replace(/\s+/g,' ').slice(0,240)}`);
+
+    const srcLower=new Set(sourceTokens.map(t=>t.toLocaleLowerCase('pt-BR')));
+    const outLower=new Set(outputTokens.map(t=>t.toLocaleLowerCase('pt-BR')));
+    for(const token of srcLower){
+      if(token.length<4||!outLower.has(token)||!ptResidue.has(token))continue;
+      unchanged.push(`${token} (${file})`);
+    }
   }
 }
-check('no Portuguese residue in translated human-facing literals',residue.length===0,residue.slice(0,20).join(' | '));
+check('no Portuguese residue in translated human-facing literals',residue.length===0,residue.slice(0,80).join(' | '));
+check('no known Portuguese token survives translation unchanged',unchanged.length===0,[...new Set(unchanged)].slice(0,120).join('; '));
 
 const index=fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
 check('header logo is direct PNG',index.includes('src="./header-logo-transparent.png?v=1"'));
 check('old inline SVG logo removed',!index.includes('<svg class="logo"'));
+check('Love Ya Like A Sister preserved',index.includes("family=Love+Ya+Like+A+Sister")&&index.includes("font-family:'Love Ya Like A Sister',cursive"));
 check('English runtime loaded directly',index.includes('i18n-en-us-words-extra-1.js?v=1')&&index.includes('i18n-en-us.js?v=3'));
 const logoPath=path.join(ROOT,'header-logo-transparent.png');
 check('header logo file exists',fs.existsSync(logoPath));
