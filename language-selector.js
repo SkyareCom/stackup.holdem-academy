@@ -73,7 +73,8 @@
   });
 
   applyDocumentLanguage(getLanguage());
-  const observer=new MutationObserver(()=>requestAnimationFrame(buildHomeCard));
-  if(root)observer.observe(root,{childList:true,subtree:true});
+  let cardFrame=0;
+  const observer=new MutationObserver(()=>{if(cardFrame)return;cardFrame=requestAnimationFrame(()=>{cardFrame=0;buildHomeCard();});});
+  if(root)observer.observe(root,{childList:true});
   buildHomeCard();
 })();
