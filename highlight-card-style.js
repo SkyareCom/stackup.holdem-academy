@@ -37,7 +37,7 @@
 
   (async()=>{
     try{
-      await load('./misdeal-exposed-card-details.js?v=1','misdeal-exposed-card-details.js');
+      await load('./misdeal-exposed-card-details.js?v=2','misdeal-exposed-card-details.js');
       if(!window.StackupFundamentalsSpotBank){
         await load('./fundamentals-interactive-bank.js?v=1','fundamentals-interactive-bank.js');
       }
