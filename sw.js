@@ -1,7 +1,7 @@
-const CACHE='stackup-academy-v63';
-const SW_VERSION=63;
+const CACHE='stackup-academy-v64';
+const SW_VERSION=64;
 const ASSETS=[
-  './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js',
+  './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
   './strategic-concepts-details.js','./terminology-extra-terms.js','./cash-tournament-details.js','./highlight-card-style.js',
   './etiquette-details.js','./other-rules-details.js','./fundamentals-learning-flow.js','./fundamentals-interactive-bank.js',
@@ -12,6 +12,7 @@ const ASSETS=[
 ];
 const SCRIPTS=[
   ['session-reset.js',1],
+  ['language-selector.js',1],
   ['positions-table.js',4],
   ['fundamentals-details.js',3],
   ['misdeal-staff-details.js',1],
