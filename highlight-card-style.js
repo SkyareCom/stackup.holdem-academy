@@ -37,6 +37,7 @@
 
   (async()=>{
     try{
+      await load('./fundamentals-learning-flow.js?v=1','fundamentals-learning-flow.js');
       if(!window.StackupFundamentalsSpotBank){
         await load('./fundamentals-interactive-bank.js?v=1','fundamentals-interactive-bank.js');
       }
