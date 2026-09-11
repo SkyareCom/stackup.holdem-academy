@@ -46,6 +46,7 @@
       await load('./fundamentals-progress-panel.js?v=1','fundamentals-progress-panel.js');
       await load('./modalities-module.js?v=1','modalities-module.js');
       await load('./modalities-depth-details.js?v=1','modalities-depth-details.js');
+      await load('./mixed-games-module.js?v=1','mixed-games-module.js');
       await load('./typography-standard.js?v=1','typography-standard.js');
     }catch(err){
       console.error('[STACKUP] Falha ao carregar módulos interativos.',err);
