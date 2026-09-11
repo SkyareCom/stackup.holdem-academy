@@ -1,13 +1,41 @@
 (() => {
   const STYLE_ID='stackup-positions-table-style';
+  const EN='en-US';
+
+  function isEnglish(){
+    try{return localStorage.getItem('stackup-language-v1')===EN;}catch(_){return false;}
+  }
 
   function addStyles(){
     if(document.getElementById(STYLE_ID)) return;
     const style=document.createElement('style');
     style.id=STYLE_ID;
     style.textContent=`
-      .positions-visual{margin-top:8px}
-      .positions-board{position:relative;width:100%;aspect-ratio:9/14.2;min-height:520px;border-radius:24px;overflow:hidden;background:radial-gradient(circle at 50% 38%,#083f2f 0,#03251c 48%,#01130f 100%);border:1px solid #b9873d;box-shadow:inset 0 0 45px #000b,0 12px 28px #0004}
+      .positions-visual{
+        width:100%;
+        max-width:100%;
+        margin:8px auto 0;
+        padding:0;
+        box-sizing:border-box;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-self:center;
+      }
+      .positions-board{
+        position:relative;
+        width:100%;
+        max-width:100%;
+        margin:0 auto;
+        box-sizing:border-box;
+        aspect-ratio:9/14.2;
+        min-height:520px;
+        border-radius:24px;
+        overflow:hidden;
+        background:radial-gradient(circle at 50% 38%,#083f2f 0,#03251c 48%,#01130f 100%);
+        border:1px solid #b9873d;
+        box-shadow:inset 0 0 45px #000b,0 12px 28px #0004
+      }
       .positions-board:before{content:'♠';position:absolute;left:50%;top:3.5%;transform:translateX(-50%);color:#d4aa58;font:26px Arial,sans-serif;text-shadow:0 0 12px #d4aa5888}
       .positions-table{position:absolute;left:15%;right:15%;top:11%;bottom:8%;border-radius:46%/19%;background:linear-gradient(90deg,#50230f 0,#9a4d1f 12%,#6d2f12 24%,#ad5e2b 50%,#6f3013 76%,#9b4c1d 88%,#4a200e 100%);box-shadow:0 0 0 5px #111d18,0 0 0 8px #50665b,0 0 22px #0f7b4c66,inset 0 0 20px #e48b3b66}
       .positions-table:before{content:'';position:absolute;inset:7%;border-radius:46%/19%;background:radial-gradient(ellipse at center,#07603e 0,#034c34 58%,#033326 100%);border:2px solid #108052;box-shadow:inset 0 0 30px #001b14,inset 0 0 0 16px #04432f}
@@ -25,27 +53,76 @@
       .s-sb{left:16.7%;top:37.6%}
       .s-bb{left:29.5%;top:17.6%}
       .dealer-button{position:absolute;z-index:4;left:30%;top:68.5%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff4c9,#d4aa58);border:2px solid #fff0c8;color:#2b170a;box-shadow:0 4px 10px #0009,0 0 10px #d4aa5870;font:700 14px Arial,sans-serif}
-      .position-key{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-      .position-key .block{margin:0}
+      .position-key{
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:10px;
+        margin:14px auto 0;
+        padding:0;
+        justify-items:stretch;
+      }
+      .position-key .block{
+        width:100%;
+        max-width:100%;
+        box-sizing:border-box;
+        margin:0 auto;
+      }
       .position-key .block h3{font-size:17px}
       .position-key .block p{font-size:14px}
       .position-key .dealer-info{grid-column:1/-1;background:#e6d8b9;border-color:#c99539}
-      @media(max-width:390px){.positions-board{min-height:470px}.seat-label{min-width:54px;padding:6px 7px;font-size:14px}.dealer-button{width:27px;height:27px;font-size:12px}.position-key{grid-template-columns:1fr}.position-key .dealer-info{grid-column:auto}}
+      @media(max-width:390px){
+        .positions-board{min-height:470px}
+        .seat-label{min-width:54px;padding:6px 7px;font-size:14px}
+        .dealer-button{width:27px;height:27px;font-size:12px}
+        .position-key{grid-template-columns:1fr}
+        .position-key .dealer-info{grid-column:auto}
+      }
     `;
     document.head.appendChild(style);
+  }
+
+  function copy(){
+    if(isEnglish()){
+      return {
+        boardLabel:'Poker table with 10 player positions distributed evenly: UTG1, UTG2, MP1, MP2, LJ, HJ, CO, BTN, SB, and BB. The dealer button is marked next to BTN.',
+        dealerLabel:'Dealer button next to BTN',
+        blocks:`
+          <div class="block"><h3>BLINDS</h3><p><strong>SB — SMALL BLIND</strong> and <strong>BB — BIG BLIND</strong> are the forced-bet positions.</p></div>
+          <div class="block"><h3>EARLY POSITIONS</h3><p><strong>UTG1 — UNDER THE GUN 1</strong> and <strong>UTG2 — UNDER THE GUN 2</strong> act early and have less information.</p></div>
+          <div class="block"><h3>MIDDLE POSITIONS</h3><p><strong>MP1 — MIDDLE POSITION 1</strong>, <strong>MP2 — MIDDLE POSITION 2</strong>, and <strong>LJ — LOJACK</strong> form the middle-position area of the table.</p></div>
+          <div class="block"><h3>LATE POSITIONS</h3><p><strong>HJ — HIJACK</strong>, <strong>CO — CUTOFF</strong>, and <strong>BTN — BUTTON</strong> act later and usually have more information.</p></div>
+          <div class="block dealer-info"><h3>DEALER</h3><p>The <strong>DEALER</strong> handles the physical dealing of the cards. The <strong>BTN — BUTTON</strong> marks the nominal dealer position among the players and serves as the reference point for the action order.</p></div>`
+      };
+    }
+    return {
+      boardLabel:'Mesa de poker com 10 posições de jogador distribuídas uniformemente: UTG1, UTG2, MP1, MP2, LJ, HJ, CO, BTN, SB e BB. O botão do dealer está marcado junto ao BTN.',
+      dealerLabel:'Botão do dealer junto ao BTN',
+      blocks:`
+          <div class="block"><h3>BLINDS</h3><p><strong>SB — SMALL BLIND</strong> e <strong>BB — BIG BLIND</strong> são as posições das apostas obrigatórias.</p></div>
+          <div class="block"><h3>POSIÇÕES INICIAIS</h3><p><strong>UTG1 — UNDER THE GUN 1</strong> e <strong>UTG2 — UNDER THE GUN 2</strong> agem cedo e têm menos informação.</p></div>
+          <div class="block"><h3>POSIÇÕES MÉDIAS</h3><p><strong>MP1 — MIDDLE POSITION 1</strong>, <strong>MP2 — MIDDLE POSITION 2</strong> e <strong>LJ — LOJACK</strong> formam a região intermediária da mesa.</p></div>
+          <div class="block"><h3>POSIÇÕES FINAIS</h3><p><strong>HJ — HIJACK</strong>, <strong>CO — CUTOFF</strong> e <strong>BTN — BUTTON</strong> agem mais tarde e normalmente têm mais informação.</p></div>
+          <div class="block dealer-info"><h3>DEALER</h3><p><strong>DEALER — CRUPIÊ</strong> conduz a distribuição física das cartas. O <strong>BTN — BUTTON</strong> marca a posição nominal do dealer entre os jogadores e serve de referência para a ordem de ação.</p></div>`
+    };
   }
 
   function renderPositionsLesson(){
     const lesson=document.querySelector('.card.lesson');
     const title=lesson?.querySelector('h2');
-    if(!lesson || !title || title.textContent.trim().toUpperCase()!=='POSIÇÕES NA MESA') return;
+    if(!lesson || !title) return;
+    const normalized=title.textContent.trim().toUpperCase();
+    if(normalized!=='POSIÇÕES NA MESA' && normalized!=='TABLE POSITIONS') return;
     if(lesson.querySelector('.positions-visual')) return;
     addStyles();
     const blocks=lesson.querySelector('.blocks');
     if(!blocks) return;
+    const text=copy();
     blocks.innerHTML=`
       <div class="positions-visual">
-        <div class="positions-board" role="img" aria-label="Mesa de poker com 10 posições de jogador distribuídas uniformemente: UTG1, UTG2, MP1, MP2, LJ, HJ, CO, BTN, SB e BB. O botão do dealer está marcado junto ao BTN.">
+        <div class="positions-board" role="img" aria-label="${text.boardLabel}">
           <div class="positions-table"></div>
           <div class="seat s-utg1"><span class="seat-label">UTG1</span></div>
           <div class="seat s-utg2"><span class="seat-label">UTG2</span></div>
@@ -55,17 +132,11 @@
           <div class="seat s-hj"><span class="seat-label">HJ</span></div>
           <div class="seat s-co"><span class="seat-label">CO</span></div>
           <div class="seat s-btn"><span class="seat-label">BTN</span></div>
-          <div class="dealer-button" aria-label="Botão do dealer junto ao BTN">D</div>
+          <div class="dealer-button" aria-label="${text.dealerLabel}">D</div>
           <div class="seat s-sb"><span class="seat-label">SB</span></div>
           <div class="seat s-bb"><span class="seat-label">BB</span></div>
         </div>
-        <div class="position-key">
-          <div class="block"><h3>BLINDS</h3><p><strong>SB — SMALL BLIND</strong> e <strong>BB — BIG BLIND</strong> são as posições das apostas obrigatórias.</p></div>
-          <div class="block"><h3>POSIÇÕES INICIAIS</h3><p><strong>UTG1 — UNDER THE GUN 1</strong> e <strong>UTG2 — UNDER THE GUN 2</strong> agem cedo e têm menos informação.</p></div>
-          <div class="block"><h3>POSIÇÕES MÉDIAS</h3><p><strong>MP1 — MIDDLE POSITION 1</strong>, <strong>MP2 — MIDDLE POSITION 2</strong> e <strong>LJ — LOJACK</strong> formam a região intermediária da mesa.</p></div>
-          <div class="block"><h3>POSIÇÕES FINAIS</h3><p><strong>HJ — HIJACK</strong>, <strong>CO — CUTOFF</strong> e <strong>BTN — BUTTON</strong> agem mais tarde e normalmente têm mais informação.</p></div>
-          <div class="block dealer-info"><h3>DEALER</h3><p><strong>DEALER — CRUPIÊ</strong> conduz a distribuição física das cartas. O <strong>BTN — BUTTON</strong> marca a posição nominal do dealer entre os jogadores e serve de referência para a ordem de ação.</p></div>
-        </div>
+        <div class="position-key">${text.blocks}</div>
       </div>`;
   }
 
