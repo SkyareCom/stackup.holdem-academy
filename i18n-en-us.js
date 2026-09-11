@@ -13,7 +13,12 @@
     ['BLINDS/ANTES','BLINDS/ANTES'],['BLINDS / ANTES','BLINDS / ANTES'],['BLINDS E ANTES','BLINDS AND ANTES'],
     ['BLINDS E, QUANDO APLICÁVEL, ANTES','BLINDS AND, WHEN APPLICABLE, ANTES'],
     ['OS NÍVEIS ELEVAM BLINDS/ANTES AO LONGO DO EVENTO.','THE LEVELS INCREASE BLINDS/ANTES THROUGHOUT THE EVENT.'],
-    ['ANTES JÁ FORMAM O POTE','ANTES ALREADY FORM THE POT'],['ANTES SÃO DEVOLVIDOS','ANTES ARE RETURNED']
+    ['ANTES JÁ FORMAM O POTE','ANTES ALREADY FORM THE POT'],['ANTES SÃO DEVOLVIDOS','ANTES ARE RETURNED'],
+    ['JOGAR ARTIFICIALMENTE MAIS BRANDO CONTRA ALGUÉM','PLAY ARTIFICIALLY SOFTER AGAINST SOMEONE'],
+    ['AFASTAR-SE SEM ATRAPALHAR','STEP AWAY WITHOUT DISRUPTING'],
+    ['ADAPTAR-SE ENTRE REGRAS','ADAPT BETWEEN RULES'],
+    ['MATEMATICA DO POKER SIMPLIFICADA','SIMPLIFIED POKER MATH'],
+    ['MATEMÁTICA DO POKER SIMPLIFICADA','SIMPLIFIED POKER MATH']
   ];
   const phrasePairs=runtimePhrases.concat(window.StackupI18nPhrases||[]).slice().sort((a,b)=>b[0].length-a[0].length);
   const words=Object.assign({},window.StackupI18nWords||{}, {
@@ -23,8 +28,13 @@
     resultado:'result',resultados:'results',confere:'checks',conferem:'check',
     viva:'live',vivas:'live',vivo:'live',vivos:'live',contra:'against',
     'compara-se':'compare','comparam-se':'compare','divide-se':'is split','aproxima-se':'is closer',
-    'refere-se':'refers','soma-se':'add','aplica-se':'applies','trata-se':'this is','torna-se':'becomes',
-    'mantém-se':'remains','encontra-se':'is',conectividade:'connectivity',movimentando:'moving',aplicam:'apply'
+    'refere-se':'refers','soma-se':'add','aplica-se':'applies','aplicam-se':'apply',
+    'trata-se':'this is','torna-se':'becomes','mantém-se':'remains','encontra-se':'is',
+    'descobre-se':'it is discovered','usa-se':'use','preserva-se':'preserve','corrige-se':'correct',
+    'movem-se':'move','afastar-se':'step away','ausenta-se':'steps away','queima-se':'burn',
+    'abre-se':'deal','escolhem-se':'choose','adaptar-se':'adapt',
+    conectividade:'connectivity',movimentando:'moving',aplicam:'apply',brando:'soft',
+    terceira:'third',matematica:'mathematics'
   });
 
   function language(){try{return localStorage.getItem(STORAGE)||'pt-BR';}catch(_){return 'pt-BR';}}
