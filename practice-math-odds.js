@@ -6,7 +6,7 @@
       note:'Probabilidades de receber estas cartas em Texas Hold’em antes do flop.',
       rows:[
         ['AA','0,45%','aprox. 1 vez a cada 221 mãos','Ajuda a entender por que ases são raros e não devem ser “esperados” toda sessão.'],
-        ['QUALQUER POCKET PAIR','5,88%','aprox. 1 vez a cada 17 mãos','Útil para entender a frequência de pares de mão e decisões com set mining.'],
+        ['QUALQUER PAR DE MÃO — POCKET PAIR','5,88%','aprox. 1 vez a cada 17 mãos','Útil para entender a frequência de pares de mão e decisões com set mining.'],
         ['AK — SUITED OU OFFSUIT','1,21%','aprox. 1 vez a cada 83 mãos','Mostra como mãos premium não aparecem com tanta frequência quanto parecem.'],
         ['AK SUITED','0,30%','aprox. 1 vez a cada 332 mãos','É uma mão específica e bastante rara.'],
         ['DUAS CARTAS DO MESMO NAIPE','23,53%','aprox. 1 vez a cada 4,25 mãos','Ser suited é relativamente comum; por isso “ser do mesmo naipe” sozinho não torna uma mão forte.']
@@ -74,7 +74,7 @@
       .p3m-title{margin:0;padding:11px 12px;border-radius:13px;background:#08372d;color:#d4aa58;border:1px solid #d4aa58;font-size:18px;text-transform:uppercase}
       .p3m-group{border:1px solid #a87c3260;border-radius:15px;background:#efe4cd;overflow:hidden}
       .p3m-group-head{padding:11px 12px;background:#2a160d;color:#f8f0df}.p3m-group-head strong{display:block;color:#d4aa58;font-size:16px}.p3m-group-head span{display:block;margin-top:4px;color:#d8c6ad;font-size:12px;line-height:1.35}
-      .p3m-row{padding:10px 12px;border-top:1px solid #a87c3233}.p3m-row:first-of-type{border-top:0}.p3m-row h4{margin:0 0 6px;color:#08372d;font-size:15px;text-transform:uppercase}.p3m-values{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}.p3m-values b{padding:7px 8px;border-radius:9px;background:#e7dcc2;border:1px solid #a87c3238;color:#25170f;font:700 13px Arial,sans-serif;text-align:center}.p3m-row p{margin:0;color:#725f4d;font-size:13px;line-height:1.4}
+      .p3m-row{padding:10px 12px;border-top:1px solid #a87c3233}.p3m-row:first-of-type{border-top:0}.p3m-row h4{margin:0 0 6px;color:#08372d;font-size:15px;text-transform:uppercase}.p3m-values{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:6px}.p3m-values b{padding:7px 8px;border-radius:9px;background:#e7dcc2;border:1px solid #a87c3238;color:#25170f;font-family:inherit!important;font-size:14px!important;font-weight:700!important;line-height:1.25!important;text-align:center}.p3m-row p{margin:0;color:#725f4d;font-size:13px;line-height:1.4}
       .p3m-warning{padding:11px 12px;border-radius:13px;background:#e7dcc2;border:1px solid #a87c3260;color:#5f4b39;font-size:13px;line-height:1.45}
       @media(max-width:390px){.p3m-values{grid-template-columns:1fr}.p3m-title{font-size:16px}}
     `;document.head.appendChild(s);
