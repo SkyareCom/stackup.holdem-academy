@@ -141,8 +141,32 @@
     const lesson=document.querySelector('.card.lesson'); const shell=lesson?.querySelector('.fi-shell'); if(!lesson||!shell)return null;
     const chapter=lesson.querySelector('h2')?.textContent.trim().toUpperCase(); const bank=BANK[chapter]; if(!bank)return null;
     const raw=shell.querySelector('.fi-spotbar span')?.textContent||''; const m=raw.match(/SPOT\s+(\d+)/i); if(!m)return null;
-    const idx=Number(m[1])-1; return {shell,spot:bank[idx]};
+    const idx=Number(m[1])-1; const spot=bank[idx]; if(!spot)return null;
+    return {shell,spot,key:`${chapter}:${spot.id||idx}`};
   }
-  function apply(){addStyle();const info=currentSpotInfo();if(!info||!info.spot?.visual)return;const spotEl=info.shell.querySelector('.fi-spot');const q=spotEl?.querySelector('.fi-question');if(!spotEl||!q)return;const old=spotEl.querySelector('.fv-wrap');if(old)old.remove();q.insertAdjacentHTML('afterend',render(info.spot.visual));}
-  let queued=false;const obs=new MutationObserver(()=>{if(queued)return;queued=true;queueMicrotask(()=>{queued=false;apply();});});obs.observe(document.documentElement,{childList:true,subtree:true});apply();
+  function apply(){
+    addStyle();
+    const info=currentSpotInfo();
+    if(!info)return;
+    const spotEl=info.shell.querySelector('.fi-spot');
+    const q=spotEl?.querySelector('.fi-question');
+    if(!spotEl||!q)return;
+    const old=spotEl.querySelector('.fv-wrap');
+    if(!info.spot?.visual){if(old)old.remove();return;}
+    if(old?.dataset.fvKey===info.key)return;
+    if(old)old.remove();
+    q.insertAdjacentHTML('afterend',render(info.spot.visual));
+    const fresh=q.nextElementSibling;
+    if(fresh?.classList?.contains('fv-wrap'))fresh.dataset.fvKey=info.key;
+  }
+  let queued=false;
+  const root=document.getElementById('root');
+  if(root){
+    new MutationObserver(()=>{
+      if(queued)return;
+      queued=true;
+      requestAnimationFrame(()=>{queued=false;apply();});
+    }).observe(root,{childList:true,subtree:true});
+  }
+  requestAnimationFrame(apply);
 })();
