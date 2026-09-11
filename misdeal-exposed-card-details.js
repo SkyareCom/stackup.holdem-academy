@@ -109,8 +109,13 @@
     if(premature){premature.insertAdjacentHTML('afterend',prematureBoard+turnExample+riverExample+why+normalExposure);}else{grid.insertAdjacentHTML('beforeend',prematureBoard+turnExample+riverExample+why+normalExposure);}
   }
 
-  let queued=false;
-  const obs=new MutationObserver(()=>{if(queued)return;queued=true;queueMicrotask(()=>{queued=false;apply();});});
-  obs.observe(document.documentElement,{childList:true,subtree:true});
+  const root=document.getElementById('root');
+  let raf=0;
+  if(root){
+    new MutationObserver(()=>{
+      cancelAnimationFrame(raf);
+      raf=requestAnimationFrame(apply);
+    }).observe(root,{childList:true});
+  }
   apply();
 })();
