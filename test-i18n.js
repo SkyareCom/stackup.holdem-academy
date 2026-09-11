@@ -127,7 +127,7 @@ const cover=fs.readFileSync(path.join(ROOT,'cover-layout.js'),'utf8');
 check('cover uses ASCII logo path',cover.includes("./header-logo-transparent.png?v=1"));
 check('cover is language aware',cover.includes("stackup-language-v1")&&cover.includes('LEARN POKER'));
 const sw=fs.readFileSync(path.join(ROOT,'sw.js'),'utf8');
-check('service worker v67',sw.includes("stackup-academy-v67")&&sw.includes('SW_VERSION=67'));
+check('service worker v68',sw.includes("stackup-academy-v68")&&sw.includes('SW_VERSION=68'));
 check('service worker caches English extras',sw.includes('i18n-en-us-phrases-3.js')&&[1,2,3,4].every(i=>sw.includes(`i18n-en-us-words-extra-${i}.js`)));
 check('service worker caches restored logo',sw.includes('header-logo-transparent.png'));
 
