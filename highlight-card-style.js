@@ -52,7 +52,7 @@
       await load('./practice-table.js?v=2','practice-table.js');
       await load('./practice-advanced-bank.js?v=1','practice-advanced-bank.js');
       await load('./practice-advanced.js?v=2','practice-advanced.js');
-      await load('./practice-math-odds.js?v=1','practice-math-odds.js');
+      await load('./practice-math-odds.js?v=2','practice-math-odds.js');
       await load('./typography-standard.js?v=1','typography-standard.js');
       await load('./portuguese-corrections.js?v=1','portuguese-corrections.js');
     }catch(err){
