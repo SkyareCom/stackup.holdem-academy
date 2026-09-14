@@ -8,6 +8,7 @@ const interactive=fs.readFileSync('fundamentals-interactive.js','utf8');
 const progress=fs.readFileSync('fundamentals-progress-panel.js','utf8');
 const flow=fs.readFileSync('fundamentals-learning-flow.js','utf8');
 const highlight=fs.readFileSync('highlight-card-style.js','utf8');
+const loader=fs.readFileSync('academy-loader.js','utf8');
 const sw=fs.readFileSync('sw.js','utf8');
 
 assert('i18n phrase regexes are precompiled',i18n.includes('const compiledPhrases=phrasePairs.map'));
@@ -24,7 +25,11 @@ assert('language-card observer is batched',lang.includes('cardFrame=requestAnima
 assert('fundamentals training observer is root-only',interactive.includes("observer.observe(root,{childList:true})")&&!interactive.includes("observe(document.documentElement,{childList:true,subtree:true})"));
 assert('progress observer avoids document-wide scans',progress.includes("observer.observe(root,{childList:true,subtree:true})")&&!progress.includes("document.querySelectorAll('.fi-stats')"));
 assert('navigation alignment uses one animation frame',flow.includes('frame=requestAnimationFrame(()=>{')&&!flow.includes('frame=requestAnimationFrame(()=>{\n      frame=requestAnimationFrame'));
-assert('controlled pages do not dynamically reload injected modules',highlight.includes('if(navigator.serviceWorker?.controller) return;'));
+assert('first load only boots the lightweight loader',highlight.includes("await load('./academy-loader.js?v=1','academy-loader.js')")&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
+assert('heavy Academy modules are lazy by stage',loader.includes('const groups={')&&loader.includes('requestIdleCallback')&&loader.includes("new MutationObserver(schedule).observe(root,{childList:true})"));
+assert('service worker limits legacy document-wide observers',sw.includes('stackup-performance-guard')&&sw.includes('target===document.documentElement'));
+assert('service worker auto-injects only lightweight core',sw.includes('const AUTO_SCRIPTS=new Set')&&sw.includes('AUTO_SCRIPTS.has(name)'));
+assert('service worker serves static assets cache-first',sw.includes("caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request)"));
 assert('service worker activation does not force client navigation',!sw.includes('client.navigate(client.url)'));
 
 if(process.exitCode)process.exit(process.exitCode);
