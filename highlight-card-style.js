@@ -20,6 +20,16 @@
         padding:9px 12px!important;
         line-height:1.3;
       }
+
+      #root .card.stage .desc{
+        display:-webkit-box!important;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+        overflow:hidden!important;
+        height:2.84em!important;
+        min-height:2.84em!important;
+        max-height:2.84em!important;
+      }
     `;
     document.head.appendChild(style);
   }
