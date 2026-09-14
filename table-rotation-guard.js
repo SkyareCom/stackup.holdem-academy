@@ -14,7 +14,7 @@
   if(typeof window!=='undefined')window.StackupTableRotation={POSITIONS,HERO_ANCHOR,visualSlot,seatMap};
   if(typeof document==='undefined')return;
 
-  const STYLE_ID='stackup-table-rotation-guard-v1';
+  const STYLE_ID='stackup-table-rotation-guard-v2';
   if(!document.getElementById(STYLE_ID)){
     const style=document.createElement('style');
     style.id=STYLE_ID;
@@ -32,7 +32,7 @@
       #root .p3x-table-center .p3x-board{width:100%!important;max-width:100%!important;margin:2px 0!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:3px!important;flex-wrap:wrap!important}
       #root .p3x-table-center .p3x-action-bubble{position:static!important;left:auto!important;top:auto!important;transform:none!important;width:auto!important;margin:2px auto 0!important;padding:7px 9px!important;opacity:0;pointer-events:none;transition:opacity .2s ease!important}
       #root .p3x-table-center .p3x-action-bubble.show{position:static!important;top:auto!important;opacity:1!important}
-      #root .p3x-dealer{z-index:10!important}
+      #root .p3x-dealer{z-index:10!important;pointer-events:none!important}
       #root .p3x-info,#root .p3x-hands{position:relative!important;z-index:0!important}
       #root .p3x-info>div,#root .p3x-hand{min-width:0!important;overflow:hidden!important}
       #root .p3x-info small,#root .p3x-info b,#root .p3x-hand strong{white-space:normal!important;overflow-wrap:anywhere}
@@ -72,10 +72,16 @@
     const btnSlot=btn?.dataset.visualSeat;
     if(dealer&&btnSlot&&POSXY[btnSlot]){
       const [x,y]=POSXY[btnSlot];
-      const inward=.62;
-      dealer.style.left=`${50+(x-50)*inward}%`;
-      dealer.style.top=`${50+(y-50)*inward}%`;
+      const dx=x-50,dy=y-50;
+      const len=Math.hypot(dx,dy)||1;
+      const ux=dx/len,uy=dy/len;
+      const tx=-uy,ty=ux;
+      const radial=.82;
+      const tangent=6;
+      dealer.style.left=`${50+dx*radial+tx*tangent}%`;
+      dealer.style.top=`${50+dy*radial+ty*tangent}%`;
       dealer.dataset.visualSeat=btnSlot;
+      dealer.dataset.follows='BTN';
     }
 
     board.dataset.heroAnchor=HERO_ANCHOR;
