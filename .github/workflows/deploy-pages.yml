@@ -49,6 +49,9 @@ jobs:
       - name: Protect Academy typography
         run: node test-typography.js
 
+      - name: Validate Play release UI
+        run: node test-ui-release.js
+
       - name: Validate web manifest
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest OK')"
 
