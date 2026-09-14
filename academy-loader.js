@@ -25,7 +25,7 @@
     ],
     pratica:[
       ['practice-module.js',1],
-      ['practice-table.js',2],
+      ['practice-table.js',3],
       ['practice-advanced-bank.js',1],
       ['practice-advanced.js',2],
       ['practice-math-odds.js',2]
