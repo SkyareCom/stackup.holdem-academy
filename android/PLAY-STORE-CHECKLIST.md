@@ -16,6 +16,13 @@
 - CI validates AAB integrity and generates SHA-256 checksum.
 - CI smoke-tests the debug APK on an Android emulator.
 - Initial Play Store title and short description stored under `android/store-listing/pt-BR/`.
+- Academy UI uses the Love Ya Like A Sister Google font globally, with card/suit glyph exceptions only where required.
+- Academy palette is locked to dark green, emerald, gold, parchment/beige and dark brown.
+- Main and content cards share centralized border, radius, shadow, padding and spacing tokens.
+- Mobile layout has global horizontal-overflow protection and responsive typography.
+- Topic titles and descriptions are allowed to wrap instead of being cut with ellipsis.
+- Card navigation, Back and Main Menu force the next page to start with the full Academy header visible.
+- Pages deployment now runs a dedicated Play release UI consistency guard before publishing.
 
 ## Required outside the repository before production upload
 
