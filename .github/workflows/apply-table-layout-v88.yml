@@ -1,0 +1,64 @@
+name: Apply table layout v88
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-table-layout-v88.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Integrate table rotation guard
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('academy-loader.js')
+          s=p.read_text()
+          old="      ['practice-advanced.js',2],\n      ['math-card-structure.js',2],"
+          new="      ['practice-advanced.js',2],\n      ['table-rotation-guard.js',1],\n      ['math-card-structure.js',2],"
+          assert old in s, 'academy-loader practice block not found'
+          p.write_text(s.replace(old,new))
+
+          p=Path('sw.js')
+          s=p.read_text()
+          s=s.replace("const CACHE='stackup-academy-v87';","const CACHE='stackup-academy-v88';")
+          s=s.replace('const SW_VERSION=87;','const SW_VERSION=88;')
+          old="  './practice-advanced.js','./math-card-structure.js'"
+          new="  './practice-advanced.js','./table-rotation-guard.js','./math-card-structure.js'"
+          assert old in s, 'sw asset block not found'
+          s=s.replace(old,new)
+          old="  ['practice-advanced.js',2],\n  ['math-card-structure.js',2],"
+          new="  ['practice-advanced.js',2],\n  ['table-rotation-guard.js',1],\n  ['math-card-structure.js',2],"
+          assert old in s, 'sw script block not found'
+          s=s.replace(old,new)
+          s=s.replace("  ['academy-loader.js',3]","  ['academy-loader.js',4]")
+          p.write_text(s)
+
+          p=Path('.github/workflows/deploy-pages.yml')
+          s=p.read_text()
+          marker="      - name: Audit quiz options\n        run: node test-quiz-quality.js\n"
+          insert=marker+"\n      - name: Audit table layout\n        run: node test-table-layout.js\n"
+          assert marker in s, 'deploy audit marker not found'
+          p.write_text(s.replace(marker,insert))
+          PY
+
+      - name: Validate table layout
+        run: node test-table-layout.js
+
+      - name: Commit integration
+        run: |
+          git config user.name "SkyareCom"
+          git config user.email "skyare.company@gmail.com"
+          git add academy-loader.js sw.js .github/workflows/deploy-pages.yml
+          git commit -m "Aplica rotacao fixa do heroi e protecao de layout v88"
+          git push origin main
