@@ -1,0 +1,1 @@
+Primeira versao do StackUp Hold'em Academy para Android. Inclui trilhas de aprendizado, simulador, quiz, matematica do poker e treino por modalidades.
