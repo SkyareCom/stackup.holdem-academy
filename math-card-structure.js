@@ -16,7 +16,7 @@
     'OESD — STRAIGHT DRAW':'Um open-ended straight draw normalmente tem 8 outs. Compare a chance de completar a sequência com as pot odds antes de pagar.',
     'GUTSHOT':'Um gutshot normalmente tem 4 outs. Como a chance é menor, procure um preço melhor ou implied odds suficientes para continuar.',
     'PAR DE MÃO → TRINCA NO FLOP':'Um pocket pair melhora para trinca ou melhor no flop em cerca de 11,8%. Use essa frequência junto com stack efetivo, posição e custo do call para avaliar set mining.',
-    'DUAS CARTAS DO MESMO NAIPE':'Ser suited acrescenta possibilidade de flush, mas não torna a mão forte sozinho. Considere também os ranks, posição e facilidade de jogar a mão pós-flop.',
+    'DUAS CARTAS DO MESMO NAIPE':'Ser suited acrescenta possibilidade de flush, mas não torna a mão forte sozinho. Considere também os ranks, posição e o jogo pós-flop.',
     'RECEBER AA':'AA aparece em cerca de 0,45% das mãos. Use essa frequência para calibrar expectativas e não esperar mãos premium em intervalos regulares.',
     'RECEBER QUALQUER POCKET PAIR':'Um pocket pair aparece em cerca de 5,88% das mãos. Essa referência ajuda a entender frequência e oportunidades de set mining ao longo do volume.',
     'AA × KK PRÉ-FLOP':'AA tem aproximadamente 81–82% contra KK pré-flop. Use como referência de equity e para entender que mesmo grande favoritismo ainda envolve variância.'
