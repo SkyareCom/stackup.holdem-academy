@@ -21,7 +21,6 @@
         line-height:1.3;
       }
 
-      /* Proteção responsiva: nenhum card pode ampliar a viewport no mobile */
       html,body,.app,#root,.screen,.list,.card{
         max-width:100%!important;
       }
@@ -46,7 +45,6 @@
         flex:none!important;
       }
 
-      /* PADRÃO DE TÍTULOS: 1 linha com reticências */
       #root .card.stage .stitle,
       #root .head > h2,
       #root .card.topic .ttitle{
@@ -59,7 +57,6 @@
         text-overflow:ellipsis!important;
       }
 
-      /* PRIMEIRA TELA: descrição com até 2 linhas e altura uniforme */
       #root .card.stage .desc{
         display:-webkit-box!important;
         -webkit-box-orient:vertical;
@@ -73,7 +70,6 @@
         max-height:2.84em!important;
       }
 
-      /* SEGUNDA CAMADA: descrição com até 2 linhas */
       #root .head > p{
         display:-webkit-box!important;
         -webkit-box-orient:vertical;
@@ -100,7 +96,6 @@
         max-height:2.7em!important;
       }
 
-      /* CABEÇALHO DA TERCEIRA TELA */
       #root .card.lesson > h2{
         display:block!important;
         width:100%!important;
@@ -129,7 +124,6 @@
         max-height:3em!important;
       }
 
-      /* TERCEIRA CAMADA DE CARDS REAL: .block */
       #root .card.lesson .blocks .block{
         min-width:0!important;
         overflow:hidden!important;
