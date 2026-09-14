@@ -82,6 +82,7 @@
     else idleId=setTimeout(run,32);
   }
 
+  load('page-top-reset.js',1).catch(err=>console.error('[STACKUP] Page top reset load failed.',err));
   new MutationObserver(schedule).observe(root,{childList:true});
   window.addEventListener('popstate',schedule,{passive:true});
   schedule();
