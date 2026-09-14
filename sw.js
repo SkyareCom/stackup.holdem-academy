@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v71';
-const SW_VERSION=71;
+const CACHE='stackup-academy-v72';
+const SW_VERSION=72;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -31,12 +31,12 @@ const SCRIPTS=[
   ['cash-tournament-details.js',1],
   ['highlight-card-style.js',27],
   ['etiquette-details.js',2],
-  ['other-rules-details.js',1],
+  ['other-rules-details.js',2],
   ['fundamentals-learning-flow.js',1],
   ['fundamentals-interactive-bank.js',1],
   ['fundamentals-visual-layer.js',2],
-  ['fundamentals-interactive.js',3],
-  ['fundamentals-progress-panel.js',1],
+  ['fundamentals-interactive.js',4],
+  ['fundamentals-progress-panel.js',2],
   ['modalities-module.js',1],
   ['modalities-depth-details.js',1],
   ['mixed-games-module.js',2],
