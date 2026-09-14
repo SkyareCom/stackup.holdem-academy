@@ -31,7 +31,7 @@
   for(let i=0;i<25;i++){
     const open=opens[i%opens.length], raiser=['UTG1','LJ','HJ','CO','BTN'][i%5], hero=NEXT[raiser];
     const min=(open+(open-1)).toFixed(open%1?1:0)+' BB';
-    add("Texas Hold'em",{kind:'reraise',hero,villain:raiser,street:'PRÉ-FLOP',context:`${raiser} aumenta de 1 BB para ${open} BB. Você está em ${hero} e quer reaumentar.`,question:'Qual é o menor total permitido para o seu re-raise?',options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+1).toFixed(open%1?1:0)+' BB'),answer:min,why:`O aumento anterior foi de ${(open-1).toFixed(open%1?1:0)} BB. O próximo raise precisa aumentar pelo menos o mesmo incremento: ${open} + ${(open-1).toFixed(open%1?1:0)} = ${min}.`,phase:'AÇÃO PRÉ-FLOP'});
+    add("Texas Hold'em",{kind:'reraise',hero,villain:raiser,street:'PRÉ-FLOP',context:`${raiser} aumenta de 1 BB para ${open} BB. Você está em ${hero} e quer reaumentar.`,question:'Qual é o menor total permitido para o seu re-raise?',options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+0.5).toFixed((open+0.5)%1?1:0)+' BB'),answer:min,why:`O aumento anterior foi de ${(open-1).toFixed(open%1?1:0)} BB. O próximo raise precisa aumentar pelo menos o mesmo incremento: ${open} + ${(open-1).toFixed(open%1?1:0)} = ${min}.`,phase:'AÇÃO PRÉ-FLOP'});
   }
   const actions=[
     ['igualar exatamente a aposta feita','CALL','CHECK','FOLD','Call é a ação de igualar a aposta pendente.'],
@@ -56,7 +56,7 @@
   const streets=[['PRÉ-FLOP','FLOP'],['FLOP','TURN'],['TURN','RIVER'],['RIVER','SHOWDOWN'],['BLINDS','DISTRIBUIÇÃO']];
   for(let i=0;i<25;i++){
     const st=streets[i%streets.length], hero=POS[(i+5)%8];
-    add("Texas Hold'em",{kind:'sequencia',hero,street:st[0],context:`A mão está na etapa ${st[0]}. Você está em ${hero}.`,question:'Qual é a próxima etapa normal do fluxo da mão?',options:choice(st[1],st[0],i%2?'FLOP':'RIVER'),answer:st[1],why:`No fluxo padrão desta situação, depois de ${st[0]} vem ${st[1]}.`,phase:st[0]});
+    add("Texas Hold'em",{kind:'sequencia',hero,street:st[0],context:`A mão está na etapa ${st[0]}. Você está em ${hero}.`,question:'Qual é a próxima etapa normal do fluxo da mão?',options:choice(st[1],st[0],['TURN','PRÉ-FLOP','FLOP','TURN','PRÉ-FLOP'][i%5]),answer:st[1],why:`No fluxo padrão desta situação, depois de ${st[0]} vem ${st[1]}.`,phase:st[0]});
   }
 
   // 50 spots de Omaha (PLO4/PLO5/PLO6).
