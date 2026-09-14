@@ -27,7 +27,7 @@
       ['practice-module.js',1],
       ['practice-table.js',3],
       ['practice-advanced-bank.js',1],
-      ['practice-advanced.js',2],
+      ['practice-advanced.js',3],
       ['table-rotation-guard.js',1],
       ['math-card-structure.js',2],
       ['practice-math-odds.js',2]
