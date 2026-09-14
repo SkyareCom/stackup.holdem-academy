@@ -28,6 +28,7 @@
       ['practice-table.js',3],
       ['practice-advanced-bank.js',1],
       ['practice-advanced.js',2],
+      ['math-card-structure.js',1],
       ['practice-math-odds.js',2]
     ]
   };
