@@ -1,0 +1,11 @@
+const fs=require('fs');
+const assert=require('assert');
+const source=fs.readFileSync('table-rotation-guard.js','utf8');
+assert(source.includes("const HERO_ANCHOR='HJ'"),'Hero visual anchor must be HJ');
+assert(source.includes("seat.classList.add(`s-${slot.toLowerCase()}`)"),'Seat rotation class assignment missing');
+assert(source.includes("const visualSlot=(position,hero)=>"),'Visual rotation function missing');
+assert(source.includes("center.appendChild(bubble)"),'Action status must be moved into table center flow');
+assert(source.includes(".p3x-table-center .p3x-action-bubble{position:static!important"),'Action status must not float over seats');
+assert(source.includes("overflow:hidden!important;isolation:isolate;contain:layout paint"),'Table overlap guard missing');
+assert(source.includes(".p3x-counter{position:static!important"),'Progress block must not float over content');
+console.log('Table layout audit passed.');
