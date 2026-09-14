@@ -100,7 +100,7 @@
         max-height:2.7em!important;
       }
 
-      /* TERCEIRA CAMADA DE CARDS: título exatamente em 1 linha */
+      /* CABEÇALHO DA TERCEIRA TELA */
       #root .card.lesson > h2{
         display:block!important;
         width:100%!important;
@@ -115,8 +115,41 @@
         max-height:1.05em!important;
       }
 
-      /* TERCEIRA CAMADA DE CARDS: descrição obrigatoriamente com área de 2 linhas */
       #root .card.lesson > .lead{
+        display:-webkit-box!important;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+        overflow:hidden!important;
+        white-space:normal!important;
+        width:100%!important;
+        max-width:100%!important;
+        line-height:1.5!important;
+        height:3em!important;
+        min-height:3em!important;
+        max-height:3em!important;
+      }
+
+      /* TERCEIRA CAMADA DE CARDS REAL: .block */
+      #root .card.lesson .blocks .block{
+        min-width:0!important;
+        overflow:hidden!important;
+      }
+
+      #root .card.lesson .blocks .block > h3{
+        display:block!important;
+        width:100%!important;
+        max-width:100%!important;
+        min-width:0!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+        line-height:1.15!important;
+        height:1.15em!important;
+        min-height:1.15em!important;
+        max-height:1.15em!important;
+      }
+
+      #root .card.lesson .blocks .block > p{
         display:-webkit-box!important;
         -webkit-box-orient:vertical;
         -webkit-line-clamp:2;
