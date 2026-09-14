@@ -183,11 +183,11 @@
     document.head.appendChild(style);
   }
 
-  if(navigator.serviceWorker?.controller) return;
+  if(navigator.serviceWorker?.controller)return;
 
   const hasScript=needle=>[...document.scripts].some(s=>(s.getAttribute('src')||'').includes(needle));
   const load=(src,needle)=>new Promise((resolve,reject)=>{
-    if(hasScript(needle)) return resolve();
+    if(hasScript(needle))return resolve();
     const s=document.createElement('script');
     s.src=src;
     s.async=false;
@@ -200,24 +200,11 @@
     try{
       await load('./cover-layout.js?v=10','cover-layout.js');
       await load('./fundamentals-learning-flow.js?v=3','fundamentals-learning-flow.js');
-      if(!window.StackupFundamentalsSpotBank){
-        await load('./fundamentals-interactive-bank.js?v=1','fundamentals-interactive-bank.js');
-      }
-      await load('./fundamentals-visual-layer.js?v=2','fundamentals-visual-layer.js');
-      await load('./fundamentals-interactive.js?v=5','fundamentals-interactive.js');
-      await load('./fundamentals-progress-panel.js?v=3','fundamentals-progress-panel.js');
-      await load('./modalities-module.js?v=1','modalities-module.js');
-      await load('./modalities-depth-details.js?v=1','modalities-depth-details.js');
-      await load('./mixed-games-module.js?v=2','mixed-games-module.js');
-      await load('./practice-module.js?v=1','practice-module.js');
-      await load('./practice-table.js?v=2','practice-table.js');
-      await load('./practice-advanced-bank.js?v=1','practice-advanced-bank.js');
-      await load('./practice-advanced.js?v=2','practice-advanced.js');
-      await load('./practice-math-odds.js?v=2','practice-math-odds.js');
       await load('./typography-standard.js?v=2','typography-standard.js');
       await load('./portuguese-corrections.js?v=2','portuguese-corrections.js');
+      await load('./academy-loader.js?v=1','academy-loader.js');
     }catch(err){
-      console.error('[STACKUP] Falha ao carregar módulos interativos.',err);
+      console.error('[STACKUP] Core module load failed.',err);
     }
   })();
 })();
