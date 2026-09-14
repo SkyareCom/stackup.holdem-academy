@@ -6,16 +6,16 @@
   style.id=STYLE_ID;
   style.textContent=`
     :root{
-      --type-display:34px;
-      --type-stage:28px;
-      --type-section:24px;
-      --type-card-title:21px;
-      --type-item-title:20px;
-      --type-question:18px;
-      --type-lead:17px;
-      --type-body:16px;
-      --type-small:14px;
-      --type-meta:12px;
+      --type-display:clamp(28px,8.8vw,34px);
+      --type-stage:clamp(24px,7.2vw,28px);
+      --type-section:clamp(21px,6.2vw,24px);
+      --type-card-title:clamp(18px,5.5vw,21px);
+      --type-item-title:clamp(18px,5.2vw,20px);
+      --type-question:clamp(16px,4.8vw,18px);
+      --type-lead:clamp(15px,4.4vw,17px);
+      --type-body:clamp(14px,4.1vw,16px);
+      --type-small:clamp(12px,3.6vw,14px);
+      --type-meta:clamp(11px,3.1vw,12px);
       --type-micro:11px;
       font-family:'Love Ya Like A Sister',cursive!important;
     }
@@ -31,8 +31,8 @@
       font-family:Arial,sans-serif!important;
     }
 
-    .name{font-size:24px!important;line-height:1.02!important}
-    .sub{font-size:var(--type-small)!important}
+    .name{font-size:clamp(20px,6vw,24px)!important;line-height:1.02!important}
+    .sub{font-size:clamp(12px,3.8vw,14px)!important;line-height:1.2!important}
     .navbtn{font-size:var(--type-body)!important}
 
     .intro h1,.stitle{font-size:var(--type-stage)!important}
@@ -82,20 +82,12 @@
     .fv-scene h4,.fv-name,.fv-format h4{font-size:var(--type-question)!important}
     .fv-metric b{font-size:var(--type-lead)!important}
 
-    @media(max-width:390px){
-      .name{font-size:24px!important}
-      .sub{font-size:var(--type-small)!important}
-      .intro h1,.stitle{font-size:var(--type-stage)!important}
-      .head h2,.card.lesson>h2{font-size:var(--type-display)!important}
-      .detail-card h3,.card.lesson h3{font-size:var(--type-card-title)!important}
-      .detail-card p,.card.lesson p,.card.lesson li{font-size:var(--type-body)!important}
-      .fi-head h3{font-size:var(--type-section)!important}
-      .fi-question{font-size:var(--type-question)!important}
-      .fi-stat .fi-stat-label{font-size:var(--type-micro)!important}
-      .fi-stat .fi-stat-value{font-size:var(--type-question)!important}
-      .fv-rank{font-size:var(--type-lead)!important}
-      .fv-suit{font-size:var(--type-question)!important}
-      .fv-seat{font-size:var(--type-micro)!important}
+    h1,h2,h3,h4,
+    .name,.sub,.stitle,.ttitle,.rname,
+    .lead,.desc,.tnote,.rnote,
+    p,li,button,span{
+      overflow-wrap:break-word;
+      word-break:normal;
     }
   `;
   document.head.appendChild(style);
