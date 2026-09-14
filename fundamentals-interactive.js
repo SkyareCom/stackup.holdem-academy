@@ -104,7 +104,10 @@
   }
 
   let mountQueued=false;
-  const observer=new MutationObserver(()=>{if(mountQueued)return;mountQueued=true;queueMicrotask(()=>{mountQueued=false;mount();});});
-  observer.observe(document.documentElement,{childList:true,subtree:true});
+  const root=document.getElementById('root');
+  if(root){
+    const observer=new MutationObserver(()=>{if(mountQueued)return;mountQueued=true;queueMicrotask(()=>{mountQueued=false;mount();});});
+    observer.observe(root,{childList:true});
+  }
   mount();
 })();
