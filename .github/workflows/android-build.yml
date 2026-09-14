@@ -36,8 +36,58 @@ jobs:
         with:
           gradle-version: '9.6.0'
 
+      - name: Prepare optional Play upload signing
+        env:
+          ANDROID_UPLOAD_KEYSTORE_BASE64: ${{ secrets.ANDROID_UPLOAD_KEYSTORE_BASE64 }}
+          ANDROID_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
+          ANDROID_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          ANDROID_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
+        run: |
+          if [ -n "$ANDROID_UPLOAD_KEYSTORE_BASE64" ] && \
+             [ -n "$ANDROID_UPLOAD_STORE_PASSWORD" ] && \
+             [ -n "$ANDROID_UPLOAD_KEY_ALIAS" ] && \
+             [ -n "$ANDROID_UPLOAD_KEY_PASSWORD" ]; then
+            printf '%s' "$ANDROID_UPLOAD_KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/stackup-upload.jks"
+            chmod 600 "$RUNNER_TEMP/stackup-upload.jks"
+            echo "STACKUP_SIGNING_READY=true" >> "$GITHUB_ENV"
+          else
+            echo "STACKUP_SIGNING_READY=false" >> "$GITHUB_ENV"
+          fi
+
+      - name: Run Android release lint
+        run: gradle -p android :app:lintRelease --stacktrace
+
       - name: Build release AAB
+        env:
+          STACKUP_UPLOAD_KEYSTORE: ${{ runner.temp }}/stackup-upload.jks
+          STACKUP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_UPLOAD_STORE_PASSWORD }}
+          STACKUP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_UPLOAD_KEY_ALIAS }}
+          STACKUP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_UPLOAD_KEY_PASSWORD }}
         run: gradle -p android :app:bundleRelease --stacktrace
+
+      - name: Verify AAB integrity
+        run: |
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          test -s "$AAB"
+          unzip -t "$AAB"
+          sha256sum "$AAB" | tee "${AAB}.sha256"
+
+      - name: Verify signed Play AAB
+        if: ${{ env.STACKUP_SIGNING_READY == 'true' }}
+        run: |
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          jarsigner -verify -verbose -certs "$AAB"
+
+      - name: Record release signing status
+        run: |
+          mkdir -p android/app/build/outputs/bundle/release
+          {
+            echo "package=com.skyare.stackupacademy"
+            echo "versionName=1.0.0"
+            echo "versionCode=1"
+            echo "targetSdk=36"
+            echo "signed=${STACKUP_SIGNING_READY}"
+          } > android/app/build/outputs/bundle/release/RELEASE-INFO.txt
 
       - name: Build installable debug APK
         run: gradle -p android :app:assembleDebug --stacktrace
@@ -73,15 +123,17 @@ jobs:
             grep -q "Status: ok" /tmp/stackup-start.txt
             sleep 8
             adb logcat -d -v brief > /tmp/stackup-logcat.txt
-            cat /tmp/stackup-logcat.txt
             ! grep -q "FATAL EXCEPTION" /tmp/stackup-logcat.txt
             adb shell dumpsys package com.skyare.stackupacademy | grep -q "com.skyare.stackupacademy.MainActivity"
 
-      - name: Upload unsigned AAB
+      - name: Upload Play AAB artifact
         uses: actions/upload-artifact@v4
         with:
-          name: stackup-academy-android-aab
-          path: android/app/build/outputs/bundle/release/*.aab
+          name: stackup-academy-play-aab
+          path: |
+            android/app/build/outputs/bundle/release/*.aab
+            android/app/build/outputs/bundle/release/*.sha256
+            android/app/build/outputs/bundle/release/RELEASE-INFO.txt
           if-no-files-found: error
 
       - name: Upload installable test APK
