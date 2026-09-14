@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v88';
-const SW_VERSION=88;
+const CACHE='stackup-academy-v89';
+const SW_VERSION=89;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -43,7 +43,7 @@ const SCRIPTS=[
   ['practice-module.js',1],
   ['practice-table.js',3],
   ['practice-advanced-bank.js',2],
-  ['practice-advanced.js',2],
+  ['practice-advanced.js',3],
   ['table-rotation-guard.js',1],
   ['math-card-structure.js',2],
   ['practice-math-odds.js',2],
@@ -52,7 +52,7 @@ const SCRIPTS=[
   ['release-compliance.js',1],
   ['academy-visual-system.js',1],
   ['typography-standard.js',2],
-  ['academy-loader.js',4]
+  ['academy-loader.js',5]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
