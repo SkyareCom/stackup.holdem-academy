@@ -4,23 +4,135 @@
   const style=document.createElement('style');
   style.id=STYLE_ID;
   style.textContent=`
+    :root{
+      --academy-card-bg:linear-gradient(180deg,#f4ecd9 0%,#eee3cb 100%);
+      --academy-card-border:#d4aa58cc;
+      --academy-card-border-soft:#a87c3255;
+      --academy-card-radius:24px;
+      --academy-card-radius-inner:17px;
+      --academy-card-shadow:0 12px 28px #00000030;
+      --academy-card-gap:14px;
+      --academy-card-pad-x:18px;
+      --academy-card-pad-y:17px;
+      --academy-index-size:48px;
+      --academy-arrow-size:24px;
+    }
+
+    /* PADRÃO ÚNICO — CARDS PRINCIPAIS */
     #root .card.stage,
     #root .card.topic,
     #root .card.lesson{
-      border:1px solid #d4aa58cc!important;
-      border-radius:20px!important;
-      box-shadow:0 10px 26px #00000030!important;
+      width:100%!important;
+      border:1px solid var(--academy-card-border)!important;
+      border-radius:var(--academy-card-radius)!important;
+      box-shadow:var(--academy-card-shadow)!important;
+      overflow:hidden!important;
+      box-sizing:border-box!important;
     }
 
     #root .card.stage,
-    #root .card.topic{
-      background:linear-gradient(180deg,#f4ecd9 0%,#eee3cb 100%)!important;
+    #root .card.topic,
+    #root .card.lesson{
+      background:var(--academy-card-bg)!important;
     }
 
-    #root .card.stage{padding:18px!important}
-    #root .card.topic{padding:15px!important}
-    #root .card.lesson{padding:18px!important}
+    #root .card.stage{
+      padding:20px!important;
+    }
 
+    #root .card.topic{
+      display:flex!important;
+      align-items:center!important;
+      gap:var(--academy-card-gap)!important;
+      min-height:96px!important;
+      padding:var(--academy-card-pad-y) var(--academy-card-pad-x)!important;
+    }
+
+    #root .card.lesson{
+      padding:20px!important;
+    }
+
+    /* LISTAS: MESMA DISTÂNCIA ENTRE TODOS OS CARDS */
+    #root .list{
+      display:grid!important;
+      gap:14px!important;
+    }
+
+    /* NÚMERO / ÍCONE ESQUERDO — MESMA CAIXA EM TODAS AS TELAS */
+    #root .card.topic .idx{
+      width:var(--academy-index-size)!important;
+      height:var(--academy-index-size)!important;
+      min-width:var(--academy-index-size)!important;
+      flex:0 0 var(--academy-index-size)!important;
+      display:grid!important;
+      place-items:center!important;
+      margin:0!important;
+      padding:0!important;
+      border-radius:14px!important;
+      background:#211008!important;
+      color:#d4aa58!important;
+      text-align:center!important;
+      line-height:1!important;
+    }
+
+    /* ÁREA DE TEXTO — SEM TRUNCAR TÍTULOS */
+    #root .card.topic .tcopy{
+      flex:1 1 auto!important;
+      min-width:0!important;
+      display:flex!important;
+      flex-direction:column!important;
+      justify-content:center!important;
+      gap:4px!important;
+      overflow:visible!important;
+    }
+
+    #root .card.topic .ttitle{
+      display:block!important;
+      width:100%!important;
+      margin:0!important;
+      padding:0!important;
+      line-height:1.16!important;
+      white-space:normal!important;
+      overflow:visible!important;
+      text-overflow:clip!important;
+      overflow-wrap:break-word!important;
+      word-break:normal!important;
+      -webkit-line-clamp:unset!important;
+      -webkit-box-orient:initial!important;
+    }
+
+    #root .card.topic .tnote{
+      display:block!important;
+      width:100%!important;
+      margin:0!important;
+      line-height:1.34!important;
+      white-space:normal!important;
+      overflow:hidden!important;
+      text-overflow:clip!important;
+      overflow-wrap:break-word!important;
+      word-break:normal!important;
+      display:-webkit-box!important;
+      -webkit-box-orient:vertical!important;
+      -webkit-line-clamp:3!important;
+    }
+
+    /* SETA — MESMO TAMANHO E MESMA POSIÇÃO VISUAL */
+    #root .card.topic .arrow{
+      width:var(--academy-arrow-size)!important;
+      min-width:var(--academy-arrow-size)!important;
+      flex:0 0 var(--academy-arrow-size)!important;
+      display:grid!important;
+      place-items:center!important;
+      align-self:center!important;
+      margin:0!important;
+      padding:0!important;
+      color:#a87c32!important;
+      font-size:28px!important;
+      line-height:1!important;
+      text-align:center!important;
+    }
+
+    /* CARDS INTERNOS DE CONTEÚDO — VARIANTE SECUNDÁRIA */
     #root .block,
     #root .rrow,
     #root .m2-card,
@@ -28,18 +140,37 @@
     #root .p3x-panel,
     #root .p3x-math-card,
     #root .p3m-group,
-    #root .fi-spot{
-      border-radius:16px!important;
-      border-color:#a87c3255!important;
+    #root .fi-spot,
+    #root .detail-card{
+      border:1px solid var(--academy-card-border-soft)!important;
+      border-radius:var(--academy-card-radius-inner)!important;
       box-shadow:0 4px 12px #25170f12!important;
+      box-sizing:border-box!important;
+    }
+
+    #root .block,
+    #root .rrow,
+    #root .m2-card,
+    #root .p3x-panel,
+    #root .p3x-math-card,
+    #root .p3m-group,
+    #root .detail-card{
+      padding:16px!important;
     }
 
     #root .blocks,
+    #root .ranking,
     #root .p3x-math-grid,
     #root .p3m-odds{
       gap:12px!important;
     }
 
+    #root .block h3,
+    #root .detail-card h3{
+      margin-top:0!important;
+    }
+
+    /* BADGES */
     #root .badge,
     #root .p3x-badge,
     #root .fi-type,
@@ -48,6 +179,7 @@
       letter-spacing:.05em!important;
     }
 
+    /* CARDS DE ESTATÍSTICA */
     #root .fi-stats,
     #root .p3-progress{
       display:grid!important;
@@ -148,11 +280,24 @@
     }
 
     @media(max-width:420px){
-      #root .screen{padding-left:14px!important;padding-right:14px!important}
+      :root{
+        --academy-card-pad-x:16px;
+        --academy-card-pad-y:15px;
+        --academy-index-size:46px;
+        --academy-card-gap:12px;
+      }
+
+      #root .screen{
+        padding-left:14px!important;
+        padding-right:14px!important;
+      }
+
       #root .list{gap:12px!important}
-      #root .card.stage{padding:16px!important}
-      #root .card.topic{padding:14px!important}
-      #root .card.lesson{padding:16px!important}
+      #root .card.stage{padding:18px!important}
+      #root .card.topic{min-height:92px!important}
+      #root .card.lesson{padding:18px!important}
+      #root .card.topic .arrow{font-size:26px!important}
+
       #root .fi-stats,
       #root .p3-progress{gap:6px!important}
       #root .fi-stat,
@@ -167,6 +312,12 @@
     }
 
     @media(max-width:340px){
+      :root{
+        --academy-card-pad-x:13px;
+        --academy-index-size:42px;
+        --academy-card-gap:10px;
+      }
+      #root .card.topic{min-height:88px!important}
       #root .fi-stats,
       #root .p3-progress{grid-template-columns:1fr!important}
       #root .fi-stat,
