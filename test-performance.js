@@ -25,7 +25,7 @@ assert('language-card observer is batched',lang.includes('cardFrame=requestAnima
 assert('fundamentals training observer is root-only',interactive.includes("observer.observe(root,{childList:true})")&&!interactive.includes("observe(document.documentElement,{childList:true,subtree:true})"));
 assert('progress observer avoids document-wide scans',progress.includes("observer.observe(root,{childList:true,subtree:true})")&&!progress.includes("document.querySelectorAll('.fi-stats')"));
 assert('navigation alignment uses one animation frame',flow.includes('frame=requestAnimationFrame(()=>{')&&!flow.includes('frame=requestAnimationFrame(()=>{\n      frame=requestAnimationFrame'));
-assert('first load only boots the lightweight loader',highlight.includes("await load('./academy-loader.js?v=1','academy-loader.js')")&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
+assert('first load only boots the lightweight loader',/await load\('\.\/academy-loader\.js\?v=\d+','academy-loader\.js'\)/.test(highlight)&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
 assert('heavy Academy modules are lazy by stage',loader.includes('const groups={')&&loader.includes('requestIdleCallback')&&loader.includes("new MutationObserver(schedule).observe(root,{childList:true})"));
 assert('service worker limits legacy document-wide observers',sw.includes('stackup-performance-guard')&&sw.includes('target===document.documentElement'));
 assert('service worker auto-injects only lightweight core',sw.includes('const AUTO_SCRIPTS=new Set')&&sw.includes('AUTO_SCRIPTS.has(name)'));
