@@ -21,6 +21,7 @@
         line-height:1.3;
       }
 
+      /* PRIMEIRA TELA: descrição com no máximo 2 linhas e altura uniforme */
       #root .card.stage .desc{
         display:-webkit-box!important;
         -webkit-box-orient:vertical;
@@ -29,6 +30,38 @@
         height:2.84em!important;
         min-height:2.84em!important;
         max-height:2.84em!important;
+      }
+
+      /* SEGUNDA CAMADA: título + 1 linha descritiva */
+      #root .head > p{
+        display:-webkit-box!important;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:1;
+        overflow:hidden!important;
+        height:1.45em!important;
+        min-height:1.45em!important;
+        max-height:1.45em!important;
+      }
+
+      #root .card.topic .tnote{
+        display:block!important;
+        width:100%;
+        max-width:100%;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+      }
+
+      /* TERCEIRA CAMADA, QUANDO EXISTIR: título + 1 linha descritiva.
+         O conteúdo didático interno permanece completo. */
+      #root .card.lesson > .lead{
+        display:-webkit-box!important;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:1;
+        overflow:hidden!important;
+        height:1.5em!important;
+        min-height:1.5em!important;
+        max-height:1.5em!important;
       }
     `;
     document.head.appendChild(style);
