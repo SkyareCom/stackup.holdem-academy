@@ -99,18 +99,25 @@
         max-height:2.7em!important;
       }
 
-      #root .card.lesson > h2{
+      #root .card.lesson > h2,
+      #root .card.lesson h3,
+      #root .card.lesson h4{
         display:block!important;
         width:100%!important;
         max-width:100%!important;
         min-width:0!important;
-        white-space:nowrap!important;
-        overflow:hidden!important;
-        text-overflow:ellipsis!important;
+        white-space:normal!important;
+        overflow:visible!important;
+        text-overflow:clip!important;
+        overflow-wrap:anywhere!important;
+        word-break:normal!important;
+        height:auto!important;
+        min-height:0!important;
+        max-height:none!important;
+      }
+
+      #root .card.lesson > h2{
         line-height:1.05!important;
-        height:1.05em!important;
-        min-height:1.05em!important;
-        max-height:1.05em!important;
       }
 
       #root .card.lesson > .lead{
@@ -133,17 +140,7 @@
       }
 
       #root .card.lesson .blocks .block > h3{
-        display:block!important;
-        width:100%!important;
-        max-width:100%!important;
-        min-width:0!important;
-        white-space:nowrap!important;
-        overflow:hidden!important;
-        text-overflow:ellipsis!important;
         line-height:1.15!important;
-        height:1.15em!important;
-        min-height:1.15em!important;
-        max-height:1.15em!important;
       }
 
       #root .card.lesson .blocks .block > p{
@@ -202,7 +199,7 @@
       await load('./fundamentals-learning-flow.js?v=3','fundamentals-learning-flow.js');
       await load('./typography-standard.js?v=2','typography-standard.js');
       await load('./portuguese-corrections.js?v=2','portuguese-corrections.js');
-      await load('./academy-loader.js?v=1','academy-loader.js');
+      await load('./academy-loader.js?v=2','academy-loader.js');
     }catch(err){
       console.error('[STACKUP] Core module load failed.',err);
     }
