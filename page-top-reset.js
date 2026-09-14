@@ -1,25 +1,58 @@
 (() => {
   const root=document.getElementById('root');
+  const brand=document.getElementById('brand')||document.querySelector('.brand');
   if(!root)return;
 
   if('scrollRestoration' in history)history.scrollRestoration='manual';
 
-  let frame=0;
-  function resetToHeader(){
-    if(frame)cancelAnimationFrame(frame);
-    frame=requestAnimationFrame(()=>{
-      frame=0;
-      window.scrollTo({top:0,left:0,behavior:'auto'});
-      document.documentElement.scrollTop=0;
-      document.body.scrollTop=0;
-    });
+  let resetId=0;
+  function setTop(){
+    window.scrollTo(0,0);
+    document.documentElement.scrollTop=0;
+    document.body.scrollTop=0;
+    if(brand&&brand.getBoundingClientRect().top<0){
+      brand.scrollIntoView({block:'start',inline:'nearest',behavior:'auto'});
+      window.scrollTo(0,0);
+    }
   }
 
-  new MutationObserver(mutations=>{
-    if(mutations.some(mutation=>mutation.target===root&&mutation.type==='childList')){
-      resetToHeader();
-    }
-  }).observe(root,{childList:true});
+  function resetToHeader(){
+    const id=++resetId;
+    const run=()=>{if(id===resetId)setTop();};
+
+    run();
+    requestAnimationFrame(()=>{
+      run();
+      requestAnimationFrame(run);
+    });
+    setTimeout(run,0);
+    setTimeout(run,50);
+    setTimeout(run,140);
+    setTimeout(run,320);
+  }
+
+  const nativePushState=history.pushState.bind(history);
+  history.pushState=function(...args){
+    const value=nativePushState(...args);
+    resetToHeader();
+    return value;
+  };
+
+  const nativeReplaceState=history.replaceState.bind(history);
+  history.replaceState=function(...args){
+    const value=nativeReplaceState(...args);
+    resetToHeader();
+    return value;
+  };
+
+  root.addEventListener('click',event=>{
+    const card=event.target.closest('button.card,.card[role="button"],a.card');
+    if(card)resetToHeader();
+  },true);
+
+  document.addEventListener('click',event=>{
+    if(event.target.closest('#backBtn,#homeBtn,#brand'))resetToHeader();
+  },true);
 
   window.addEventListener('popstate',resetToHeader,{passive:true});
   window.addEventListener('hashchange',resetToHeader,{passive:true});
