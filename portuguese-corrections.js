@@ -1,5 +1,7 @@
 (() => {
   const CORRECTIONS=[
+    ['SMALL BLIND, BIG BLIND E ANTE','SMALL, BIG E ANTE'],
+    ['Small Blind, Big Blind e Ante','Small, Big e Ante'],
     ['QUALQUER 5 CARTAS','QUAISQUER 5 CARTAS'],
     ['Compare as melhores 5 cartas.','Compare as cinco melhores cartas.'],
     ['No poker padrão a mão final avaliada tem 5 cartas.','No poker padrão, a mão final avaliada tem 5 cartas.'],
