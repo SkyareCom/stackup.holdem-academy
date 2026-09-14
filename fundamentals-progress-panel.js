@@ -69,7 +69,7 @@
     const realizedRaw=(stats[1].querySelector('small')?.textContent||'0/50').trim();
     const realized=realizedRaw.split('/')[0]||'0';
 
-    const total='50';
+    const total=(panel.dataset.fiTotal||stats[2].querySelector('small')?.textContent?.split('/')[1]||'50').trim();
 
     const values=[
       ['CERTOS',correct,correctPct],
