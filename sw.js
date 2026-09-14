@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v86';
-const SW_VERSION=86;
+const CACHE='stackup-academy-v87';
+const SW_VERSION=87;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -39,10 +39,10 @@ const SCRIPTS=[
   ['fundamentals-progress-panel.js',3],
   ['modalities-module.js',1],
   ['modalities-depth-details.js',1],
-  ['mixed-games-module.js',2],
+  ['mixed-games-module.js',3],
   ['practice-module.js',1],
   ['practice-table.js',3],
-  ['practice-advanced-bank.js',1],
+  ['practice-advanced-bank.js',2],
   ['practice-advanced.js',2],
   ['math-card-structure.js',2],
   ['practice-math-odds.js',2],
