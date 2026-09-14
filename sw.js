@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v81';
-const SW_VERSION=81;
+const CACHE='stackup-academy-v82';
+const SW_VERSION=82;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -11,7 +11,7 @@ const ASSETS=[
   './header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
-  ['session-reset.js',2],
+  ['session-reset.js',3],
   ['language-selector.js',4],
   ['i18n-en-us-phrases-1.js',2],
   ['i18n-en-us-phrases-2.js',2],
@@ -29,7 +29,7 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',35],
+  ['highlight-card-style.js',36],
   ['etiquette-details.js',2],
   ['other-rules-details.js',2],
   ['fundamentals-learning-flow.js',3],
@@ -60,8 +60,6 @@ self.addEventListener('activate',event=>{
     const keys=await caches.keys();
     await Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)));
     await self.clients.claim();
-    const clients=await self.clients.matchAll({type:'window'});
-    await Promise.all(clients.map(client=>client.navigate(client.url).catch(()=>null)));
   })());
 });
 
