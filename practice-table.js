@@ -1,5 +1,5 @@
 (() => {
-  const STYLE_ID='stackup-positions-table-style';
+  const STYLE_ID='stackup-practice-table-style';
 
   function ensureTableStyles(){
     if(document.getElementById(STYLE_ID))return;
