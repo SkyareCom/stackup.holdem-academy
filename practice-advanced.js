@@ -21,6 +21,18 @@
   const seeded=(arr,seed)=>{const a=arr.slice();let x=seed||1;for(let i=a.length-1;i>0;i--){x=(Math.imul(x,1664525)+1013904223)>>>0;const j=x%(i+1);[a[i],a[j]]=[a[j],a[i]]}return a};
   const shuffleOptions=item=>seeded(item.options,item.id?hash(item.id):1);
 
+  const SIM_FILTERS=[
+    {key:'HNL',label:'HNL',match:s=>norm(s.game).includes('TEXAS HOLD')},
+    {key:'PLO4',label:'PLO4',match:s=>norm(s.game)==='PLO4'},
+    {key:'PLO5',label:'PLO5',match:s=>norm(s.game)==='PLO5'},
+    {key:'PLO6',label:'PLO6',match:s=>norm(s.game)==='PLO6'},
+    {key:'MAIS',label:'MAIS',match:s=>!['TEXAS HOLD\'EM','PLO4','PLO5','PLO6'].includes(norm(s.game))}
+  ];
+  if(!SIM_FILTERS.some(f=>f.key===state.sim.filter))state.sim.filter='HNL';
+  const activeSimFilter=()=>SIM_FILTERS.find(f=>f.key===state.sim.filter)||SIM_FILTERS[0];
+  const simBank=()=>B.sim.filter(activeSimFilter().match);
+  const simFilterBar=()=>`<div class="p3x-sim-filters" role="group" aria-label="Filtrar modalidade do simulador">${SIM_FILTERS.map(f=>`<button type="button" class="p3x-filter-btn ${f.key===state.sim.filter?'active':''}" data-sim-filter="${f.key}">${f.label}</button>`).join('')}</div>`;
+
   const style=document.createElement('style');
   style.id='stackup-practice-advanced-style-v2';
   style.textContent=`
@@ -28,6 +40,7 @@
     .p3x-shell{margin-top:15px;color:#25170f}
     .p3x-counter{position:sticky;top:8px;z-index:20;margin:10px 0 14px!important;box-shadow:0 8px 18px #0004}
     .p3x-kicker{font-size:12px;letter-spacing:.07em;text-transform:uppercase;color:#a87c32;margin-bottom:7px}
+    .p3x-sim-filters{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:0 0 10px}.p3x-filter-btn{min-width:0;padding:9px 3px;border:1px solid #a87c3270;border-radius:10px;background:#e7dcc2;color:#5f4b39;font:inherit;font-size:12px;line-height:1;text-align:center;cursor:pointer}.p3x-filter-btn.active{background:#08372d;color:#d4aa58;border-color:#d4aa58;box-shadow:0 4px 12px #0003}.p3x-filter-btn:focus-visible{outline:2px solid #d4aa58;outline-offset:2px}
     .p3x-panel{border:1px solid #a87c3260;background:#efe4cd;border-radius:18px;padding:14px;margin-top:12px}
     .p3x-panel h3{margin:0 0 8px;font-size:21px;color:#08372d;text-transform:uppercase}
     .p3x-panel p{margin:0;color:#725f4d;font-size:16px;line-height:1.48}
@@ -66,9 +79,11 @@
   `;
   document.head.appendChild(style);
 
-  function counter(mode,total){
+  function counter(mode,total,bank=null){
     const r=state[mode].results||{};
-    const done=Object.keys(r).length,correct=Object.values(r).filter(Boolean).length;
+    const ids=bank?new Set(bank.map(x=>x.id)):null;
+    const entries=Object.entries(r).filter(([id])=>!ids||ids.has(id));
+    const done=entries.length,correct=entries.filter(([,ok])=>ok).length;
     return `<div class="fi-stats p3x-counter" data-unified-progress="1"><div class="fi-stat"><span class="fi-stat-label">CERTOS</span><strong class="fi-stat-value">${correct} · ${pct(correct,done)}%</strong></div><div class="fi-stat"><span class="fi-stat-label">REALIZADOS</span><strong class="fi-stat-value">${done} · ${pct(done,total)}%</strong></div><div class="fi-stat"><span class="fi-stat-label">TOTAL</span><strong class="fi-stat-value">${total} · 100%</strong></div></div>`;
   }
 
@@ -167,10 +182,15 @@
   function renderMode(mode){
     const shell=shellFor(mode);if(!shell)return;
     if(mode==='sim'){
-      if(!current.sim)current.sim=pick('sim',B.sim);
+      const bank=simBank();
+      if(!current.sim||!bank.some(x=>x.id===current.sim.id))current.sim=pick('sim',bank);
       const s=current.sim;
-      shell.innerHTML=`${counter('sim',B.sim.length)}<div class="p3x-kicker">${esc(s.game)} · SPOT ${esc(s.id)} · MÃO SIMULADA</div>${liveTable(s)}<div class="p3x-panel"><h3>SUA DECISÃO</h3>${optionBlock(s)}<div class="p3x-nav"><button class="p3x-btn" data-prev>ANTERIOR</button><button class="p3x-btn" data-redo>REFAZER MÃO</button><button class="p3x-btn" data-next>PRÓXIMA MÃO</button></div></div>`;
-      bindExercise(shell,'sim',B.sim,B.sim.length,s);requestAnimationFrame(()=>animateHand(shell,s));
+      shell.innerHTML=`${simFilterBar()}${counter('sim',bank.length,bank)}<div class="p3x-kicker">${esc(activeSimFilter().label)} · ${esc(s.game)} · SPOT ${esc(s.id)} · MÃO SIMULADA</div>${liveTable(s)}<div class="p3x-panel"><h3>SUA DECISÃO</h3>${optionBlock(s)}<div class="p3x-nav"><button class="p3x-btn" data-prev>ANTERIOR</button><button class="p3x-btn" data-redo>REFAZER MÃO</button><button class="p3x-btn" data-next>PRÓXIMA MÃO</button></div></div>`;
+      shell.querySelectorAll('[data-sim-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+        const key=btn.dataset.simFilter;if(key===state.sim.filter)return;
+        state.sim.filter=key;save();current.sim=null;history.sim=[];answered.sim=false;renderMode('sim');
+      }));
+      bindExercise(shell,'sim',bank,bank.length,s);requestAnimationFrame(()=>animateHand(shell,s));
     }else if(mode==='quiz'){
       if(!current.quiz)current.quiz=pick('quiz',B.quiz);
       const q=current.quiz;
@@ -186,7 +206,7 @@
 
   function setTheory(lesson,mode){
     const blocks=lesson.querySelector('.blocks');if(!blocks)return;
-    if(mode==='sim')blocks.innerHTML=`<div class="block"><h3>SIMULAÇÃO DE JOGO</h3><p>A mão acontece visualmente na mesa: dealer, blinds, distribuição, stacks, apostas, pote, valor a pagar, board e showdown. A pergunta aparece como decisão dentro da situação.</p></div><div class="block"><h3>250 SPOTS</h3><p><strong>175 Texas Hold’em</strong>, <strong>50 Omaha PLO4/PLO5/PLO6</strong> e <strong>25 das demais modalidades</strong>.</p></div><div class="block"><h3>NÍVEL</h3><p>Situações conceituais e reais de nível inicial para o jogador se ambientar com a sequência de uma mão.</p></div>`;
+    if(mode==='sim')blocks.innerHTML=`<div class="block"><h3>SIMULAÇÃO DE JOGO</h3><p>A mão acontece visualmente na mesa: dealer, blinds, distribuição, stacks, apostas, pote, valor a pagar, board e showdown. A pergunta aparece como decisão dentro da situação.</p></div><div class="block"><h3>FILTROS PRIORITÁRIOS</h3><p><strong>HNL, PLO4, PLO5 e PLO6</strong> ficam separados para treino direcionado. <strong>MAIS</strong> reúne as demais modalidades.</p></div><div class="block"><h3>ESTATÍSTICAS POR FILTRO</h3><p>CERTOS, REALIZADOS e TOTAL mostram somente os spots da modalidade selecionada, preservando o progresso de cada grupo.</p></div>`;
     if(mode==='quiz')blocks.innerHTML=`<div class="block"><h3>150 PERGUNTAS INÉDITAS</h3><p>Perguntas gerais sobre tudo que foi ensinado no app: conceitos, jogo, regras, terminologias, modalidades e comportamento.</p></div><div class="block"><h3>SEM REPETIR O EXERCÍCIO DO CAPÍTULO</h3><p>O Quiz reformula o conhecimento e cobra aplicação fora do contexto exato em que ele foi apresentado.</p></div>`;
     if(mode==='math')blocks.innerHTML=`<div class="block"><h3>MATEMÁTICA QUE VOCÊ USA NA MESA</h3><p>Cada cálculo explica para que serve, como usar e um atalho mental. Inclui Regra do 2 e do 4, outs, pot odds, SPR, EV, MDF, alpha e probabilidades de referência.</p></div>`;
   }
