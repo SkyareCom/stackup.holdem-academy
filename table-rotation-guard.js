@@ -14,7 +14,7 @@
   if(typeof window!=='undefined')window.StackupTableRotation={POSITIONS,HERO_ANCHOR,visualSlot,seatMap};
   if(typeof document==='undefined')return;
 
-  const STYLE_ID='stackup-table-rotation-guard-v2';
+  const STYLE_ID='stackup-table-rotation-guard-v3';
   if(!document.getElementById(STYLE_ID)){
     const style=document.createElement('style');
     style.id=STYLE_ID;
@@ -27,20 +27,93 @@
       #root .p3x-live .positions-board{position:relative!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;overflow:hidden!important;isolation:isolate;contain:layout paint}
       #root .p3x-live .seat{max-width:31%!important}
       #root .p3x-live .seat-label,#root .p3x-live .p3x-seat-stack{max-width:100%!important;box-sizing:border-box!important;overflow:hidden;text-overflow:ellipsis}
-      #root .p3x-table-center{top:46%!important;width:58%!important;max-width:58%!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;box-sizing:border-box!important}
-      #root .p3x-table-center .p3x-phase,#root .p3x-table-center .p3x-pot,#root .p3x-table-center .p3x-action-bubble{max-width:100%!important;box-sizing:border-box!important}
-      #root .p3x-table-center .p3x-board{width:100%!important;max-width:100%!important;margin:2px 0!important;display:flex!important;justify-content:center!important;align-items:center!important;gap:3px!important;flex-wrap:wrap!important}
-      #root .p3x-table-center .p3x-action-bubble{position:static!important;left:auto!important;top:auto!important;transform:none!important;width:auto!important;margin:2px auto 0!important;padding:7px 9px!important;opacity:0;pointer-events:none;transition:opacity .2s ease!important}
-      #root .p3x-table-center .p3x-action-bubble.show{position:static!important;top:auto!important;opacity:1!important}
+
+      #root .p3x-table-center{
+        top:50%!important;
+        width:62%!important;
+        max-width:62%!important;
+        height:150px!important;
+        display:block!important;
+        box-sizing:border-box!important;
+        pointer-events:none!important;
+      }
+      #root .p3x-table-center .p3x-phase{
+        position:absolute!important;
+        left:50%!important;
+        top:0!important;
+        transform:translate(-50%,-50%)!important;
+        max-width:100%!important;
+        box-sizing:border-box!important;
+        white-space:nowrap!important;
+      }
+      #root .p3x-table-center .p3x-pot{
+        position:absolute!important;
+        left:50%!important;
+        top:27%!important;
+        transform:translate(-50%,-50%)!important;
+        max-width:100%!important;
+        box-sizing:border-box!important;
+        white-space:nowrap!important;
+      }
+      #root .p3x-table-center .p3x-board{
+        position:absolute!important;
+        left:50%!important;
+        top:50%!important;
+        transform:translate(-50%,-50%)!important;
+        width:100%!important;
+        max-width:100%!important;
+        min-height:44px!important;
+        margin:0!important;
+        display:flex!important;
+        justify-content:center!important;
+        align-items:center!important;
+        gap:3px!important;
+        flex-wrap:nowrap!important;
+        box-sizing:border-box!important;
+      }
+
+      #root .p3x-action-bubble.p3x-table-message{
+        position:relative!important;
+        left:auto!important;
+        top:auto!important;
+        transform:none!important;
+        width:100%!important;
+        max-width:500px!important;
+        min-height:46px!important;
+        margin:10px auto 8px!important;
+        padding:10px 12px!important;
+        display:flex!important;
+        align-items:center!important;
+        justify-content:center!important;
+        box-sizing:border-box!important;
+        border-radius:12px!important;
+        background:#211008!important;
+        border:1px solid #d4aa58!important;
+        color:#f8f0df!important;
+        font-size:13px!important;
+        line-height:1.3!important;
+        text-align:center!important;
+        opacity:0!important;
+        visibility:hidden!important;
+        pointer-events:none!important;
+        transition:opacity .2s ease!important;
+      }
+      #root .p3x-action-bubble.p3x-table-message.show{
+        opacity:1!important;
+        visibility:visible!important;
+      }
+
       #root .p3x-dealer{z-index:10!important;pointer-events:none!important}
       #root .p3x-info,#root .p3x-hands{position:relative!important;z-index:0!important}
       #root .p3x-info>div,#root .p3x-hand{min-width:0!important;overflow:hidden!important}
       #root .p3x-info small,#root .p3x-info b,#root .p3x-hand strong{white-space:normal!important;overflow-wrap:anywhere}
       @media(max-width:390px){
-        #root .p3x-table-center{width:56%!important;max-width:56%!important;gap:4px!important}
+        #root .p3x-table-center{width:58%!important;max-width:58%!important;height:136px!important}
+        #root .p3x-table-center .p3x-pot{top:25%!important}
         #root .p3x-live .seat{max-width:30%!important}
         #root .p3x-live .seat-label{min-width:50px!important;padding:5px 6px!important}
         #root .p3x-seat-stack{font-size:8px!important}
+        #root .p3x-action-bubble.p3x-table-message{font-size:12px!important;min-height:44px!important}
       }
     `;
     document.head.appendChild(style);
@@ -63,9 +136,13 @@
       seat.dataset.visualSeat=slot;
     }
 
-    const center=board.querySelector('.p3x-table-center');
-    const bubble=board.querySelector('.p3x-action-bubble');
-    if(center&&bubble&&bubble.parentElement!==center)center.appendChild(bubble);
+    const live=board.closest('.p3x-live');
+    const bubble=live?.querySelector('.p3x-action-bubble');
+    const info=live?.querySelector('.p3x-info');
+    if(live&&bubble&&info){
+      bubble.classList.add('p3x-table-message');
+      if(bubble.parentElement!==live||bubble.nextElementSibling!==info)live.insertBefore(bubble,info);
+    }
 
     const dealer=board.querySelector('.p3x-dealer');
     const btn=board.querySelector('.seat[data-seat="BTN"]');
