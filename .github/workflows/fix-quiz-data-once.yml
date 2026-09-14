@@ -1,0 +1,55 @@
+name: Fix quiz data once
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/fix-quiz-data-once.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Correct duplicated quiz options
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          p=Path('practice-advanced-bank.js')
+          s=p.read_text()
+          old="options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+1).toFixed(open%1?1:0)+' BB')"
+          new="options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+0.5).toFixed((open+0.5)%1?1:0)+' BB')"
+          assert old in s, 'padrao de reraise nao encontrado'
+          s=s.replace(old,new)
+          old="options:choice(st[1],st[0],i%2?'FLOP':'RIVER')"
+          new="options:choice(st[1],st[0],['TURN','PRÉ-FLOP','FLOP','TURN','PRÉ-FLOP'][i%5])"
+          assert old in s, 'padrao de fluxo nao encontrado'
+          s=s.replace(old,new)
+          p.write_text(s)
+
+          p=Path('mixed-games-module.js')
+          s=p.read_text()
+          old="['Stud: streets posteriores.',['ENCERRAR THIRD','DISTRIBUIR FOURTH','APOSTAR','DISTRIBUIR FIFTH','APOSTAR','DISTRIBUIR SIXTH / SEVENTH COM APOSTAS'],'Cada nova street traz carta e ação.','STUD · LATER STREETS · APOSTAS']"
+          new="['Stud: streets posteriores.',['ENCERRAR THIRD','DISTRIBUIR FOURTH','APOSTAR NA FOURTH','DISTRIBUIR FIFTH','APOSTAR NA FIFTH','DISTRIBUIR SIXTH / SEVENTH COM APOSTAS'],'Cada nova street traz carta e ação.','STUD · LATER STREETS · APOSTAS']"
+          assert old in s, 'sequencia Stud nao encontrada'
+          s=s.replace(old,new)
+          p.write_text(s)
+          PY
+
+      - name: Verify quiz audit
+        run: node test-quiz-quality.js
+
+      - name: Commit fixes
+        run: |
+          git config user.name "SkyareCom"
+          git config user.email "skyare.company@gmail.com"
+          git add practice-advanced-bank.js mixed-games-module.js
+          git commit -m "Corrige alternativas duplicadas nos quizzes"
+          git push origin main
