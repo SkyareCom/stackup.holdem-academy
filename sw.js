@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v83';
-const SW_VERSION=83;
+const CACHE='stackup-academy-v84';
+const SW_VERSION=84;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -29,7 +29,7 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',36],
+  ['highlight-card-style.js',37],
   ['etiquette-details.js',2],
   ['other-rules-details.js',2],
   ['fundamentals-learning-flow.js',3],
@@ -41,7 +41,7 @@ const SCRIPTS=[
   ['modalities-depth-details.js',1],
   ['mixed-games-module.js',2],
   ['practice-module.js',1],
-  ['practice-table.js',2],
+  ['practice-table.js',3],
   ['practice-advanced-bank.js',1],
   ['practice-advanced.js',2],
   ['practice-math-odds.js',2],
@@ -49,7 +49,7 @@ const SCRIPTS=[
   ['cover-layout.js',10],
   ['release-compliance.js',1],
   ['typography-standard.js',2],
-  ['academy-loader.js',1]
+  ['academy-loader.js',2]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
