@@ -6,11 +6,6 @@
   const HEADER_LOGO='./header-logo-transparent.png?v=1';
   let frame=0;
 
-  const scrollHeader=()=>{
-    window.scrollTo({top:0,left:0,behavior:'auto'});
-    requestAnimationFrame(()=>window.scrollTo({top:0,left:0,behavior:'auto'}));
-  };
-
   const applyLogo=()=>{
     const brand=document.querySelector('.brandin');
     if(!brand)return;
@@ -38,11 +33,9 @@
 
   const queueApply=()=>{
     if(frame)return;
-    frame=requestAnimationFrame(()=>{frame=0;apply();scrollHeader();});
+    frame=requestAnimationFrame(()=>{frame=0;apply();});
   };
   const root=document.getElementById('root');
   if(root)new MutationObserver(queueApply).observe(root,{childList:true});
-  window.addEventListener('popstate',scrollHeader,{passive:true});
-  document.addEventListener('click',event=>{if(event.target.closest('.stage,.topic,#backBtn,#homeBtn,#brand'))setTimeout(scrollHeader,0);},true);
   apply();
 })();
