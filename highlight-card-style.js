@@ -49,8 +49,7 @@
       /* PADRÃO DE TÍTULOS: 1 linha com reticências */
       #root .card.stage .stitle,
       #root .head > h2,
-      #root .card.topic .ttitle,
-      #root .card.lesson > h2{
+      #root .card.topic .ttitle{
         display:block!important;
         width:100%!important;
         max-width:100%!important;
@@ -101,8 +100,22 @@
         max-height:2.7em!important;
       }
 
-      /* TERCEIRA CAMADA, QUANDO EXISTIR: descrição com até 2 linhas.
-         O conteúdo didático interno permanece completo. */
+      /* TERCEIRA CAMADA DE CARDS: título exatamente em 1 linha */
+      #root .card.lesson > h2{
+        display:block!important;
+        width:100%!important;
+        max-width:100%!important;
+        min-width:0!important;
+        white-space:nowrap!important;
+        overflow:hidden!important;
+        text-overflow:ellipsis!important;
+        line-height:1.05!important;
+        height:1.05em!important;
+        min-height:1.05em!important;
+        max-height:1.05em!important;
+      }
+
+      /* TERCEIRA CAMADA DE CARDS: descrição obrigatoriamente com área de 2 linhas */
       #root .card.lesson > .lead{
         display:-webkit-box!important;
         -webkit-box-orient:vertical;
@@ -111,6 +124,7 @@
         white-space:normal!important;
         width:100%!important;
         max-width:100%!important;
+        line-height:1.5!important;
         height:3em!important;
         min-height:3em!important;
         max-height:3em!important;
