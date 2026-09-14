@@ -84,17 +84,25 @@
     panel.dataset.unifiedProgress='1';
   }
 
-  function apply(){
-    addStyle();
-    document.querySelectorAll('.fi-stats').forEach(normalize);
+  function normalizeWithin(node){
+    if(!(node instanceof Element)) return;
+    if(node.matches('.fi-stats')) normalize(node);
+    node.querySelectorAll?.('.fi-stats').forEach(normalize);
   }
 
-  let queued=false;
-  const observer=new MutationObserver(()=>{
-    if(queued) return;
-    queued=true;
-    queueMicrotask(()=>{queued=false;apply();});
-  });
-  observer.observe(document.documentElement,{childList:true,subtree:true});
+  function apply(){
+    addStyle();
+    document.getElementById('root')?.querySelectorAll('.fi-stats').forEach(normalize);
+  }
+
+  const root=document.getElementById('root');
+  if(root){
+    const observer=new MutationObserver(records=>{
+      for(const record of records){
+        for(const node of record.addedNodes) normalizeWithin(node);
+      }
+    });
+    observer.observe(root,{childList:true,subtree:true});
+  }
   apply();
 })();
