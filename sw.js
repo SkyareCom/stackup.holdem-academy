@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v82';
-const SW_VERSION=82;
+const CACHE='stackup-academy-v83';
+const SW_VERSION=83;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -8,7 +8,7 @@ const ASSETS=[
   './fundamentals-visual-layer.js','./fundamentals-interactive.js','./fundamentals-progress-panel.js','./modalities-module.js',
   './modalities-depth-details.js','./mixed-games-module.js','./practice-module.js','./practice-table.js','./practice-advanced-bank.js',
   './practice-advanced.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
-  './header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
+  './academy-loader.js','./header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
   ['session-reset.js',3],
@@ -48,8 +48,14 @@ const SCRIPTS=[
   ['portuguese-corrections.js',2],
   ['cover-layout.js',10],
   ['release-compliance.js',1],
-  ['typography-standard.js',2]
+  ['typography-standard.js',2],
+  ['academy-loader.js',1]
 ];
+const AUTO_SCRIPTS=new Set([
+  'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
+  'portuguese-corrections.js','cover-layout.js','release-compliance.js',
+  'typography-standard.js','academy-loader.js'
+]);
 
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
@@ -73,6 +79,10 @@ function enhanceHtml(source){
     const re=new RegExp(`${escapeRegExp(name)}\\?v=\\d+`,'g');
     html=html.replace(re,`${name}?v=${version}`);
   }
+  if(!html.includes('stackup-performance-guard')){
+    const guard=`<script id="stackup-performance-guard">(()=>{if(window.__stackupObserverGuard)return;window.__stackupObserverGuard=1;const nativeObserve=MutationObserver.prototype.observe;MutationObserver.prototype.observe=function(target,options){const root=document.getElementById('root');if(root&&target===document.documentElement&&options&&options.childList&&options.subtree&&!options.attributes&&!options.characterData){return nativeObserve.call(this,root,{childList:true});}return nativeObserve.call(this,target,options);};})();</script>`;
+    html=html.replace('</head>',guard+'</head>');
+  }
   if(!html.includes('stackup-header-logo-size')){
     html=html.replace('</head>','<style id="stackup-header-logo-size">.brandin .logo[data-stackup-logo="1"]{width:80px!important;height:80px!important;flex:0 0 80px!important;object-fit:contain!important;background:transparent!important}</style></head>');
   }
@@ -80,7 +90,7 @@ function enhanceHtml(source){
     html=html.replace('</head>','<style id="stackup-font-lock">html,body,body *{font-family:\'Love Ya Like A Sister\',cursive!important}.navicon,.rank,.suit,.fv-rank,.fv-suit{font-family:Arial,sans-serif!important}</style></head>');
   }
   for(const [name,version] of SCRIPTS){
-    if(!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=${version}"></script></body>`);
+    if(AUTO_SCRIPTS.has(name)&&!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=${version}"></script></body>`);
   }
   return html;
 }
@@ -116,15 +126,15 @@ self.addEventListener('fetch',event=>{
         const copy=response.clone();
         caches.open(CACHE).then(cache=>cache.put(event.request,copy));
         return response;
-      }).catch(()=>caches.match(event.request))
+      }).catch(()=>caches.match(event.request,{ignoreSearch:true}))
     );
     return;
   }
   event.respondWith(
-    fetch(event.request).then(response=>{
+    caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request).then(response=>{
       const copy=response.clone();
       caches.open(CACHE).then(cache=>cache.put(event.request,copy));
       return response;
-    }).catch(()=>caches.match(event.request).then(response=>response||caches.match('./index.html')))
+    }))
   );
 });
