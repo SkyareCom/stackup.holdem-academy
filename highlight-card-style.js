@@ -27,6 +27,9 @@
       html,body,.app,#root{
         overflow-x:hidden!important;
       }
+      button,.navbtn,.card{
+        touch-action:manipulation;
+      }
       #root .card.topic{
         min-width:0!important;
         overflow:hidden!important;
@@ -157,6 +160,16 @@
         max-height:3em!important;
       }
 
+      @media(max-width:700px){
+        #root .card.topic,
+        #root .card.lesson .block,
+        #root .rrow,
+        #root .m2-card{
+          content-visibility:auto;
+          contain-intrinsic-size:auto 96px;
+        }
+      }
+
       @media(max-width:480px){
         #root .card.topic{
           gap:10px!important;
@@ -183,14 +196,14 @@
 
   (async()=>{
     try{
-      await load('./cover-layout.js?v=3','cover-layout.js');
-      await load('./fundamentals-learning-flow.js?v=2','fundamentals-learning-flow.js');
+      await load('./cover-layout.js?v=10','cover-layout.js');
+      await load('./fundamentals-learning-flow.js?v=3','fundamentals-learning-flow.js');
       if(!window.StackupFundamentalsSpotBank){
         await load('./fundamentals-interactive-bank.js?v=1','fundamentals-interactive-bank.js');
       }
       await load('./fundamentals-visual-layer.js?v=2','fundamentals-visual-layer.js');
       await load('./fundamentals-interactive.js?v=3','fundamentals-interactive.js');
-      await load('./fundamentals-progress-panel.js?v=1','fundamentals-progress-panel.js');
+      await load('./fundamentals-progress-panel.js?v=3','fundamentals-progress-panel.js');
       await load('./modalities-module.js?v=1','modalities-module.js');
       await load('./modalities-depth-details.js?v=1','modalities-depth-details.js');
       await load('./mixed-games-module.js?v=2','mixed-games-module.js');
