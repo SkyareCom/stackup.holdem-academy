@@ -1,0 +1,36 @@
+const fs=require('fs');
+const assert=(name,ok)=>{
+  if(!ok){console.error(`FAIL: ${name}`);process.exitCode=1;}
+  else console.log(`PASS: ${name}`);
+};
+
+const index=fs.readFileSync('index.html','utf8');
+const typography=fs.readFileSync('typography-standard.js','utf8');
+const visual=fs.readFileSync('academy-visual-system.js','utf8');
+const topReset=fs.readFileSync('page-top-reset.js','utf8');
+const manifest=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
+const androidGradle=fs.readFileSync('android/app/build.gradle.kts','utf8');
+const androidManifest=fs.readFileSync('android/app/src/main/AndroidManifest.xml','utf8');
+
+assert('Google font import exists',index.includes('Love+Ya+Like+A+Sister'));
+assert('global font lock uses Love Ya Like A Sister',typography.includes("font-family:'Love Ya Like A Sister',cursive!important"));
+assert('typography scales down on narrow phones',typography.includes('clamp('));
+assert('horizontal overflow is blocked globally',visual.includes('overflow-x:hidden!important'));
+assert('visual system caps app content to viewport',visual.includes('max-width:100%!important'));
+assert('cards share one radius token',visual.includes('--academy-card-radius:24px')&&visual.includes('border-radius:var(--academy-card-radius)!important'));
+assert('cards share one border width token',visual.includes('--academy-card-border-width:1.5px'));
+assert('cards share one shadow token',visual.includes('--academy-card-shadow:')&&visual.includes('box-shadow:var(--academy-card-shadow)!important'));
+assert('topic titles are not clamped',visual.includes('-webkit-line-clamp:unset!important'));
+assert('topic descriptions are not forced to ellipsis',!visual.includes('text-overflow:ellipsis'));
+assert('header-first navigation is enforced',topReset.includes('resetToHeader')&&topReset.includes('scrollIntoView')&&topReset.includes('button.card.topic'));
+assert('header reset survives delayed rendering',topReset.includes('1450')&&topReset.includes('MutationObserver'));
+assert('web app is standalone',manifest.display==='standalone');
+assert('web app stays portrait-first',manifest.orientation==='portrait-primary');
+assert('web theme keeps Academy green',String(manifest.theme_color).toLowerCase()==='#0e4b3b');
+assert('Android application id is stable',androidGradle.includes('applicationId = "com.skyare.stackupacademy"'));
+assert('Android targets API 36',androidGradle.includes('targetSdk = 36')&&androidGradle.includes('compileSdk = 36'));
+assert('Android blocks cleartext traffic',androidManifest.includes('android:usesCleartextTraffic="false"'));
+assert('Android opens the Academy HTTPS host',androidManifest.includes('android:host="skyarecom.github.io"')&&androidManifest.includes('android:pathPrefix="/stackup.holdem-academy/"'));
+
+if(process.exitCode)process.exit(process.exitCode);
+console.log('Play release UI guard OK');
