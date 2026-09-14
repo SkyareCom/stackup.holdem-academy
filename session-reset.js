@@ -9,7 +9,7 @@
   const SESSION_FLAG='stackup-test-session-active-v1';
   const RETURN_FLAG='stackup-test-return-pending-v1';
   const AWAY_AT='stackup-test-away-at-v1';
-  const MIN_AWAY_MS=3000;
+  const MIN_AWAY_MS=300000;
   let reloading=false;
 
   function isTestKey(key){
