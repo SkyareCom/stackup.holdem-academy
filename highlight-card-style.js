@@ -21,6 +21,35 @@
         line-height:1.3;
       }
 
+      /* Proteção responsiva: nenhum card pode ampliar a viewport no mobile */
+      html,body,.app,#root,.screen,.list,.card{
+        max-width:100%!important;
+      }
+      html,body,.app,#root{
+        overflow-x:hidden!important;
+      }
+      #root .card.topic{
+        min-width:0!important;
+        overflow:hidden!important;
+      }
+      #root .card.topic .tcopy{
+        min-width:0!important;
+        width:0!important;
+      }
+      #root .card.topic .ttitle,
+      #root .card.topic .tnote{
+        min-width:0!important;
+        max-width:100%!important;
+      }
+      #root .card.topic .ttitle{
+        overflow-wrap:anywhere!important;
+        word-break:normal!important;
+      }
+      #root .card.topic .arrow,
+      #root .card.topic .idx{
+        flex:none!important;
+      }
+
       /* PRIMEIRA TELA: descrição com no máximo 2 linhas e altura uniforme */
       #root .card.stage .desc{
         display:-webkit-box!important;
@@ -38,6 +67,8 @@
         -webkit-box-orient:vertical;
         -webkit-line-clamp:1;
         overflow:hidden!important;
+        width:100%!important;
+        max-width:100%!important;
         height:1.45em!important;
         min-height:1.45em!important;
         max-height:1.45em!important;
@@ -45,8 +76,7 @@
 
       #root .card.topic .tnote{
         display:block!important;
-        width:100%;
-        max-width:100%;
+        width:100%!important;
         white-space:nowrap!important;
         overflow:hidden!important;
         text-overflow:ellipsis!important;
@@ -59,9 +89,21 @@
         -webkit-box-orient:vertical;
         -webkit-line-clamp:1;
         overflow:hidden!important;
+        width:100%!important;
+        max-width:100%!important;
         height:1.5em!important;
         min-height:1.5em!important;
         max-height:1.5em!important;
+      }
+
+      @media(max-width:480px){
+        #root .card.topic{
+          gap:10px!important;
+        }
+        #root .card.topic .idx{
+          width:38px!important;
+          height:38px!important;
+        }
       }
     `;
     document.head.appendChild(style);
