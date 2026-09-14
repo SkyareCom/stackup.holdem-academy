@@ -70,3 +70,16 @@ window.StackupI18nPhrases=(window.StackupI18nPhrases||[]).concat([
   ['COM O PRIMEIRO','WITH THE FIRST'],['COM O SEGUNDO','WITH THE SECOND'],['COM A MELHOR','WITH THE BEST'],['COM A PIOR','WITH THE WORST'],
   ['DE FORMA','IN A'],['DE FORMA MAIS','MORE'],['DE MANEIRA','IN A'],['DE MANEIRA MAIS','MORE'],
 ]);
+
+window.StackupI18nWords=Object.assign(window.StackupI18nWords||{}, {
+  'distância':'distance',
+  'ícone':'icon',
+  'títulos':'titles',
+  'preferências':'preferences',
+  'criação':'creation',
+  'bancários':'banking',
+  'razoáveis':'reasonable',
+  'transmissão':'transmission',
+  'eletrônica':'electronic',
+  'permanecerá':'will remain'
+});
