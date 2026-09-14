@@ -4,6 +4,9 @@ const i18n=fs.readFileSync('i18n-en-us.js','utf8');
 const reset=fs.readFileSync('session-reset.js','utf8');
 const cover=fs.readFileSync('cover-layout.js','utf8');
 const lang=fs.readFileSync('language-selector.js','utf8');
+const interactive=fs.readFileSync('fundamentals-interactive.js','utf8');
+const progress=fs.readFileSync('fundamentals-progress-panel.js','utf8');
+const flow=fs.readFileSync('fundamentals-learning-flow.js','utf8');
 
 assert('i18n phrase regexes are precompiled',i18n.includes('const compiledPhrases=phrasePairs.map'));
 assert('i18n uses exact phrase fast path',i18n.includes('const exactPhrases=new Map()')&&i18n.includes('function exactPhrase'));
@@ -14,7 +17,11 @@ assert('English card descriptions are sentence case',i18n.includes("['APOSTAS OB
 assert('English high-visibility descriptions are natural',i18n.includes("['BTN, BLINDS, POSIÇÕES INICIAIS, MÉDIAS E FINAIS.','BTN, blinds, early, middle, and late positions.']")&&i18n.includes("['QUANDO UMA DISTRIBUIÇÃO É INVÁLIDA E COMO PROCEDER.','When a deal is invalid and how to proceed.']"));
 assert('brief Android visibility changes do not force reload',reset.includes('MIN_AWAY_MS=3000')&&reset.includes('awayDuration()>=MIN_AWAY_MS'));
 assert('cover observer no longer watches entire subtree',cover.includes("observe(root,{childList:true})")&&!cover.includes("observe(root,{childList:true,subtree:true})"));
+assert('cover does not force duplicate scroll work',!cover.includes('scrollHeader'));
 assert('language-card observer is batched',lang.includes('cardFrame=requestAnimationFrame')&&lang.includes("observe(root,{childList:true})"));
+assert('fundamentals training observer is root-only',interactive.includes("observer.observe(root,{childList:true})")&&!interactive.includes("observe(document.documentElement,{childList:true,subtree:true})"));
+assert('progress observer avoids document-wide scans',progress.includes("observer.observe(root,{childList:true,subtree:true})")&&!progress.includes("document.querySelectorAll('.fi-stats')"));
+assert('navigation alignment uses one animation frame',flow.includes('frame=requestAnimationFrame(()=>{')&&!flow.includes('frame=requestAnimationFrame(()=>{\n      frame=requestAnimationFrame'));
 
 if(process.exitCode)process.exit(process.exitCode);
 console.log('Performance and UI consistency guards OK');
