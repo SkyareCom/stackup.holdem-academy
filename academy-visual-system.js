@@ -52,13 +52,13 @@
       padding:20px!important;
     }
 
-    /* LISTAS: MESMA DISTÂNCIA ENTRE TODOS OS CARDS */
+    /* LIST SPACING */
     #root .list{
       display:grid!important;
       gap:14px!important;
     }
 
-    /* NÚMERO / ÍCONE ESQUERDO — MESMA CAIXA EM TODAS AS TELAS */
+    /* LEFT INDEX BOX */
     #root .card.topic .idx{
       width:var(--academy-index-size)!important;
       height:var(--academy-index-size)!important;
@@ -75,7 +75,7 @@
       line-height:1!important;
     }
 
-    /* ÁREA DE TEXTO — SEM TRUNCAR TÍTULOS */
+    /* TITLE AREA WITHOUT CLIPPING */
     #root .card.topic .tcopy{
       flex:1 1 auto!important;
       min-width:0!important;
