@@ -22,35 +22,13 @@
     if(current)current.replaceWith(img);else brand.prepend(img);
   };
 
-  const cleanHomeCards=()=>{
-    const root=document.getElementById('root');
-    if(!root || history.state?.type!=='home')return;
-    const screen=root.firstElementChild;
-    if(!screen || !screen.classList.contains('screen'))return;
-    const intro=screen.querySelector(':scope > .intro');
-    const homeList=screen.querySelector(':scope > .intro + .list');
-    if(!intro || !homeList)return;
-
-    homeList.querySelectorAll(':scope > .card.stage').forEach(card=>{
-      const foot=card.querySelector(':scope > .foot');
-      if(foot){
-        foot.style.setProperty('display','none','important');
-        foot.setAttribute('aria-hidden','true');
-      }
-    });
-  };
-
   const apply=()=>{
     applyLogo();
     const root=document.getElementById('root');if(!root)return;
-    if(history.state?.type!=='home')return;
-    const screen=root.firstElementChild;
-    if(!screen || !screen.classList.contains('screen'))return;
-    const intro=screen.querySelector(':scope > .intro');if(!intro)return;
+    const intro=root.querySelector('.intro');if(!intro)return;
     const h1=intro.querySelector('h1');
     if(h1 && h1.innerHTML!==TITLE_HTML){h1.innerHTML=TITLE_HTML;h1.setAttribute('aria-label',TITLE_LABEL);}
     const p=intro.querySelector('p');if(p && p.textContent!==DESCRIPTION)p.textContent=DESCRIPTION;
-    cleanHomeCards();
   };
 
   const queueApply=()=>{
@@ -59,6 +37,5 @@
   };
   const root=document.getElementById('root');
   if(root)new MutationObserver(queueApply).observe(root,{childList:true});
-  window.addEventListener('popstate',queueApply,{passive:true});
   apply();
 })();

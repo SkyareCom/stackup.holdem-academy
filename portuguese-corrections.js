@@ -1,7 +1,5 @@
 (() => {
   const CORRECTIONS=[
-    ['MATEMÁTICA DO POKER SIMPLIFICADA','MATEMÁTICA DO POKER'],
-    ['Matemática do poker simplificada','Matemática do poker'],
     ['SMALL BLIND, BIG BLIND E ANTE','SMALL, BIG E ANTE'],
     ['Small Blind, Big Blind e Ante','Small, Big e Ante'],
     ['QUALQUER 5 CARTAS','QUAISQUER 5 CARTAS'],
