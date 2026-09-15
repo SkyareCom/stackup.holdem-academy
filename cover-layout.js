@@ -46,6 +46,6 @@
     frame=requestAnimationFrame(()=>{frame=0;apply();});
   };
   const root=document.getElementById('root');
-  if(root)new MutationObserver(queueApply).observe(root,{childList:true,subtree:true});
+  if(root)new MutationObserver(queueApply).observe(root,{childList:true});
   apply();
 })();
