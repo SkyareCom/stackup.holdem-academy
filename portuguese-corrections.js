@@ -40,6 +40,14 @@
     return out;
   }
 
+  function renameMathCardTitle(root){
+    root.querySelectorAll('.ttitle').forEach(el=>{
+      if((el.textContent||'').trim()==='Matemática do poker simplificada'){
+        el.textContent='Matemática do poker';
+      }
+    });
+  }
+
   function apply(root=document.getElementById('root')){
     if(!root) return;
     const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
@@ -57,6 +65,7 @@
         if(fixed!==old) el.setAttribute(attr,fixed);
       }
     });
+    renameMathCardTitle(root);
   }
 
   const root=document.getElementById('root');
