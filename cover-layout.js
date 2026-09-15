@@ -22,6 +22,15 @@
     if(current)current.replaceWith(img);else brand.prepend(img);
   };
 
+  const cleanHomeCards=()=>{
+    const root=document.getElementById('root');
+    if(!root || !root.querySelector('.intro'))return;
+    root.querySelectorAll('.card.stage .foot').forEach(foot=>{
+      foot.style.setProperty('display','none','important');
+      foot.setAttribute('aria-hidden','true');
+    });
+  };
+
   const apply=()=>{
     applyLogo();
     const root=document.getElementById('root');if(!root)return;
@@ -29,6 +38,7 @@
     const h1=intro.querySelector('h1');
     if(h1 && h1.innerHTML!==TITLE_HTML){h1.innerHTML=TITLE_HTML;h1.setAttribute('aria-label',TITLE_LABEL);}
     const p=intro.querySelector('p');if(p && p.textContent!==DESCRIPTION)p.textContent=DESCRIPTION;
+    cleanHomeCards();
   };
 
   const queueApply=()=>{
@@ -36,6 +46,6 @@
     frame=requestAnimationFrame(()=>{frame=0;apply();});
   };
   const root=document.getElementById('root');
-  if(root)new MutationObserver(queueApply).observe(root,{childList:true});
+  if(root)new MutationObserver(queueApply).observe(root,{childList:true,subtree:true});
   apply();
 })();
