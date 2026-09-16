@@ -144,7 +144,7 @@
       });
   };
 
-  new MutationObserver(()=>{schedule();queueRestack();}).observe(root,{childList:true});
+  new MutationObserver(schedule).observe(root,{childList:true});
   window.addEventListener('popstate',schedule,{passive:true});
   schedule();
 })();
