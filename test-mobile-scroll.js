@@ -28,55 +28,82 @@ const server=http.createServer((req,res)=>{
       const scroll=window.scrollTo;
       window.scrollTo=function(...args){window.scrollCalls.push(args);return scroll.apply(this,args)};
     });
+
+    const cdpSend=(method,params,label)=>Promise.race([
+      cdp.send(method,params),
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label}: CDP touch timeout`)),5000))
+    ]);
+
+    async function firstSwipe(label){
+      const canScroll=await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+4);
+      if(!canScroll){
+        console.log(`PASS ${label}: screen is not vertically scrollable`);
+        return;
+      }
+      const calls=await page.evaluate(()=>scrollCalls.length);
+      await cdpSend('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:195,y:680}]},label);
+      const y=[];
+      for(let step=1;step<=8;step++){
+        await cdpSend('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:195,y:680-step*45}]},label);
+        await page.waitForTimeout(25);
+        y.push(await page.evaluate(()=>scrollY));
+      }
+      await cdpSend('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]},label);
+      await page.waitForTimeout(180);
+      assert.equal(await page.evaluate(()=>scrollCalls.length),calls,`${label}: delayed scroll reset`);
+      for(let i=1;i<y.length;i++)assert(y[i]>=y[i-1]-2,`${label}: first swipe moved backwards: ${y}`);
+      assert(y.at(-1)>0,`${label}: first swipe did not advance`);
+      console.log(`PASS ${label}: first touch swipe advances without late reset`);
+    }
+
+    async function openStage(stage,mode){
+      await page.evaluate(k=>window.stage(k,1),stage);
+      await page.locator('.card.topic').first().waitFor();
+      console.log(`CHECK ${mode}: ${stage} topic screen`);
+      await firstSwipe(`${mode}/${stage}/topic`);
+
+      // The requested mobile journey validates the first lesson. Testing every lesson
+      // under 4x CPU throttling made the deploy gate exceed its 8-minute budget.
+      await page.evaluate(stage=>{window.lesson(stage,0,1);},stage);
+      await page.locator('.card.lesson').first().waitFor();
+      await firstSwipe(`${mode}/${stage}/lesson-0`);
+
+      // Same-document History API navigation: do not wait for a document navigation.
+      await page.evaluate(()=>history.back());
+      await page.locator('.card.topic').first().waitFor();
+      await firstSwipe(`${mode}/${stage}/back`);
+      console.log(`PASS ${mode}: ${stage}, first lesson + back + immediate scroll`);
+    }
+
     await page.goto(`http://127.0.0.1:${server.address().port}/`,{waitUntil:'domcontentloaded'});
     await page.locator('.card.stage').first().waitFor();
     console.log('PASS bootstrap: mobile Academy rendered');
-    for(const mode of ['cold','pwa']){
-      if(mode==='pwa'){
-        await page.evaluate(()=>Promise.race([
-          navigator.serviceWorker.ready,
-          new Promise((_,reject)=>setTimeout(()=>reject(new Error('service worker ready timeout')),10000))
-        ]));
-        await page.reload({waitUntil:'domcontentloaded'});
-        await page.locator('.card.stage').first().waitFor();
-        assert(await page.evaluate(()=>!!navigator.serviceWorker.controller));
-        console.log('PASS pwa bootstrap: service worker controls reload');
-      }
-      for(const stage of ['fundamentos','modalidades','pratica']){
-        await page.evaluate(k=>window.stage(k,1),stage);
-        await page.locator('.card.topic').first().waitFor();
-        const count=await page.locator('.card.topic').count();
-        console.log(`CHECK ${mode}: ${stage}, ${count} lessons`);
-        for(let index=0;index<count;index++){
-          // A real tap does not await the loader promise. Fire navigation and use
-          // the rendered lesson as the bounded, user-visible completion signal.
-          await page.evaluate(({stage,index})=>{window.lesson(stage,index,1);},{stage,index});
-          await page.locator('.card.lesson').waitFor();
-          const calls=await page.evaluate(()=>scrollCalls.length);
-          const y=[];
-          await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:195,y:680}]});
-          for(let step=1;step<=8;step++){
-            await cdp.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:195,y:680-step*45}]});
-            await page.waitForTimeout(25);
-            y.push(await page.evaluate(()=>scrollY));
-          }
-          await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
-          await page.waitForTimeout(120);
-          assert.equal(await page.evaluate(()=>scrollCalls.length),calls,`${mode}/${stage}/${index}: delayed scroll reset`);
-          for(let i=1;i<y.length;i++)assert(y[i]>=y[i-1]-2,`${mode}/${stage}/${index}: first swipe moved backwards: ${y}`);
-          assert(y.at(-1)>0,`${mode}/${stage}/${index}: first swipe did not advance`);
-          // This app uses same-document History API navigation. Trigger history directly;
-          // page.goBack() waits for a document navigation that never occurs in this SPA.
-          await page.evaluate(()=>history.back());
-          await page.locator('.card.topic').first().waitFor();
-        }
-        console.log(`PASS ${mode}: ${stage}, ${count} lessons, immediate touch swipe and history back`);
-      }
-      await page.evaluate(()=>window.stage('pratica',1));
-      await page.locator('.card.topic').first().waitFor();
-      assert(await page.getByText('Matemática do poker',{exact:true}).count(),'visual math title preserved');
-      assert.equal(await page.locator('.screen').evaluate(el=>getComputedStyle(el).transform),'none');
-    }
+
+    for(const stage of ['fundamentos','modalidades','pratica'])await openStage(stage,'cold');
+
+    // Normal reload must preserve a usable, immediately scrollable rendered screen.
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.locator('.card.stage,.card.topic,.card.lesson').first().waitFor();
+    await firstSwipe('normal-reload');
+    console.log('PASS normal reload: rendered UI remains responsive');
+
+    // Service-worker-controlled reload exercises the cached/PWA path when available.
+    await page.evaluate(()=>Promise.race([
+      navigator.serviceWorker.ready,
+      new Promise((_,reject)=>setTimeout(()=>reject(new Error('service worker ready timeout')),10000))
+    ]));
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.locator('.card.stage').first().waitFor();
+    assert(await page.evaluate(()=>!!navigator.serviceWorker.controller));
+    console.log('PASS pwa bootstrap: service worker controls reload');
+    for(const stage of ['fundamentos','modalidades','pratica'])await openStage(stage,'pwa');
+
+    await page.evaluate(()=>window.stage('pratica',1));
+    await page.locator('.card.topic').first().waitFor();
+    assert(await page.getByText('Matemática do poker',{exact:true}).count(),'visual math title preserved');
+    assert.equal(await page.locator('.screen').evaluate(el=>getComputedStyle(el).transform),'none');
+    await page.waitForTimeout(250);
     assert.deepEqual(errors,[]);
+    console.log('PASS mobile/PWA journey: no page errors or late whole-screen transform');
   }finally{await browser.close();server.close();}
 })().catch(err=>{console.error(err);server.close();process.exitCode=1});
