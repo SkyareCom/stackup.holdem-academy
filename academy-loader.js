@@ -2,6 +2,32 @@
   const root=document.getElementById('root');
   if(!root)return;
 
+  // Shared narrow-screen guard for progress/stat cards used across Academy modules.
+  // Module-specific colors and visual identity remain untouched.
+  if(!document.getElementById('stackup-progress-card-fit')){
+    const style=document.createElement('style');
+    style.id='stackup-progress-card-fit';
+    style.textContent=`
+      .p3-progress{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+      .p3-stat{min-width:0!important;overflow:hidden!important;padding:9px 4px!important}
+      .p3-stat b{display:block!important;max-width:100%!important;font-size:clamp(13px,3.6vw,18px)!important;line-height:1.05!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}
+      .p3-stat span{display:flex!important;align-items:center!important;justify-content:center!important;min-height:2.1em!important;max-width:100%!important;font-size:clamp(8px,2.35vw,10px)!important;line-height:1.05!important;letter-spacing:.01em!important;overflow-wrap:anywhere!important;text-align:center!important}
+      @media(max-width:390px){
+        .p3-progress{gap:5px!important}
+        .p3-stat{padding:8px 2px!important}
+        .p3-stat b{font-size:clamp(12px,3.45vw,14px)!important}
+        .p3-stat span{font-size:clamp(8px,2.2vw,9px)!important}
+      }
+      @media(max-width:340px){
+        .p3-progress{gap:4px!important}
+        .p3-stat{padding-inline:1px!important}
+        .p3-stat b{font-size:12px!important}
+        .p3-stat span{font-size:8px!important}
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   const loaded=new Set();
   for(const s of document.scripts){
     const src=s.getAttribute('src')||'';
@@ -16,7 +42,7 @@
       ['fundamentals-interactive-bank.js',1],
       ['fundamentals-visual-layer.js',2],
       ['fundamentals-interactive.js',5],
-      ['fundamentals-progress-panel.js',3]
+      ['fundamentals-progress-panel.js',4]
     ],
     modalidades:[
       ['modalities-module.js',1],
