@@ -17,7 +17,7 @@ const server=http.createServer((req,res)=>{
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   const browser=await chromium.launch({headless:true});
   try{
-    const page=await browser.newPage({viewport:{width:393,height:851},isMobile:true,hasTouch:true,deviceScaleFactor:2});
+    const page=await browser.newPage({viewport:{width:360,height:851},isMobile:true,hasTouch:true,deviceScaleFactor:2});
     page.setDefaultTimeout(10000);
     page.setDefaultNavigationTimeout(10000);
     const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -41,10 +41,10 @@ const server=http.createServer((req,res)=>{
         return;
       }
       const calls=await page.evaluate(()=>scrollCalls.length);
-      await cdpSend('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:195,y:680}]},label);
+      await cdpSend('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:180,y:680}]},label);
       const y=[];
       for(let step=1;step<=8;step++){
-        await cdpSend('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:195,y:680-step*45}]},label);
+        await cdpSend('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:180,y:680-step*45}]},label);
         await page.waitForTimeout(25);
         y.push(await page.evaluate(()=>scrollY));
       }
@@ -54,6 +54,29 @@ const server=http.createServer((req,res)=>{
       for(let i=1;i<y.length;i++)assert(y[i]>=y[i-1]-2,`${label}: first swipe moved backwards: ${y}`);
       assert(y.at(-1)>0,`${label}: first swipe did not advance`);
       console.log(`PASS ${label}: first touch swipe advances without late reset`);
+    }
+
+    async function statCardsFit(label){
+      await page.waitForTimeout(100);
+      const cards=await page.evaluate(()=>[...document.querySelectorAll('.fi-stat,.p3-stat')].map((el,index)=>({
+        index,
+        className:el.className,
+        clientWidth:el.clientWidth,
+        scrollWidth:el.scrollWidth,
+        parts:[...el.querySelectorAll(':scope > .fi-stat-label,:scope > .fi-stat-value,:scope > b,:scope > span')].map(part=>({
+          text:(part.textContent||'').trim(),
+          clientWidth:part.clientWidth,
+          scrollWidth:part.scrollWidth
+        }))
+      })));
+      if(!cards.length)return;
+      for(const card of cards){
+        assert(card.scrollWidth<=card.clientWidth+1,`${label}: ${card.className} ${card.index} overflows (${card.scrollWidth}>${card.clientWidth})`);
+        for(const part of card.parts){
+          assert(part.scrollWidth<=part.clientWidth+1,`${label}: "${part.text}" overflows (${part.scrollWidth}>${part.clientWidth})`);
+        }
+      }
+      console.log(`PASS ${label}: ${cards.length} progress cards fit 360px mobile viewport`);
     }
 
     async function openStage(stage,mode){
@@ -66,6 +89,9 @@ const server=http.createServer((req,res)=>{
       // under 4x CPU throttling made the deploy gate exceed its 8-minute budget.
       await page.evaluate(stage=>{window.lesson(stage,0,1);},stage);
       await page.locator('.card.lesson').first().waitFor();
+      if(stage==='fundamentos')await page.locator('.fi-stats').first().waitFor();
+      if(stage==='pratica')await page.locator('.p3-progress').first().waitFor();
+      await statCardsFit(`${mode}/${stage}/lesson-0`);
       await firstSwipe(`${mode}/${stage}/lesson-0`);
 
       // Same-document History API navigation: do not wait for a document navigation.
@@ -104,6 +130,6 @@ const server=http.createServer((req,res)=>{
     assert.equal(await page.locator('.screen').evaluate(el=>getComputedStyle(el).transform),'none');
     await page.waitForTimeout(250);
     assert.deepEqual(errors,[]);
-    console.log('PASS mobile/PWA journey: no page errors or late whole-screen transform');
+    console.log('PASS mobile/PWA journey: no page errors, stat overflow, or late whole-screen transform');
   }finally{await browser.close();server.close();}
 })().catch(err=>{console.error(err);server.close();process.exitCode=1});
