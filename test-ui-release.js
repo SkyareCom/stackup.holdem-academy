@@ -7,6 +7,9 @@ const assert=(name,ok)=>{
 const index=fs.readFileSync('index.html','utf8');
 const typography=fs.readFileSync('typography-standard.js','utf8');
 const visual=fs.readFileSync('academy-visual-system.js','utf8');
+const highlight=fs.readFileSync('highlight-card-style.js','utf8');
+const loader=fs.readFileSync('academy-loader.js','utf8');
+const serviceWorker=fs.readFileSync('sw.js','utf8');
 const topReset=fs.readFileSync('page-top-reset.js','utf8');
 const manifest=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
 const androidGradle=fs.readFileSync('android/app/build.gradle.kts','utf8');
@@ -22,6 +25,17 @@ assert('cards share one border width token',visual.includes('--academy-card-bord
 assert('cards share one shadow token',visual.includes('--academy-card-shadow:')&&visual.includes('box-shadow:var(--academy-card-shadow)!important'));
 assert('topic titles are not clamped',visual.includes('-webkit-line-clamp:unset!important'));
 assert('topic descriptions are not forced to ellipsis',!visual.includes('text-overflow:ellipsis'));
+assert('topic copy no longer uses zero width',!highlight.includes('width:0!important'));
+assert('base cards no longer use forced line clamps',!highlight.includes('-webkit-line-clamp:2'));
+assert('topic copy explicitly restores natural width',visual.includes('width:auto!important'));
+assert('training progress uses one three-card grid',visual.includes('#root .fi-stats')&&visual.includes('#root .m2-stats')&&visual.includes('#root .mg-stats')&&visual.includes('#root .p3-progress')&&visual.includes('#root .p3x-counter'));
+assert('progress indicators stay inside content flow',visual.includes('position:static!important'));
+assert('calculator forms collapse safely on narrow screens',visual.includes('#root .p3-form{grid-template-columns:minmax(0,1fr)!important}'));
+assert('comparison hands stack safely on narrow screens',visual.includes('#root .fv-compare{grid-template-columns:minmax(0,1fr)!important}'));
+assert('horizontal exercise strips wrap instead of overflowing',visual.includes('#root .fv-steps')&&visual.includes('#root .m2-flow')&&visual.includes('overflow:visible!important'));
+assert('lazy feature styles cannot override final layout contract',loader.includes('restackVisualSystem')&&loader.includes("node.tagName==='STYLE'"));
+assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v109'")&&serviceWorker.includes('SW_VERSION=109')&&serviceWorker.includes("['academy-visual-system.js',4]")&&serviceWorker.includes("['academy-loader.js',15]"));
+assert('fresh TWA cache strategy is preserved',serviceWorker.includes('precacheFresh')&&serviceWorker.includes("fetch(request,{cache:'no-store'})")&&serviceWorker.includes("['portuguese-corrections.js',5]"));
 assert('navigation resets only on a new screen',topReset.includes('next===screen')&&topReset.includes('MutationObserver'));
 assert('header reset avoids delayed forced scrolling',!topReset.includes('1450')&&!topReset.includes("window.addEventListener('scroll'"));
 assert('scrolling screen has no transform or entrance animation',topReset.includes('animation:none!important;transform:none!important'));

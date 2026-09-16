@@ -2,80 +2,24 @@
   const root=document.getElementById('root');
   if(!root)return;
 
-  // Shared narrow-screen guard for progress/stat cards used across Academy modules.
-  // Keep the existing palette/radii while ensuring every counter can shrink safely.
-  if(!document.getElementById('stackup-progress-card-fit')){
-    const style=document.createElement('style');
-    style.id='stackup-progress-card-fit';
-    style.textContent=`
-      .fi-stats{
-        display:grid!important;
-        grid-template-columns:repeat(3,minmax(0,1fr))!important;
-        gap:0!important;
-        overflow:hidden!important;
-        border:1px solid #d4aa5860!important;
-        border-radius:14px!important;
-        background:#2a160d!important;
-      }
-      .fi-stat{
-        display:flex!important;
-        flex-direction:column!important;
-        align-items:center!important;
-        justify-content:center!important;
-        min-width:0!important;
-        min-height:64px!important;
-        padding:8px 2px!important;
-        overflow:hidden!important;
-        border:0!important;
-        border-radius:0!important;
-        background:transparent!important;
-        text-align:center!important;
-      }
-      .fi-stat+.fi-stat{border-left:1px solid #d4aa5840!important}
-      .fi-stat .fi-stat-label{
-        display:block!important;
-        width:100%!important;
-        margin:0 0 5px!important;
-        color:#d8c6ad!important;
-        font-size:clamp(8px,2.25vw,9px)!important;
-        line-height:1.05!important;
-        letter-spacing:.015em!important;
-        text-transform:uppercase!important;
-        white-space:nowrap!important;
-      }
-      .fi-stat .fi-stat-value{
-        display:block!important;
-        width:100%!important;
-        max-width:100%!important;
-        color:var(--gold,#d4aa58)!important;
-        font-size:clamp(12px,3.45vw,14px)!important;
-        line-height:1.05!important;
-        letter-spacing:-.045em!important;
-        white-space:nowrap!important;
-        font-variant-numeric:tabular-nums!important;
-      }
-      .p3-progress{grid-template-columns:repeat(3,minmax(0,1fr))!important}
-      .p3-stat{min-width:0!important;overflow:hidden!important;padding:9px 4px!important}
-      .p3-stat b{display:block!important;max-width:100%!important;font-size:clamp(13px,3.6vw,18px)!important;line-height:1.05!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}
-      .p3-stat span{display:flex!important;align-items:center!important;justify-content:center!important;min-height:2.1em!important;max-width:100%!important;font-size:clamp(8px,2.35vw,10px)!important;line-height:1.05!important;letter-spacing:.01em!important;overflow-wrap:anywhere!important;text-align:center!important}
-      @media(max-width:390px){
-        .p3-progress{gap:5px!important}
-        .p3-stat{padding:8px 2px!important}
-        .p3-stat b{font-size:clamp(12px,3.45vw,14px)!important}
-        .p3-stat span{font-size:clamp(8px,2.2vw,9px)!important}
-      }
-      @media(max-width:340px){
-        .fi-stat{padding-inline:1px!important}
-        .fi-stat .fi-stat-label{font-size:8px!important}
-        .fi-stat .fi-stat-value{font-size:12px!important}
-        .p3-progress{gap:4px!important}
-        .p3-stat{padding-inline:1px!important}
-        .p3-stat b{font-size:12px!important}
-        .p3-stat span{font-size:8px!important}
-      }
-    `;
+  // The Academy visual system is the final layout authority. Feature modules may
+  // inject their own presentation styles, but they must not reintroduce overflow,
+  // clipped text or competing spacing/progress patterns.
+  let restackQueued=false;
+  function restackVisualSystem(){
+    const style=document.getElementById('stackup-academy-visual-system');
+    if(!style||style.parentNode!==document.head||style===document.head.lastElementChild)return;
     document.head.appendChild(style);
   }
+  function queueRestack(){
+    if(restackQueued)return;
+    restackQueued=true;
+    queueMicrotask(()=>{restackQueued=false;restackVisualSystem();});
+  }
+  new MutationObserver(records=>{
+    if(records.some(record=>[...record.addedNodes].some(node=>node.nodeType===1&&node.tagName==='STYLE')))queueRestack();
+  }).observe(document.head,{childList:true});
+  queueRestack();
 
   const loaded=new Set();
   for(const s of document.scripts){
@@ -117,8 +61,16 @@
       const script=document.createElement('script');
       script.src=`./${name}?v=${version}`;
       script.async=false;
-      script.onload=()=>{loaded.add(name);loading.delete(name);resolve();};
-      script.onerror=()=>{loading.delete(name);reject(new Error(`Failed to load ${name}`));};
+      script.onload=()=>{
+        loaded.add(name);
+        loading.delete(name);
+        queueRestack();
+        resolve();
+      };
+      script.onerror=()=>{
+        loading.delete(name);
+        reject(new Error(`Failed to load ${name}`));
+      };
       document.body.appendChild(script);
     });
     loading.set(name,task);
@@ -129,8 +81,8 @@
   function ensure(stage){
     const files=groups[stage];
     if(!files||groupTasks.has(stage))return groupTasks.get(stage)||Promise.resolve();
-    // async=false preserves execution order while requests download together.
     const task=Promise.all(files.map(([name,version])=>load(name,version)))
+      .then(value=>{queueRestack();return value;})
       .catch(err=>{groupTasks.delete(stage);throw err;});
     groupTasks.set(stage,task);
     return task;
@@ -153,6 +105,7 @@
       idleId=0;
       const stage=currentStage();
       if(stage)ensure(stage).catch(err=>console.error('[STACKUP] Lazy module load failed.',err));
+      queueRestack();
     };
     idleId=1;
     queueMicrotask(run);
@@ -181,6 +134,7 @@
       if(opened||ticket!==navigation||root.firstElementChild!==screen)return;
       opened=true;
       nativeLesson(stage,index,push);
+      queueRestack();
     };
     return bounded(ensure(stage),`Lesson modules for ${stage}`)
       .then(open)
@@ -189,6 +143,7 @@
         open();
       });
   };
+
   new MutationObserver(schedule).observe(root,{childList:true});
   window.addEventListener('popstate',schedule,{passive:true});
   schedule();
