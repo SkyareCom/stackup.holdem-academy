@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v107';
-const SW_VERSION=107;
+const CACHE='stackup-academy-v108';
+const SW_VERSION=108;
 const ASSETS=[
   './fonts/love-ya-like-a-sister.ttf',
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
@@ -30,7 +30,7 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',40],
+  ['highlight-card-style.js',41],
   ['etiquette-details.js',2],
   ['other-rules-details.js',2],
   ['fundamentals-learning-flow.js',4],
@@ -48,7 +48,7 @@ const SCRIPTS=[
   ['table-rotation-guard.js',3],
   ['math-card-structure.js',2],
   ['practice-math-odds.js',2],
-  ['portuguese-corrections.js',4],
+  ['portuguese-corrections.js',5],
   ['cover-layout.js',10],
   ['release-compliance.js',1],
   ['academy-visual-system.js',3],
@@ -62,8 +62,17 @@ const AUTO_SCRIPTS=new Set([
   'academy-visual-system.js','page-top-reset.js','typography-standard.js','academy-loader.js'
 ]);
 
+async function precacheFresh(){
+  const cache=await caches.open(CACHE);
+  await Promise.all(ASSETS.map(async asset=>{
+    const request=new Request(asset,{cache:'reload'});
+    const response=await fetch(request);
+    if(response.ok)await cache.put(request,response);
+  }));
+}
+
 self.addEventListener('install',event=>{
-  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
+  event.waitUntil(precacheFresh().then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',event=>{
@@ -103,10 +112,12 @@ function enhanceHtml(source){
 async function appShellResponse(request){
   let response;
   try{
-    response=await fetch(request);
+    response=await fetch(request,{cache:'no-store'});
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const copy=response.clone();
+    caches.open(CACHE).then(cache=>cache.put(request,copy));
   }catch(_){
-    response=await caches.match('./index.html');
+    response=await caches.match(request)||await caches.match('./index.html');
   }
   if(!response)return new Response('Offline',{status:503,headers:{'content-type':'text/plain; charset=utf-8'}});
   const type=response.headers.get('content-type')||'';
@@ -117,29 +128,39 @@ async function appShellResponse(request){
   return new Response(html,{status:200,statusText:'OK',headers});
 }
 
+async function networkFirst(request){
+  try{
+    const response=await fetch(request,{cache:'no-store'});
+    if(!response.ok)throw new Error(`HTTP ${response.status}`);
+    const copy=response.clone();
+    caches.open(CACHE).then(cache=>cache.put(request,copy));
+    return response;
+  }catch(_){
+    return (await caches.match(request))||(await caches.match(request,{ignoreSearch:true}))||new Response('Offline',{status:503});
+  }
+}
+
+async function cacheFirst(request){
+  const cached=await caches.match(request);
+  if(cached)return cached;
+  try{
+    const response=await fetch(request);
+    if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy));}
+    return response;
+  }catch(_){
+    return (await caches.match(request,{ignoreSearch:true}))||new Response('Offline',{status:503});
+  }
+}
+
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
+  const url=new URL(event.request.url);
   if(event.request.mode==='navigate'){
-    const url=new URL(event.request.url);
     const isAppShell=url.pathname.endsWith('/')||url.pathname.endsWith('/index.html');
-    if(isAppShell){
-      event.respondWith(appShellResponse(event.request));
-      return;
-    }
-    event.respondWith(
-      fetch(event.request).then(response=>{
-        const copy=response.clone();
-        caches.open(CACHE).then(cache=>cache.put(event.request,copy));
-        return response;
-      }).catch(()=>caches.match(event.request,{ignoreSearch:true}))
-    );
+    if(isAppShell){event.respondWith(appShellResponse(event.request));return;}
+    event.respondWith(networkFirst(event.request));
     return;
   }
-  event.respondWith(
-    caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request).then(response=>{
-      const copy=response.clone();
-      caches.open(CACHE).then(cache=>cache.put(event.request,copy));
-      return response;
-    }))
-  );
+  const freshCode=url.origin===self.location.origin&&(/\.(?:js|css|json)$/i.test(url.pathname)||url.pathname.endsWith('.webmanifest'));
+  event.respondWith(freshCode?networkFirst(event.request):cacheFirst(event.request));
 });
