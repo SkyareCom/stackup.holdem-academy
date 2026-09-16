@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v98';
-const SW_VERSION=98;
+const CACHE='stackup-academy-v99';
+const SW_VERSION=99;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -29,7 +29,7 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',37],
+  ['highlight-card-style.js',38],
   ['etiquette-details.js',2],
   ['other-rules-details.js',2],
   ['fundamentals-learning-flow.js',3],
@@ -47,13 +47,13 @@ const SCRIPTS=[
   ['table-rotation-guard.js',3],
   ['math-card-structure.js',2],
   ['practice-math-odds.js',2],
-  ['portuguese-corrections.js',2],
+  ['portuguese-corrections.js',3],
   ['cover-layout.js',10],
   ['release-compliance.js',1],
   ['academy-visual-system.js',3],
-  ['page-top-reset.js',3],
+  ['page-top-reset.js',4],
   ['typography-standard.js',3],
-  ['academy-loader.js',9]
+  ['academy-loader.js',10]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
