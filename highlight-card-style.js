@@ -32,6 +32,7 @@
       }
       #root .card.topic{
         min-width:0!important;
+        height:auto!important;
         overflow:hidden!important;
       }
       #root .card.topic .tcopy{
@@ -87,16 +88,17 @@
       }
 
       #root .card.topic .tnote{
-        display:-webkit-box!important;
-        -webkit-box-orient:vertical;
-        -webkit-line-clamp:2;
-        overflow:hidden!important;
+        display:block!important;
+        overflow:visible!important;
         white-space:normal!important;
         width:100%!important;
         max-width:100%!important;
-        height:2.7em!important;
-        min-height:2.7em!important;
-        max-height:2.7em!important;
+        height:auto!important;
+        min-height:0!important;
+        max-height:none!important;
+        line-height:1.35!important;
+        -webkit-line-clamp:unset!important;
+        -webkit-box-orient:initial!important;
       }
 
       #root .card.lesson > h2,
