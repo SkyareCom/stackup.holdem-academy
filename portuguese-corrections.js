@@ -32,7 +32,11 @@
     ['então jogador e dealer recebem 5 cartas.','então, o jogador e o dealer recebem 5 cartas.'],
     ['Em Mixed Games, regras de distribuição, limite e avaliação mudam;','Em Mixed Games, as regras de distribuição, limite e avaliação mudam;'],
     ['Qual o máximo de uma aposta?','Qual é o máximo de uma aposta?'],
-    ['No No-Limit o jogador pode comprometer até todo o stack.','No No-Limit, o jogador pode comprometer até todo o stack.']
+    ['No No-Limit o jogador pode comprometer até todo o stack.','No No-Limit, o jogador pode comprometer até todo o stack.'],
+    ['ACTION REACHES ATIS YOU','ACTION IS ON YOU'],
+    ['ACTION REACHES UP TO YOU','ACTION IS ON YOU'],
+    ['ACTION REACHES YOU','ACTION IS ON YOU'],
+    ['MATH OF THE POKER','POKER MATH']
   ];
 
   function fixText(text){
@@ -88,7 +92,8 @@
   const pending=[];
   new MutationObserver(records=>{
     for(const record of records){
-      for(const node of record.addedNodes)pending.push(node);
+      if(record.type==='characterData')pending.push(record.target);
+      for(const node of record.addedNodes||[])pending.push(node);
     }
     if(queued||!pending.length)return;
     queued=true;
@@ -97,5 +102,5 @@
       const batch=pending.splice(0,pending.length);
       for(const node of batch)fixNode(node);
     });
-  }).observe(root,{childList:true,subtree:true});
+  }).observe(root,{childList:true,subtree:true,characterData:true});
 })();
