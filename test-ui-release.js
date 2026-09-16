@@ -25,7 +25,7 @@ assert('cards share one border width token',visual.includes('--academy-card-bord
 assert('cards share one shadow token',visual.includes('--academy-card-shadow:')&&visual.includes('box-shadow:var(--academy-card-shadow)!important'));
 assert('topic titles are not clamped',visual.includes('-webkit-line-clamp:unset!important'));
 assert('topic descriptions are not forced to ellipsis',!visual.includes('text-overflow:ellipsis'));
-assert('topic copy no longer uses zero width',!highlight.includes('width:0!important'));
+assert('topic copy no longer uses zero width',!/(?:^|[;{])\s*width\s*:\s*0\s*!important\b/m.test(highlight));
 assert('base cards no longer use forced line clamps',!highlight.includes('-webkit-line-clamp:2'));
 assert('topic copy explicitly restores natural width',visual.includes('width:auto!important'));
 assert('training progress uses one three-card grid',visual.includes('#root .fi-stats')&&visual.includes('#root .m2-stats')&&visual.includes('#root .mg-stats')&&visual.includes('#root .p3-progress')&&visual.includes('#root .p3x-counter'));
