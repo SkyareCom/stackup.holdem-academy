@@ -59,8 +59,31 @@ function inspectFile(file) {
     if (/contents\s*:\s*write/i.test(text)) {
       violations.push(`${r}: workflow requests contents: write`);
     }
+    if (/permissions\s*:\s*write-all/i.test(text)) {
+      violations.push(`${r}: workflow requests write-all permissions`);
+    }
     if (/git\s+push\b/i.test(text)) {
       violations.push(`${r}: workflow performs git push`);
+    }
+    if (/pull_request_target\s*:/i.test(text)) {
+      violations.push(`${r}: pull_request_target is forbidden for this repository`);
+    }
+    if (/secrets\s*:\s*inherit/i.test(text)) {
+      violations.push(`${r}: inherited secrets are forbidden`);
+    }
+    if (/(?:curl|wget)[^\n|]*\|\s*(?:bash|sh)\b/i.test(text)) {
+      violations.push(`${r}: remote script pipe-to-shell is forbidden`);
+    }
+
+    for (const line of text.split(/\r?\n/)) {
+      const match = line.match(/^\s*uses:\s*([^\s@]+)@([^\s#]+)/);
+      if (!match) continue;
+      const action = match[1];
+      const ref = match[2];
+      if (action.startsWith('./') || action.startsWith('docker://')) continue;
+      if (!/^[0-9a-f]{40}$/i.test(ref)) {
+        violations.push(`${r}: action ${action} must be pinned to an immutable 40-character commit SHA`);
+      }
     }
   }
 }
@@ -73,4 +96,4 @@ if (violations.length) {
   process.exit(1);
 }
 
-console.log('Security guard passed: no forbidden credential files, obvious secret material, write-enabled workflows, or workflow git pushes detected.');
+console.log('Security guard passed: credentials blocked, workflows read-only where appropriate, and external Actions pinned to immutable commit SHAs.');
