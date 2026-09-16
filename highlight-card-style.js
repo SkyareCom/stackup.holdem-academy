@@ -198,7 +198,7 @@
       await load('./cover-layout.js?v=10','cover-layout.js');
       await load('./fundamentals-learning-flow.js?v=3','fundamentals-learning-flow.js');
       await load('./typography-standard.js?v=2','typography-standard.js');
-      await load('./portuguese-corrections.js?v=2','portuguese-corrections.js');
+      await load('./portuguese-corrections.js?v=3','portuguese-corrections.js');
       await load('./academy-loader.js?v=2','academy-loader.js');
     }catch(err){
       console.error('[STACKUP] Core module load failed.',err);
