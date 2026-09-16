@@ -22,8 +22,9 @@ assert('cards share one border width token',visual.includes('--academy-card-bord
 assert('cards share one shadow token',visual.includes('--academy-card-shadow:')&&visual.includes('box-shadow:var(--academy-card-shadow)!important'));
 assert('topic titles are not clamped',visual.includes('-webkit-line-clamp:unset!important'));
 assert('topic descriptions are not forced to ellipsis',!visual.includes('text-overflow:ellipsis'));
-assert('header-first navigation is enforced',topReset.includes('resetToHeader')&&topReset.includes('scrollIntoView')&&topReset.includes('button.card.topic'));
-assert('header reset survives delayed rendering',topReset.includes('1450')&&topReset.includes('MutationObserver'));
+assert('header-first navigation is enforced without scroll lock',topReset.includes('scheduleTopReset')&&topReset.includes('requestAnimationFrame')&&topReset.includes('button.card.topic'));
+assert('header reset avoids delayed forced scrolling',!topReset.includes('1450')&&!topReset.includes("window.addEventListener('scroll'"));
+assert('screen transitions use compositor-friendly transforms',topReset.includes('translate3d')&&topReset.includes('prefers-reduced-motion'));
 assert('web app is standalone',manifest.display==='standalone');
 assert('web app stays portrait-first',manifest.orientation==='portrait-primary');
 assert('web theme keeps Academy green',String(manifest.theme_color).toLowerCase()==='#0e4b3b');
