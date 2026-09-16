@@ -1,45 +1,54 @@
 (() => {
+  if(window.__stackupPageTopReset)return;
+  window.__stackupPageTopReset=1;
+
   const root=document.getElementById('root');
-  const brand=document.getElementById('brand')||document.querySelector('.brand');
   if(!root)return;
 
   if('scrollRestoration' in history)history.scrollRestoration='manual';
 
-  let resetId=0;
-  let lockUntil=0;
+  const STYLE_ID='stackup-motion-performance';
+  if(!document.getElementById(STYLE_ID)){
+    const style=document.createElement('style');
+    style.id=STYLE_ID;
+    style.textContent=`
+      html,body{
+        scroll-behavior:auto!important;
+        overscroll-behavior-y:auto;
+      }
+      body,.app,#root{
+        touch-action:pan-y pinch-zoom;
+      }
+      #root>.screen{
+        animation:stackup-screen-in 140ms cubic-bezier(.2,.7,.2,1) both;
+        transform:translateZ(0);
+        backface-visibility:hidden;
+      }
+      @keyframes stackup-screen-in{
+        from{opacity:.01;transform:translate3d(0,5px,0)}
+        to{opacity:1;transform:translate3d(0,0,0)}
+      }
+      @media(prefers-reduced-motion:reduce){
+        #root>.screen{animation:none!important;transform:none!important}
+      }
+    `;
+    document.head.appendChild(style);
+  }
 
+  let raf=0;
   function setTop(){
     const scrolling=document.scrollingElement||document.documentElement;
     if(scrolling)scrolling.scrollTop=0;
-    document.documentElement.scrollTop=0;
-    document.body.scrollTop=0;
-    window.scrollTo({top:0,left:0,behavior:'auto'});
-
-    if(brand){
-      const box=brand.getBoundingClientRect();
-      if(Math.abs(box.top)>1){
-        brand.scrollIntoView({block:'start',inline:'nearest',behavior:'auto'});
-        if(scrolling)scrolling.scrollTop=0;
-        window.scrollTo(0,0);
-      }
-    }
+    window.scrollTo(0,0);
   }
 
-  function resetToHeader(lockMs=1500){
-    const id=++resetId;
-    lockUntil=Math.max(lockUntil,Date.now()+lockMs);
-    const run=()=>{if(id===resetId)setTop();};
-
-    run();
-    requestAnimationFrame(()=>{
-      run();
-      requestAnimationFrame(()=>{
-        run();
-        requestAnimationFrame(run);
-      });
+  function scheduleTopReset(){
+    if(raf)cancelAnimationFrame(raf);
+    setTop();
+    raf=requestAnimationFrame(()=>{
+      raf=0;
+      setTop();
     });
-
-    [0,40,100,180,320,520,800,1100,1450].forEach(delay=>setTimeout(run,delay));
   }
 
   function isPageNavigation(target){
@@ -52,39 +61,29 @@
     ));
   }
 
-  root.addEventListener('click',event=>{
-    if(isPageNavigation(event.target))resetToHeader();
-  },true);
-
   document.addEventListener('click',event=>{
-    if(isPageNavigation(event.target))resetToHeader();
+    if(isPageNavigation(event.target))scheduleTopReset();
   },true);
 
   const nativePushState=history.pushState.bind(history);
   history.pushState=function(...args){
     const value=nativePushState(...args);
-    resetToHeader();
+    scheduleTopReset();
     return value;
   };
 
   const nativeReplaceState=history.replaceState.bind(history);
   history.replaceState=function(...args){
     const value=nativeReplaceState(...args);
-    resetToHeader();
+    scheduleTopReset();
     return value;
   };
 
-  new MutationObserver(()=>{
-    if(Date.now()<lockUntil)resetToHeader(Math.max(250,lockUntil-Date.now()));
-  }).observe(root,{childList:true});
-
-  window.addEventListener('scroll',()=>{
-    if(Date.now()<lockUntil && window.scrollY>0)setTop();
+  window.addEventListener('popstate',scheduleTopReset,{passive:true});
+  window.addEventListener('hashchange',scheduleTopReset,{passive:true});
+  window.addEventListener('pageshow',event=>{
+    if(event.persisted)scheduleTopReset();
   },{passive:true});
 
-  window.addEventListener('popstate',()=>resetToHeader(),{passive:true});
-  window.addEventListener('hashchange',()=>resetToHeader(),{passive:true});
-  window.addEventListener('pageshow',()=>resetToHeader(900),{passive:true});
-
-  resetToHeader(900);
+  scheduleTopReset();
 })();
