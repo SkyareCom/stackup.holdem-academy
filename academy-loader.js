@@ -3,11 +3,57 @@
   if(!root)return;
 
   // Shared narrow-screen guard for progress/stat cards used across Academy modules.
-  // Module-specific colors and visual identity remain untouched.
+  // Keep the existing palette/radii while ensuring every counter can shrink safely.
   if(!document.getElementById('stackup-progress-card-fit')){
     const style=document.createElement('style');
     style.id='stackup-progress-card-fit';
     style.textContent=`
+      .fi-stats{
+        display:grid!important;
+        grid-template-columns:repeat(3,minmax(0,1fr))!important;
+        gap:0!important;
+        overflow:hidden!important;
+        border:1px solid #d4aa5860!important;
+        border-radius:14px!important;
+        background:#2a160d!important;
+      }
+      .fi-stat{
+        display:flex!important;
+        flex-direction:column!important;
+        align-items:center!important;
+        justify-content:center!important;
+        min-width:0!important;
+        min-height:64px!important;
+        padding:8px 2px!important;
+        overflow:hidden!important;
+        border:0!important;
+        border-radius:0!important;
+        background:transparent!important;
+        text-align:center!important;
+      }
+      .fi-stat+.fi-stat{border-left:1px solid #d4aa5840!important}
+      .fi-stat .fi-stat-label{
+        display:block!important;
+        width:100%!important;
+        margin:0 0 5px!important;
+        color:#d8c6ad!important;
+        font-size:clamp(8px,2.25vw,9px)!important;
+        line-height:1.05!important;
+        letter-spacing:.015em!important;
+        text-transform:uppercase!important;
+        white-space:nowrap!important;
+      }
+      .fi-stat .fi-stat-value{
+        display:block!important;
+        width:100%!important;
+        max-width:100%!important;
+        color:var(--gold,#d4aa58)!important;
+        font-size:clamp(12px,3.45vw,14px)!important;
+        line-height:1.05!important;
+        letter-spacing:-.045em!important;
+        white-space:nowrap!important;
+        font-variant-numeric:tabular-nums!important;
+      }
       .p3-progress{grid-template-columns:repeat(3,minmax(0,1fr))!important}
       .p3-stat{min-width:0!important;overflow:hidden!important;padding:9px 4px!important}
       .p3-stat b{display:block!important;max-width:100%!important;font-size:clamp(13px,3.6vw,18px)!important;line-height:1.05!important;white-space:nowrap!important;font-variant-numeric:tabular-nums!important}
@@ -19,6 +65,9 @@
         .p3-stat span{font-size:clamp(8px,2.2vw,9px)!important}
       }
       @media(max-width:340px){
+        .fi-stat{padding-inline:1px!important}
+        .fi-stat .fi-stat-label{font-size:8px!important}
+        .fi-stat .fi-stat-value{font-size:12px!important}
         .p3-progress{gap:4px!important}
         .p3-stat{padding-inline:1px!important}
         .p3-stat b{font-size:12px!important}
