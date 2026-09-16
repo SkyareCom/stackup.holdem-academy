@@ -54,7 +54,7 @@ const SCRIPTS=[
   ['academy-visual-system.js',3],
   ['page-top-reset.js',5],
   ['typography-standard.js',3],
-  ['academy-loader.js',12]
+  ['academy-loader.js',13]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
