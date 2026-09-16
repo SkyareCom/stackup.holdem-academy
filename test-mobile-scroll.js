@@ -137,6 +137,7 @@ const server=http.createServer((req,res)=>{
 
     await page.evaluate(()=>window.stage('pratica',1));
     await page.locator('.card.topic').first().waitFor();
+    await page.waitForFunction(()=>[...document.querySelectorAll('.ttitle')].some(el=>(el.textContent||'').trim()==='Matemática do poker'));
     assert(await page.getByText('Matemática do poker',{exact:true}).count(),'visual math title preserved');
     assert.equal(await page.locator('.screen').evaluate(el=>getComputedStyle(el).transform),'none');
     await page.waitForTimeout(250);
