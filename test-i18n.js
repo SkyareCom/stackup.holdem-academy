@@ -36,7 +36,7 @@ check('zero high-confidence Portuguese residue after EN-US translation',residue.
 
 const index=fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
 check('logo preserved',index.includes('src="./header-logo-transparent.png?v=1"'));
-check('Love Ya Like A Sister preserved',index.includes("family=Love+Ya+Like+A+Sister")&&index.includes("font-family:'Love Ya Like A Sister',cursive"));
+check('Love Ya Like A Sister preserved',index.includes("fonts/love-ya-like-a-sister.ttf")&&index.includes("font-family:'Love Ya Like A Sister',cursive"));
 const positions=fs.readFileSync(path.join(ROOT,'positions-table.js'),'utf8');
 check('positions lesson centered',positions.includes('align-items:center')&&positions.includes('margin:14px auto 0'));
 check('positions English content direct',positions.includes('are the forced-bet positions.')&&positions.includes('EARLY POSITIONS')&&positions.includes('MIDDLE POSITIONS')&&positions.includes('LATE POSITIONS'));
