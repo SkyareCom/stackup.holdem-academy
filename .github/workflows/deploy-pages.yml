@@ -50,6 +50,7 @@ jobs:
         run: node test-navigation.js
 
       - name: Test first mobile swipe and PWA navigation
+        timeout-minutes: 8
         run: |
           npm install --prefix "$RUNNER_TEMP/academy-browser" playwright
           "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium

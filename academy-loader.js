@@ -53,9 +53,9 @@
   function ensure(stage){
     const files=groups[stage];
     if(!files||groupTasks.has(stage))return groupTasks.get(stage)||Promise.resolve();
-    const task=(async()=>{
-      for(const [name,version] of files)await load(name,version);
-    })().catch(err=>{groupTasks.delete(stage);throw err;});
+    // async=false preserves execution order while requests download together.
+    const task=Promise.all(files.map(([name,version])=>load(name,version)))
+      .catch(err=>{groupTasks.delete(stage);throw err;});
     groupTasks.set(stage,task);
     return task;
   }

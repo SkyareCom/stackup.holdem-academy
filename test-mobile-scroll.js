@@ -9,7 +9,7 @@ const server=http.createServer((req,res)=>{
   const name=decodeURIComponent(new URL(req.url,'http://localhost').pathname);
   const file=path.join(__dirname,name==='/'?'index.html':name);
   if(!file.startsWith(__dirname)||!fs.existsSync(file)){res.writeHead(404);return res.end();}
-  const types={'.html':'text/html','.js':'application/javascript','.png':'image/png','.webmanifest':'application/manifest+json'};
+  const types={'.html':'text/html','.js':'application/javascript','.png':'image/png','.ttf':'font/ttf','.webmanifest':'application/manifest+json'};
   res.setHeader('Content-Type',types[path.extname(file)]||'text/plain');
   res.end(fs.readFileSync(file));
 });
