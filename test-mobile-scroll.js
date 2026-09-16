@@ -58,25 +58,35 @@ const server=http.createServer((req,res)=>{
 
     async function statCardsFit(label){
       await page.waitForTimeout(100);
-      const cards=await page.evaluate(()=>[...document.querySelectorAll('.fi-stat,.p3-stat')].map((el,index)=>({
-        index,
-        className:el.className,
-        clientWidth:el.clientWidth,
-        scrollWidth:el.scrollWidth,
-        parts:[...el.querySelectorAll(':scope > .fi-stat-label,:scope > .fi-stat-value,:scope > b,:scope > span')].map(part=>({
-          text:(part.textContent||'').trim(),
-          clientWidth:part.clientWidth,
-          scrollWidth:part.scrollWidth
-        }))
-      })));
-      if(!cards.length)return;
+      const cards=await page.evaluate(()=>[...document.querySelectorAll('.fi-stat,.p3-stat')]
+        .filter(el=>{
+          const style=getComputedStyle(el);
+          return style.display!=='none'&&style.visibility!=='hidden'&&el.getClientRects().length>0&&el.clientWidth>0;
+        })
+        .map((el,index)=>({
+          index,
+          className:el.className,
+          clientWidth:el.clientWidth,
+          scrollWidth:el.scrollWidth,
+          parts:[...el.querySelectorAll(':scope > .fi-stat-label,:scope > .fi-stat-value,:scope > b,:scope > span')]
+            .filter(part=>{
+              const style=getComputedStyle(part);
+              return style.display!=='none'&&style.visibility!=='hidden'&&part.getClientRects().length>0;
+            })
+            .map(part=>({
+              text:(part.textContent||'').trim(),
+              clientWidth:part.clientWidth,
+              scrollWidth:part.scrollWidth
+            }))
+        })));
+      assert(cards.length>0,`${label}: no visible progress cards found`);
       for(const card of cards){
         assert(card.scrollWidth<=card.clientWidth+1,`${label}: ${card.className} ${card.index} overflows (${card.scrollWidth}>${card.clientWidth})`);
         for(const part of card.parts){
           assert(part.scrollWidth<=part.clientWidth+1,`${label}: "${part.text}" overflows (${part.scrollWidth}>${part.clientWidth})`);
         }
       }
-      console.log(`PASS ${label}: ${cards.length} progress cards fit 360px mobile viewport`);
+      console.log(`PASS ${label}: ${cards.length} visible progress cards fit 360px mobile viewport`);
     }
 
     async function openStage(stage,mode){
@@ -89,9 +99,9 @@ const server=http.createServer((req,res)=>{
       // under 4x CPU throttling made the deploy gate exceed its 8-minute budget.
       await page.evaluate(stage=>{window.lesson(stage,0,1);},stage);
       await page.locator('.card.lesson').first().waitFor();
-      if(stage==='fundamentos')await page.locator('.fi-stats').first().waitFor();
-      if(stage==='pratica')await page.locator('.p3-progress').first().waitFor();
-      await statCardsFit(`${mode}/${stage}/lesson-0`);
+      if(stage==='fundamentos')await page.locator('.fi-stats').first().waitFor({state:'visible'});
+      if(stage==='pratica')await page.locator('.fi-stats.p3x-counter').first().waitFor({state:'visible'});
+      if(stage==='fundamentos'||stage==='pratica')await statCardsFit(`${mode}/${stage}/lesson-0`);
       await firstSwipe(`${mode}/${stage}/lesson-0`);
 
       // Same-document History API navigation: do not wait for a document navigation.
@@ -105,7 +115,8 @@ const server=http.createServer((req,res)=>{
     await page.locator('.card.stage').first().waitFor();
     console.log('PASS bootstrap: mobile Academy rendered');
 
-    for(const stage of ['fundamentos','modalidades','pratica'])await openStage(stage,'cold');
+    // Practice first proves the shared counter guard works even without visiting Fundamentals first.
+    for(const stage of ['pratica','fundamentos','modalidades'])await openStage(stage,'cold');
 
     // Normal reload must preserve a usable, immediately scrollable rendered screen.
     await page.reload({waitUntil:'domcontentloaded'});
@@ -122,7 +133,7 @@ const server=http.createServer((req,res)=>{
     await page.locator('.card.stage').first().waitFor();
     assert(await page.evaluate(()=>!!navigator.serviceWorker.controller));
     console.log('PASS pwa bootstrap: service worker controls reload');
-    for(const stage of ['fundamentos','modalidades','pratica'])await openStage(stage,'pwa');
+    for(const stage of ['pratica','fundamentos','modalidades'])await openStage(stage,'pwa');
 
     await page.evaluate(()=>window.stage('pratica',1));
     await page.locator('.card.topic').first().waitFor();
@@ -130,6 +141,6 @@ const server=http.createServer((req,res)=>{
     assert.equal(await page.locator('.screen').evaluate(el=>getComputedStyle(el).transform),'none');
     await page.waitForTimeout(250);
     assert.deepEqual(errors,[]);
-    console.log('PASS mobile/PWA journey: no page errors, stat overflow, or late whole-screen transform');
+    console.log('PASS mobile/PWA journey: no page errors, visible stat overflow, or late whole-screen transform');
   }finally{await browser.close();server.close();}
 })().catch(err=>{console.error(err);server.close();process.exitCode=1});
