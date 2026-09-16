@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v105';
-const SW_VERSION=105;
+const CACHE='stackup-academy-v106';
+const SW_VERSION=106;
 const ASSETS=[
   './fonts/love-ya-like-a-sister.ttf',
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
@@ -8,7 +8,7 @@ const ASSETS=[
   './etiquette-details.js','./other-rules-details.js','./fundamentals-learning-flow.js','./fundamentals-interactive-bank.js',
   './fundamentals-visual-layer.js','./fundamentals-interactive.js','./fundamentals-progress-panel.js','./modalities-module.js',
   './modalities-depth-details.js','./mixed-games-module.js','./practice-module.js','./practice-table.js','./practice-advanced-bank.js',
-  './practice-advanced.js','./table-rotation-guard.js','./math-card-structure.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
+  './practice-advanced.js','./practice-progress-layout.js','./table-rotation-guard.js','./math-card-structure.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
   './academy-loader.js','./academy-visual-system.js','./page-top-reset.js','./header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
@@ -54,7 +54,7 @@ const SCRIPTS=[
   ['academy-visual-system.js',3],
   ['page-top-reset.js',5],
   ['typography-standard.js',3],
-  ['academy-loader.js',13]
+  ['academy-loader.js',14]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
