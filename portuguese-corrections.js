@@ -1,4 +1,7 @@
 (() => {
+  if(window.__stackupPortugueseCorrections)return;
+  window.__stackupPortugueseCorrections=1;
+
   const CORRECTIONS=[
     ['SMALL BLIND, BIG BLIND E ANTE','SMALL, BIG E ANTE'],
     ['Small Blind, Big Blind e Ante','Small, Big e Ante'],
@@ -35,47 +38,64 @@
   function fixText(text){
     let out=text;
     for(const [from,to] of CORRECTIONS){
-      if(out.includes(from)) out=out.split(from).join(to);
+      if(out.includes(from))out=out.split(from).join(to);
     }
     return out;
   }
 
-  function renameMathCardTitle(root){
-    root.querySelectorAll('.ttitle').forEach(el=>{
-      if((el.textContent||'').trim()==='Matemática do poker simplificada'){
-        el.textContent='Matemática do poker';
-      }
+  function fixAttributes(el){
+    for(const attr of ['aria-label','title','placeholder']){
+      if(!el.hasAttribute(attr))continue;
+      const old=el.getAttribute(attr)||'';
+      const fixed=fixText(old);
+      if(fixed!==old)el.setAttribute(attr,fixed);
+    }
+  }
+
+  function fixElement(el){
+    fixAttributes(el);
+    if(el.matches?.('.ttitle')&&(el.textContent||'').trim()==='Matemática do poker simplificada'){
+      el.textContent='Matemática do poker';
+      return;
+    }
+    const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
+    while(walker.nextNode()){
+      const node=walker.currentNode;
+      const fixed=fixText(node.nodeValue||'');
+      if(fixed!==node.nodeValue)node.nodeValue=fixed;
+    }
+    el.querySelectorAll?.('[aria-label],[title],[placeholder]').forEach(fixAttributes);
+    el.querySelectorAll?.('.ttitle').forEach(title=>{
+      if((title.textContent||'').trim()==='Matemática do poker simplificada')title.textContent='Matemática do poker';
     });
   }
 
-  function apply(root=document.getElementById('root')){
-    if(!root) return;
-    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    const nodes=[];
-    while(walker.nextNode()) nodes.push(walker.currentNode);
-    for(const node of nodes){
+  function fixNode(node){
+    if(node.nodeType===Node.TEXT_NODE){
       const fixed=fixText(node.nodeValue||'');
-      if(fixed!==node.nodeValue) node.nodeValue=fixed;
+      if(fixed!==node.nodeValue)node.nodeValue=fixed;
+      return;
     }
-    root.querySelectorAll('[aria-label],[title],[placeholder]').forEach(el=>{
-      for(const attr of ['aria-label','title','placeholder']){
-        if(!el.hasAttribute(attr)) continue;
-        const old=el.getAttribute(attr)||'';
-        const fixed=fixText(old);
-        if(fixed!==old) el.setAttribute(attr,fixed);
-      }
-    });
-    renameMathCardTitle(root);
+    if(node.nodeType===Node.ELEMENT_NODE)fixElement(node);
   }
 
   const root=document.getElementById('root');
-  if(root){
-    let queued=false;
-    new MutationObserver(()=>{
-      if(queued) return;
-      queued=true;
-      requestAnimationFrame(()=>{queued=false;apply(root);});
-    }).observe(root,{childList:true});
-  }
-  apply(root);
+  if(!root)return;
+
+  fixElement(root);
+
+  let queued=false;
+  const pending=[];
+  new MutationObserver(records=>{
+    for(const record of records){
+      for(const node of record.addedNodes)pending.push(node);
+    }
+    if(queued||!pending.length)return;
+    queued=true;
+    requestAnimationFrame(()=>{
+      queued=false;
+      const batch=pending.splice(0,pending.length);
+      for(const node of batch)fixNode(node);
+    });
+  }).observe(root,{childList:true,subtree:true});
 })();
