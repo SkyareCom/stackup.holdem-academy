@@ -48,7 +48,9 @@ const server=http.createServer((req,res)=>{
         const count=await page.locator('.card.topic').count();
         console.log(`CHECK ${mode}: ${stage}, ${count} lessons`);
         for(let index=0;index<count;index++){
-          await page.evaluate(({stage,index})=>window.lesson(stage,index,1),{stage,index});
+          // A real tap does not await the loader promise. Fire navigation and use
+          // the rendered lesson as the bounded, user-visible completion signal.
+          await page.evaluate(({stage,index})=>{window.lesson(stage,index,1);},{stage,index});
           await page.locator('.card.lesson').waitFor();
           const calls=await page.evaluate(()=>scrollCalls.length);
           const y=[];
