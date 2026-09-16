@@ -27,6 +27,7 @@ assert('progress observer avoids document-wide scans',progress.includes("observe
 assert('learning flow does not compete for scroll ownership',!flow.includes('scrollTo')&&!flow.includes('MutationObserver'));
 assert('first load only boots the lightweight loader',fs.readFileSync('index.html','utf8').includes('academy-loader.js?v=11')&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
 assert('heavy Academy modules are lazy by stage',loader.includes('const groups={')&&loader.includes('queueMicrotask(run)')&&loader.includes("new MutationObserver(schedule).observe(root,{childList:true})"));
+assert('lesson navigation has bounded lazy-load fallback',loader.includes('const LESSON_LOAD_TIMEOUT_MS=6000')&&loader.includes('Lesson modules were not ready; opening base lesson.')&&loader.includes('nativeLesson(stage,index,push)'));
 assert('service worker limits legacy document-wide observers',sw.includes('stackup-performance-guard')&&sw.includes('target===document.documentElement'));
 assert('service worker auto-injects only lightweight core',sw.includes('const AUTO_SCRIPTS=new Set')&&sw.includes('AUTO_SCRIPTS.has(name)'));
 assert('service worker serves static assets cache-first',sw.includes("caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request)"));
