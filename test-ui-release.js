@@ -34,7 +34,8 @@ assert('calculator forms collapse safely on narrow screens',visual.includes('#ro
 assert('comparison hands stack safely on narrow screens',visual.includes('#root .fv-compare{grid-template-columns:minmax(0,1fr)!important}'));
 assert('horizontal exercise strips wrap instead of overflowing',visual.includes('#root .fv-steps')&&visual.includes('#root .m2-flow')&&visual.includes('overflow:visible!important'));
 assert('lazy feature styles cannot override final layout contract',loader.includes('restackVisualSystem')&&loader.includes("node.tagName==='STYLE'"));
-assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v108'")&&serviceWorker.includes('SW_VERSION=108')&&serviceWorker.includes("['academy-visual-system.js',4]")&&serviceWorker.includes("['academy-loader.js',15]"));
+assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v109'")&&serviceWorker.includes('SW_VERSION=109')&&serviceWorker.includes("['academy-visual-system.js',4]")&&serviceWorker.includes("['academy-loader.js',15]"));
+assert('fresh TWA cache strategy is preserved',serviceWorker.includes('precacheFresh')&&serviceWorker.includes("fetch(request,{cache:'no-store'})")&&serviceWorker.includes("['portuguese-corrections.js',5]"));
 assert('navigation resets only on a new screen',topReset.includes('next===screen')&&topReset.includes('MutationObserver'));
 assert('header reset avoids delayed forced scrolling',!topReset.includes('1450')&&!topReset.includes("window.addEventListener('scroll'"));
 assert('scrolling screen has no transform or entrance animation',topReset.includes('animation:none!important;transform:none!important'));
