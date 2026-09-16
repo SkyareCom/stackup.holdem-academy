@@ -82,16 +82,36 @@
     queueMicrotask(run);
   }
 
-  // Fetch on menu entry; keep it visible until a first lesson is ready.
+  const LESSON_LOAD_TIMEOUT_MS=6000;
+  function bounded(task,label){
+    return new Promise((resolve,reject)=>{
+      const timer=setTimeout(()=>reject(new Error(`${label} timed out`)),LESSON_LOAD_TIMEOUT_MS);
+      task.then(
+        value=>{clearTimeout(timer);resolve(value);},
+        err=>{clearTimeout(timer);reject(err);}
+      );
+    });
+  }
+
+  // Fetch on menu entry. A missing/slow enhancement must never leave a tap frozen:
+  // after the bounded wait, open the base lesson and let any late module finish later.
   const nativeLesson=window.lesson;
   let navigation=0;
   window.lesson=function(stage,index,push=0){
     const ticket=++navigation;
     const screen=root.firstElementChild;
-    return ensure(stage).then(()=>{
-      if(ticket===navigation&&root.firstElementChild===screen)
-        nativeLesson(stage,index,push);
-    }).catch(err=>console.error('[STACKUP] Lesson load failed; tap to retry.',err));
+    let opened=false;
+    const open=()=>{
+      if(opened||ticket!==navigation||root.firstElementChild!==screen)return;
+      opened=true;
+      nativeLesson(stage,index,push);
+    };
+    return bounded(ensure(stage),`Lesson modules for ${stage}`)
+      .then(open)
+      .catch(err=>{
+        console.error('[STACKUP] Lesson modules were not ready; opening base lesson.',err);
+        open();
+      });
   };
   new MutationObserver(schedule).observe(root,{childList:true});
   window.addEventListener('popstate',schedule,{passive:true});
