@@ -55,7 +55,7 @@
     if(!files||groupTasks.has(stage))return groupTasks.get(stage)||Promise.resolve();
     const task=(async()=>{
       for(const [name,version] of files)await load(name,version);
-    })().catch(err=>console.error('[STACKUP] Lazy module load failed.',err));
+    })().catch(err=>{groupTasks.delete(stage);throw err;});
     groupTasks.set(stage,task);
     return task;
   }
@@ -76,13 +76,23 @@
     const run=()=>{
       idleId=0;
       const stage=currentStage();
-      if(stage)ensure(stage);
+      if(stage)ensure(stage).catch(err=>console.error('[STACKUP] Lazy module load failed.',err));
     };
-    if('requestIdleCallback' in window)idleId=requestIdleCallback(run,{timeout:700});
-    else idleId=setTimeout(run,32);
+    idleId=1;
+    queueMicrotask(run);
   }
 
-  load('page-top-reset.js',4).catch(err=>console.error('[STACKUP] Page top reset load failed.',err));
+  // Fetch on menu entry; keep it visible until a first lesson is ready.
+  const nativeLesson=window.lesson;
+  let navigation=0;
+  window.lesson=function(stage,index,push=0){
+    const ticket=++navigation;
+    const screen=root.firstElementChild;
+    return ensure(stage).then(()=>{
+      if(ticket===navigation&&root.firstElementChild===screen)
+        nativeLesson(stage,index,push);
+    }).catch(err=>console.error('[STACKUP] Lesson load failed; tap to retry.',err));
+  };
   new MutationObserver(schedule).observe(root,{childList:true});
   window.addEventListener('popstate',schedule,{passive:true});
   schedule();

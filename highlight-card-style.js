@@ -157,15 +157,6 @@
         max-height:3em!important;
       }
 
-      @media(max-width:700px){
-        #root .card.topic,
-        #root .card.lesson .block,
-        #root .rrow,
-        #root .m2-card{
-          content-visibility:auto;
-          contain-intrinsic-size:auto 96px;
-        }
-      }
 
       @media(max-width:480px){
         #root .card.topic{
@@ -180,28 +171,4 @@
     document.head.appendChild(style);
   }
 
-  if(navigator.serviceWorker?.controller)return;
-
-  const hasScript=needle=>[...document.scripts].some(s=>(s.getAttribute('src')||'').includes(needle));
-  const load=(src,needle)=>new Promise((resolve,reject)=>{
-    if(hasScript(needle))return resolve();
-    const s=document.createElement('script');
-    s.src=src;
-    s.async=false;
-    s.onload=resolve;
-    s.onerror=reject;
-    document.body.appendChild(s);
-  });
-
-  (async()=>{
-    try{
-      await load('./cover-layout.js?v=10','cover-layout.js');
-      await load('./fundamentals-learning-flow.js?v=3','fundamentals-learning-flow.js');
-      await load('./typography-standard.js?v=2','typography-standard.js');
-      await load('./portuguese-corrections.js?v=3','portuguese-corrections.js');
-      await load('./academy-loader.js?v=10','academy-loader.js');
-    }catch(err){
-      console.error('[STACKUP] Core module load failed.',err);
-    }
-  })();
 })();

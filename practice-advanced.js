@@ -220,6 +220,6 @@
     lesson.dataset.p3x='1';lesson.classList.add('p3x-active');setTheory(lesson,mode);
     if(host)host.remove();host=document.createElement('div');host.className='p3x-shell';host.dataset.p3x=mode;lesson.appendChild(host);renderMode(mode);
   }
-  const root=document.getElementById('root');if(root)new MutationObserver(()=>requestAnimationFrame(apply)).observe(root,{childList:true});apply();
+  const root=document.getElementById('root');if(root)new MutationObserver(apply).observe(root,{childList:true});apply();
   window.StackupPracticeAdvanced={allocation:B.allocation,reset:()=>{localStorage.removeItem(STORE);location.reload()}};
 })();

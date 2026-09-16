@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v99';
-const SW_VERSION=99;
+const CACHE='stackup-academy-v103';
+const SW_VERSION=103;
 const ASSETS=[
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
   './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
@@ -29,10 +29,10 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',38],
+  ['highlight-card-style.js',39],
   ['etiquette-details.js',2],
   ['other-rules-details.js',2],
-  ['fundamentals-learning-flow.js',3],
+  ['fundamentals-learning-flow.js',4],
   ['fundamentals-interactive-bank.js',1],
   ['fundamentals-visual-layer.js',2],
   ['fundamentals-interactive.js',5],
@@ -51,9 +51,9 @@ const SCRIPTS=[
   ['cover-layout.js',10],
   ['release-compliance.js',1],
   ['academy-visual-system.js',3],
-  ['page-top-reset.js',4],
+  ['page-top-reset.js',5],
   ['typography-standard.js',3],
-  ['academy-loader.js',10]
+  ['academy-loader.js',11]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',

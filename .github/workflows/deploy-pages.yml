@@ -46,6 +46,15 @@ jobs:
       - name: Protect Academy performance
         run: node test-performance.js
 
+      - name: Protect navigation scroll ownership
+        run: node test-navigation.js
+
+      - name: Test first mobile swipe and PWA navigation
+        run: |
+          npm install --prefix "$RUNNER_TEMP/academy-browser" playwright
+          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium
+          NODE_PATH="$RUNNER_TEMP/academy-browser/node_modules" node test-mobile-scroll.js
+
       - name: Protect Academy typography
         run: node test-typography.js
 
