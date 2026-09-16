@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v104';
-const SW_VERSION=104;
+const CACHE='stackup-academy-v105';
+const SW_VERSION=105;
 const ASSETS=[
   './fonts/love-ya-like-a-sister.ttf',
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
@@ -37,7 +37,7 @@ const SCRIPTS=[
   ['fundamentals-interactive-bank.js',1],
   ['fundamentals-visual-layer.js',2],
   ['fundamentals-interactive.js',5],
-  ['fundamentals-progress-panel.js',3],
+  ['fundamentals-progress-panel.js',4],
   ['modalities-module.js',1],
   ['modalities-depth-details.js',1],
   ['mixed-games-module.js',3],
@@ -54,7 +54,7 @@ const SCRIPTS=[
   ['academy-visual-system.js',3],
   ['page-top-reset.js',5],
   ['typography-standard.js',3],
-  ['academy-loader.js',11]
+  ['academy-loader.js',12]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
