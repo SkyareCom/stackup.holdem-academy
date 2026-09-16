@@ -30,7 +30,8 @@ assert('heavy Academy modules are lazy by stage',loader.includes('const groups={
 assert('lesson navigation has bounded lazy-load fallback',loader.includes('const LESSON_LOAD_TIMEOUT_MS=6000')&&loader.includes('Lesson modules were not ready; opening base lesson.')&&loader.includes('nativeLesson(stage,index,push)'));
 assert('service worker limits legacy document-wide observers',sw.includes('stackup-performance-guard')&&sw.includes('target===document.documentElement'));
 assert('service worker auto-injects only lightweight core',sw.includes('const AUTO_SCRIPTS=new Set')&&sw.includes('AUTO_SCRIPTS.has(name)'));
-assert('service worker serves static assets cache-first',sw.includes("caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request)"));
+assert('service worker refreshes versioned code network-first',sw.includes('const freshCode=')&&sw.includes('freshCode?networkFirst(event.request):cacheFirst(event.request)'));
+assert('service worker keeps cache-first fallback for non-code assets',sw.includes('async function cacheFirst(request)')&&sw.includes('const cached=await caches.match(request)'));
 assert('service worker activation does not force client navigation',!sw.includes('client.navigate(client.url)'));
 
 if(process.exitCode)process.exit(process.exitCode);
