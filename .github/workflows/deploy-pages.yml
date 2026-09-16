@@ -17,22 +17,30 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.actor == 'SkyareCom'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: '22'
 
+      - name: Security repository guard
+        run: node scripts/security-guard.js
+
       - name: Validate JavaScript syntax
         run: |
           find . -maxdepth 1 -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check
+          node --check scripts/security-guard.js
 
       - name: Run poker engine tests
         run: node test-engine.js
