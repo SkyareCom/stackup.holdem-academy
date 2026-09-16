@@ -22,8 +22,10 @@
         flex-direction:column!important;
         align-items:center!important;
         justify-content:center!important;
+        min-width:0!important;
         min-height:68px!important;
-        padding:9px 5px!important;
+        padding:9px 4px!important;
+        overflow:hidden!important;
         border:0!important;
         border-radius:0!important;
         background:transparent!important;
@@ -32,25 +34,37 @@
       .fi-stat+.fi-stat{border-left:1px solid #d4aa5840!important}
       .fi-stat .fi-stat-label{
         display:block!important;
+        width:100%!important;
         margin:0 0 5px!important;
         color:#d8c6ad!important;
-        font-size:10px!important;
+        font-size:clamp(8px,2.35vw,10px)!important;
         line-height:1.05!important;
-        letter-spacing:.06em!important;
+        letter-spacing:.03em!important;
         text-transform:uppercase!important;
         white-space:nowrap!important;
       }
       .fi-stat .fi-stat-value{
         display:block!important;
+        width:100%!important;
+        max-width:100%!important;
         color:var(--gold,#d4aa58)!important;
-        font-size:18px!important;
+        font-size:clamp(12px,3.55vw,17px)!important;
         line-height:1.05!important;
+        letter-spacing:-.035em!important;
+        white-space:nowrap!important;
+        font-variant-numeric:tabular-nums!important;
       }
       @media(max-width:390px){
-        .fi-stats{margin:10px 9px!important}
-        .fi-stat{min-height:64px!important;padding:8px 3px!important}
-        .fi-stat .fi-stat-label{font-size:9px!important}
-        .fi-stat .fi-stat-value{font-size:16px!important}
+        .fi-stats{margin:10px 8px!important}
+        .fi-stat{min-height:64px!important;padding:8px 2px!important}
+        .fi-stat .fi-stat-label{font-size:clamp(8px,2.25vw,9px)!important;letter-spacing:.015em!important}
+        .fi-stat .fi-stat-value{font-size:clamp(12px,3.45vw,14px)!important;letter-spacing:-.045em!important}
+      }
+      @media(max-width:340px){
+        .fi-stats{margin:9px 6px!important}
+        .fi-stat{padding-inline:1px!important}
+        .fi-stat .fi-stat-label{font-size:8px!important}
+        .fi-stat .fi-stat-value{font-size:12px!important}
       }
     `;
     document.head.appendChild(s);
