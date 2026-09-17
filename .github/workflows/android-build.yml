@@ -109,7 +109,7 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-apk-badging.txt
-          grep -q "launchable-activity: name='com.google.androidbrowserhelper.trusted.LauncherActivity'" /tmp/stackup-apk-badging.txt
+          grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-apk-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-apk-manifest.txt
           grep -q "com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity" /tmp/stackup-apk-manifest.txt
           grep -q "android.support.customtabs.trusted.MANAGE_SPACE_URL" /tmp/stackup-apk-manifest.txt
@@ -136,9 +136,10 @@ jobs:
             grep -q "com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity" /tmp/stackup-package.txt
             adb logcat -c
             adb shell am force-stop com.skyare.stackupacademy
-            adb shell am start -W -n com.skyare.stackupacademy/com.google.androidbrowserhelper.trusted.LauncherActivity > /tmp/stackup-start.txt
+            adb shell am start -W -n com.skyare.stackupacademy/.MainActivity > /tmp/stackup-start.txt
             cat /tmp/stackup-start.txt
             grep -q "Status: ok" /tmp/stackup-start.txt
+            grep -q "Activity: com.skyare.stackupacademy/.MainActivity" /tmp/stackup-start.txt
             sleep 8
             adb logcat -d -v brief > /tmp/stackup-logcat.txt
             ! grep -q "ManageDataLauncherActivity does not exist in com.skyare.stackupacademy" /tmp/stackup-logcat.txt
