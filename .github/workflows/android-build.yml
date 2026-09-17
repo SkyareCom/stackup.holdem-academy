@@ -95,8 +95,8 @@ jobs:
           mkdir -p android/app/build/outputs/bundle/release
           {
             echo "package=com.skyare.stackupacademy"
-            echo "versionName=1.0.0"
-            echo "versionCode=1"
+            echo "versionName=1.0.1"
+            echo "versionCode=2"
             echo "targetSdk=36"
             echo "signed=${STACKUP_SIGNING_READY}"
           } > android/app/build/outputs/bundle/release/RELEASE-INFO.txt
@@ -104,11 +104,15 @@ jobs:
       - name: Build installable debug APK
         run: gradle -p android :app:assembleDebug --stacktrace
 
-      - name: Verify installable APK launcher
+      - name: Verify installable APK launcher and TWA components
         run: |
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
-          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee /tmp/stackup-apk-badging.txt
-          grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-apk-badging.txt
+          AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
+          "$AAPT" dump badging "$APK" | tee /tmp/stackup-apk-badging.txt
+          grep -q "launchable-activity: name='com.google.androidbrowserhelper.trusted.LauncherActivity'" /tmp/stackup-apk-badging.txt
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-apk-manifest.txt
+          grep -q "com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity" /tmp/stackup-apk-manifest.txt
+          grep -q "android.support.customtabs.trusted.MANAGE_SPACE_URL" /tmp/stackup-apk-manifest.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
 
       - name: Enable KVM
@@ -128,15 +132,17 @@ jobs:
           disable-animations: true
           script: |
             adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+            adb shell dumpsys package com.skyare.stackupacademy > /tmp/stackup-package.txt
+            grep -q "com.google.androidbrowserhelper.trusted.ManageDataLauncherActivity" /tmp/stackup-package.txt
             adb logcat -c
             adb shell am force-stop com.skyare.stackupacademy
-            adb shell am start -W -n com.skyare.stackupacademy/.MainActivity > /tmp/stackup-start.txt
+            adb shell am start -W -n com.skyare.stackupacademy/com.google.androidbrowserhelper.trusted.LauncherActivity > /tmp/stackup-start.txt
             cat /tmp/stackup-start.txt
             grep -q "Status: ok" /tmp/stackup-start.txt
-            grep -q "Activity: com.skyare.stackupacademy/.MainActivity" /tmp/stackup-start.txt
             sleep 8
             adb logcat -d -v brief > /tmp/stackup-logcat.txt
-            ! grep -q "FATAL EXCEPTION" /tmp/stackup-logcat.txt
+            ! grep -q "ManageDataLauncherActivity does not exist in com.skyare.stackupacademy" /tmp/stackup-logcat.txt
+            ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" /tmp/stackup-logcat.txt
 
       - name: Upload Play AAB artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
