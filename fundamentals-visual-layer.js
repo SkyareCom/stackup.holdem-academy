@@ -71,22 +71,37 @@
   const profileStats=[['TAG','22%','18%','7%'],['LAG','34%','28%','12%'],['NIT','13%','9%','3%'],['CALLING STATION','42%','8%','2%'],['MANIAC','58%','47%','24%']];
 
   function streetScene(spot){
-    const source=[spot?.prompt,Array.isArray(spot?.answer)?spot.answer.join(' '):spot?.answer,spot?.analysis].filter(Boolean).join(' ').toUpperCase();
+    const prompt=String(spot?.prompt||'');
+    const p=prompt.toUpperCase();
+    const answer=Array.isArray(spot?.answer)?spot.answer.join(' → '):String(spot?.answer??'');
+    const a=answer.toUpperCase();
+    const exactCards=prompt.match(/(?:10|[2-9AKQJ])[♠♥♦♣]/g)||[];
+    const boardByCount=cards=>({kind:'board',cards,label:cards.length===3?'FLOP':cards.length===4?'TURN':'RIVER'});
     const preflop={kind:'board',cards:boardSets[0],label:'PRÉ-FLOP'};
     const flop={kind:'board',cards:boardSets[1],label:'FLOP'};
     const turn={kind:'board',cards:boardSets[2],label:'TURN'};
     const river={kind:'board',cards:boardSets[3],label:'RIVER'};
-    if(source.includes('MONOTONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','s')],label:'FLOP · MONOTONE'};
-    if(source.includes('TWO-TONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','d')],label:'FLOP · TWO-TONE'};
-    if(source.includes('PAIRED')||source.includes('PAREADO'))return {kind:'board',cards:[card('K','c'),card('8','d'),card('8','s')],label:'FLOP · PAIRED'};
-    if(source.includes('PRÉ-FLOP')||source.includes('PRE-FLOP')||source.includes('SEM CARTAS COMUNITÁRIAS'))return preflop;
-    if(source.includes('RIVER'))return river;
-    if(source.includes('TURN'))return turn;
-    if(source.includes('FLOP'))return flop;
-    if(source.includes('SHOWDOWN'))return {kind:'board',cards:boardSets[3],label:'SHOWDOWN · BOARD COMPLETO'};
-    if(source.includes('CINCO CARTAS')||source.includes('5 CARTAS')||source.includes('BOARD MÁXIMO')||source.includes('BOARD COMPLETO'))return river;
-    if(source.includes('SEQUÊNCIA')||source.includes('ORDEM'))return {kind:'streetflow',steps:['PRÉ-FLOP','FLOP','TURN','RIVER']};
-    return {kind:'board',cards:boardSets[3],label:'BOARD · HOLD’EM'};
+
+    if(/\bBOARD\b/i.test(prompt)&&[3,4,5].includes(exactCards.length))return boardByCount(exactCards);
+    if(spot?.type==='sequence'||(a.includes('PRÉ-FLOP')&&a.includes('FLOP')&&a.includes('TURN')&&a.includes('RIVER')&&a.includes('→')))return {kind:'streetflow',steps:['PRÉ-FLOP','FLOP','TURN','RIVER']};
+    if(p.includes('MONOTONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','s')],label:'FLOP · MONOTONE'};
+    if(p.includes('TWO-TONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','d')],label:'FLOP · TWO-TONE'};
+    if(p.includes('PAIRED')||p.includes('PAREADO'))return {kind:'board',cards:[card('K','c'),card('8','d'),card('8','s')],label:'FLOP · PAIRED'};
+
+    if(a==='PRÉ-FLOP'||a==='PRE-FLOP')return preflop;
+    if(a==='FLOP')return flop;
+    if(a==='TURN')return turn;
+    if(a==='RIVER')return river;
+    if(a==='SHOWDOWN')return {kind:'board',cards:boardSets[3],label:'SHOWDOWN · BOARD COMPLETO'};
+
+    if(p.includes('PRÉ-FLOP')||p.includes('PRE-FLOP')||p.includes('SEM CARTAS COMUNITÁRIAS'))return preflop;
+    if(p.includes('SHOWDOWN'))return {kind:'board',cards:boardSets[3],label:'SHOWDOWN · BOARD COMPLETO'};
+    if(p.includes('RIVER'))return river;
+    if(p.includes('TURN'))return turn;
+    if(p.includes('FLOP'))return flop;
+    if(p.includes('CINCO CARTAS')||p.includes('5 CARTAS')||p.includes('BOARD MÁXIMO')||p.includes('BOARD COMPLETO'))return river;
+    if(p.includes('SEQUÊNCIA')||p.includes('ORDEM'))return {kind:'streetflow',steps:['PRÉ-FLOP','FLOP','TURN','RIVER']};
+    return {kind:'board',cards:boardSets[1],label:'FLOP · EXEMPLO'};
   }
 
   function sceneFor(chapter,i,spot){
