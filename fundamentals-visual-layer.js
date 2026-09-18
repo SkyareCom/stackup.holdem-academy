@@ -70,11 +70,30 @@
   const tourFormats=[['MTT REGULAR','40 BB','NÍVEL 8'],['PKO','28 BB','ITM'],['TURBO','18 BB','BOLHA'],['SATELLITE','22 BB','5 VAGAS'],['MULTI-DAY','65 BB','DIA 1B']];
   const profileStats=[['TAG','22%','18%','7%'],['LAG','34%','28%','12%'],['NIT','13%','9%','3%'],['CALLING STATION','42%','8%','2%'],['MANIAC','58%','47%','24%']];
 
+  function streetScene(spot){
+    const source=[spot?.prompt,Array.isArray(spot?.answer)?spot.answer.join(' '):spot?.answer,spot?.analysis].filter(Boolean).join(' ').toUpperCase();
+    const preflop={kind:'board',cards:boardSets[0],label:'PRÉ-FLOP'};
+    const flop={kind:'board',cards:boardSets[1],label:'FLOP'};
+    const turn={kind:'board',cards:boardSets[2],label:'TURN'};
+    const river={kind:'board',cards:boardSets[3],label:'RIVER'};
+    if(source.includes('MONOTONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','s')],label:'FLOP · MONOTONE'};
+    if(source.includes('TWO-TONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','d')],label:'FLOP · TWO-TONE'};
+    if(source.includes('PAIRED')||source.includes('PAREADO'))return {kind:'board',cards:[card('K','c'),card('8','d'),card('8','s')],label:'FLOP · PAIRED'};
+    if(source.includes('PRÉ-FLOP')||source.includes('PRE-FLOP')||source.includes('SEM CARTAS COMUNITÁRIAS'))return preflop;
+    if(source.includes('RIVER'))return river;
+    if(source.includes('TURN'))return turn;
+    if(source.includes('FLOP'))return flop;
+    if(source.includes('SHOWDOWN'))return {kind:'board',cards:boardSets[3],label:'SHOWDOWN · BOARD COMPLETO'};
+    if(source.includes('CINCO CARTAS')||source.includes('5 CARTAS')||source.includes('BOARD MÁXIMO')||source.includes('BOARD COMPLETO'))return river;
+    if(source.includes('SEQUÊNCIA')||source.includes('ORDEM'))return {kind:'streetflow',steps:['PRÉ-FLOP','FLOP','TURN','RIVER']};
+    return {kind:'board',cards:boardSets[3],label:'BOARD · HOLD’EM'};
+  }
+
   function sceneFor(chapter,i,spot){
     switch(chapter){
       case 'POSIÇÕES NA MESA': return {kind:'table',highlight:seats[i%seats.length],label:'IDENTIFIQUE A POSIÇÃO DESTACADA'};
       case 'SMALL BLIND, BIG BLIND E ANTE': return {kind:'blinds',button:seats[(i+7)%seats.length],sb:'SB',bb:'BB',ante:i%3===0?'BBA':i%3===1?'ANTE':'SEM ANTE'};
-      case 'STREETS': return {kind:'board',cards:boardSets[i%boardSets.length],label:['PRÉ-FLOP','FLOP','TURN','RIVER'][i%4]};
+      case 'STREETS': return streetScene(spot);
       case 'SEQUÊNCIA DE APOSTAS': return {kind:'timeline',actions:[['UTG','RAISE','2.5 BB'],['CO',i%2?'CALL':'3-BET',i%2?'2.5 BB':'8 BB'],['BTN',i%3?'FOLD':'CALL',i%3?'—':'8 BB']]};
       case 'EMBARALHANDO AS CARTAS': return {kind:'steps',steps:['RECOLHER','EMBARALHAR','QUADRAR','CORTAR','DISTRIBUIR'],active:i%5};
       case 'MISDEAL': return {kind:'scene',icon:'⚠',title:i%2?'CARTA EXPOSTA':'DISTRIBUIÇÃO IRREGULAR',lines:[i%2?'UMA CARTA FOI EXPOSTA PELO DEALER':'UM JOGADOR RECEBEU NÚMERO ERRADO DE CARTAS','DECIDA SE CORRIGE, CONTINUA OU É MISDEAL']};
@@ -120,6 +139,7 @@
       .fv-position-seat.on .fv-position-seat-label{background:linear-gradient(180deg,#ffe8a8,#d4aa58);color:#211008;border-color:#fff0c8;font-weight:800;box-shadow:0 0 0 2px #fff0c855,0 5px 12px #0007}
       .fv-position-dealer{position:absolute;z-index:4;left:29.5%;top:68.5%;width:25px;height:25px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff4c9,#d4aa58);border:2px solid #fff0c8;color:#2b170a;box-shadow:0 4px 10px #0009,0 0 10px #d4aa5870;font:700 11px Arial,sans-serif}
       .fv-board{display:flex;justify-content:center;gap:6px;min-height:64px;align-items:center}.fv-empty{color:#a9947f;font-size:13px;text-align:center;padding:18px 0}
+      .fv-streetflow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.fv-streetstage{position:relative;min-width:0;padding:9px 4px;border:1px solid #d4aa5840;border-radius:10px;background:#2a160d;color:#f8f0df;text-align:center;font-size:10px;line-height:1.15}.fv-streetstage:not(:last-child):after{content:'›';position:absolute;right:-7px;top:50%;transform:translateY(-50%);z-index:2;color:#d4aa58;font-size:16px}.fv-streetstage b{display:block;color:#d4aa58;font-size:11px}
       .fv-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border-top:1px solid #d4aa582d}.fv-row:first-child{border-top:0}.fv-pill{padding:5px 7px;border-radius:8px;background:#0e4b3b;color:#f8f0df;font-size:11px}.fv-value{color:#d4aa58;font-size:12px}
       .fv-steps{display:flex;gap:5px;overflow-x:auto;padding-bottom:3px}.fv-step{min-width:78px;padding:9px 6px;border:1px solid #d4aa5840;border-radius:10px;text-align:center;font-size:10px;color:#d8c6ad}.fv-step.on{background:#0e4b3b;color:#f8f0df;border-color:#d4aa58}
       .fv-scene{text-align:center;padding:5px 4px}.fv-icon{font-family:Arial,sans-serif;font-size:38px;color:#d4aa58}.fv-scene h4{margin:5px 0 7px;color:#f8f0df;font-size:18px}.fv-scene p{margin:3px 0;color:#cfbda7;font-size:12px;line-height:1.35}
@@ -134,6 +154,7 @@
     if(v.kind==='cards')return `<div class="fv-wrap">${label}<div class="fv-cards">${v.cards.map(renderCard).join('')}</div></div>`;
     if(v.kind==='compare')return `<div class="fv-wrap">${label}<div class="fv-compare"><div class="fv-handbox"><div class="fv-handtitle">MÃO A</div><div class="fv-cards">${v.left.map(renderCard).join('')}</div></div><div class="fv-handbox"><div class="fv-handtitle">MÃO B</div><div class="fv-cards">${v.right.map(renderCard).join('')}</div></div></div></div>`;
     if(v.kind==='board')return `<div class="fv-wrap">${label}<div class="fv-board">${v.cards.length?v.cards.map(renderCard).join(''):'<div class="fv-empty">SEM CARTAS COMUNITÁRIAS</div>'}</div></div>`;
+    if(v.kind==='streetflow')return `<div class="fv-wrap"><div class="fv-label">ORDEM DAS STREETS</div><div class="fv-streetflow">${v.steps.map((x,i)=>`<div class="fv-streetstage"><b>${i+1}</b>${esc(x)}</div>`).join('')}</div></div>`;
     if(v.kind==='table'){const pos={UTG1:[50,10],UTG2:[70.5,17.6],MP1:[83.3,37.6],MP2:[83.3,62.4],LJ:[70.5,82.4],HJ:[50,90],CO:[29.5,82.4],BTN:[16.7,62.4],SB:[16.7,37.6],BB:[29.5,17.6]};return `<div class="fv-wrap">${label}<div class="fv-position-board" data-table-visual="canonical" role="img" aria-label="Mesa de poker oval com 10 posições distribuídas uniformemente">${'<div class="fv-position-felt"></div>'}${seats.map(s=>{const p=pos[s];return `<span class="fv-position-seat${s===v.highlight?' on':''}" data-seat="${s}" style="left:${p[0]}%;top:${p[1]}%"><span class="fv-position-seat-label">${s}</span></span>`;}).join('')}<span class="fv-position-dealer" aria-label="Dealer">D</span></div></div>`;}
     if(v.kind==='blinds')return `<div class="fv-wrap"><div class="fv-label">FORMAÇÃO INICIAL</div><div class="fv-row"><span>BUTTON</span><span class="fv-pill">${esc(v.button)}</span></div><div class="fv-row"><span>SMALL BLIND</span><span class="fv-value">${esc(v.sb)}</span></div><div class="fv-row"><span>BIG BLIND</span><span class="fv-value">${esc(v.bb)}</span></div><div class="fv-row"><span>ANTE</span><span class="fv-value">${esc(v.ante)}</span></div></div>`;
     if(v.kind==='timeline')return `<div class="fv-wrap"><div class="fv-label">LINHA DE AÇÃO</div>${v.actions.map(a=>`<div class="fv-row"><span class="fv-pill">${esc(a[0])}</span><span>${esc(a[1])}</span><span class="fv-value">${esc(a[2])}</span></div>`).join('')}</div>`;
