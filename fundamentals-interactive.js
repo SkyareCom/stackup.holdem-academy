@@ -32,8 +32,8 @@
       .fi-option:active{transform:scale(.99)}
       .fi-option[disabled]{cursor:default;opacity:1}
       .fi-option.fi-picked{border:2px solid #725f4d;background:#eadfc8}
-      .fi-option.fi-correct{border:2px solid #0e4b3b;background:#dce9df;color:#08372d}
-      .fi-option.fi-wrong{border:2px solid #a87c32;background:#ead8c5;color:#4a2716}
+      .fi-option.fi-correct,.fi-option.fi-picked.fi-correct{border:2px solid #0e4b3b!important;background:#dce9df!important;color:#08372d!important}
+      .fi-option.fi-wrong,.fi-option.fi-picked.fi-wrong{border:2px solid #9f3028!important;background:#f2d6d2!important;color:#6b1712!important}
       .fi-seqnum{display:inline-grid;place-items:center;width:25px;height:25px;border-radius:8px;background:#211008;color:#d4aa58;margin-right:8px;font-size:12px;vertical-align:middle}
       .fi-help{padding:0 14px 11px;color:#725f4d;font-size:13px;line-height:1.35}
       .fi-feedback{margin:0 12px 14px;border-radius:13px;border:1px solid #a87c3260;overflow:hidden;background:#f4ecd9}
