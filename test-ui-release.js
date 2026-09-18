@@ -17,6 +17,7 @@ const practiceTable=fs.readFileSync('practice-table.js','utf8');
 const fundamentalsInteractive=fs.readFileSync('fundamentals-interactive.js','utf8');
 const modalitiesModule=fs.readFileSync('modalities-module.js','utf8');
 const mixedGamesModule=fs.readFileSync('mixed-games-module.js','utf8');
+const releaseCompliance=fs.readFileSync('release-compliance.js','utf8');
 const topReset=fs.readFileSync('page-top-reset.js','utf8');
 const manifest=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
 const androidGradle=fs.readFileSync('android/app/build.gradle.kts','utf8');
@@ -56,8 +57,9 @@ assert('sequence wrong state is explicitly red in all quiz families',fundamental
 assert('Streets texture visuals are explicit',fundamentalsVisual.includes("FLOP · MONOTONE")&&fundamentalsVisual.includes("FLOP · TWO-TONE")&&fundamentalsVisual.includes("FLOP · PAIRED"));
 assert('Streets ambiguous questions were clarified',fundamentalsBank.includes('No showdown é aberta uma nova carta comunitária?')&&fundamentalsBank.includes('street imediatamente após o Flop')&&fundamentalsBank.includes('última street normal de apostas'));
 assert('horizontal exercise strips wrap instead of overflowing',visual.includes('#root .fv-steps')&&visual.includes('#root .m2-flow')&&visual.includes('overflow:visible!important'));
+assert('PH4 logo appears above legal footer copy',releaseCompliance.includes("FOOTER_LOGO_URL = './ph4-footer-logo.webp?v=1'")&&releaseCompliance.includes('footer.append(logo,note,link)')&&fs.existsSync('ph4-footer-logo.webp'));
 assert('lazy feature styles cannot override final layout contract',loader.includes('restackVisualSystem')&&loader.includes("node.tagName==='STYLE'"));
-assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v115'")&&serviceWorker.includes('SW_VERSION=115')&&serviceWorker.includes("['fundamentals-visual-layer.js',5]")&&serviceWorker.includes("['fundamentals-interactive.js',7]")&&serviceWorker.includes("['modalities-module.js',4]")&&serviceWorker.includes("['mixed-games-module.js',5]")&&serviceWorker.includes("['academy-visual-system.js',5]")&&serviceWorker.includes("['academy-loader.js',15]"));
+assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v116'")&&serviceWorker.includes('SW_VERSION=116')&&serviceWorker.includes("['release-compliance.js',2]")&&serviceWorker.includes("'./ph4-footer-logo.webp'")&&serviceWorker.includes("['fundamentals-visual-layer.js',5]")&&serviceWorker.includes("['fundamentals-interactive.js',7]")&&serviceWorker.includes("['modalities-module.js',4]")&&serviceWorker.includes("['mixed-games-module.js',5]")&&serviceWorker.includes("['academy-visual-system.js',5]")&&serviceWorker.includes("['academy-loader.js',15]"));
 assert('fresh TWA cache strategy is preserved',serviceWorker.includes('precacheFresh')&&serviceWorker.includes("fetch(request,{cache:'no-store'})")&&serviceWorker.includes("['portuguese-corrections.js',5]"));
 assert('navigation resets only on a new screen',topReset.includes('next===screen')&&topReset.includes('MutationObserver'));
 assert('header reset avoids delayed forced scrolling',!topReset.includes('1450')&&!topReset.includes("window.addEventListener('scroll'"));
