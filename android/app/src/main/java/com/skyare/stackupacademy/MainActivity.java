@@ -10,7 +10,10 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.ViewGroup;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -27,6 +30,7 @@ public class MainActivity extends Activity {
 
     private WebView webView;
     private FrameLayout root;
+    private OnBackInvokedCallback backCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +43,13 @@ public class MainActivity extends Activity {
         root.setBackgroundColor(Color.rgb(7, 20, 13));
         setContentView(root);
         showLoadingMessage();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            backCallback = this::handleBackNavigation;
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    backCallback);
+        }
 
         try {
             createAndLoadWebView(savedInstanceState);
@@ -184,18 +195,31 @@ public class MainActivity extends Activity {
         super.onSaveInstanceState(outState);
     }
 
-    @Override
-    @SuppressWarnings("deprecation")
-    public void onBackPressed() {
+    private void handleBackNavigation() {
         if (webView != null && webView.canGoBack()) {
             webView.goBack();
         } else {
-            super.onBackPressed();
+            finish();
         }
     }
 
     @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            handleBackNavigation();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
     protected void onDestroy() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && backCallback != null) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
+            backCallback = null;
+        }
         if (webView != null) {
             try {
                 webView.stopLoading();
