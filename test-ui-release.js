@@ -22,6 +22,7 @@ const topReset=fs.readFileSync('page-top-reset.js','utf8');
 const manifest=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
 const androidGradle=fs.readFileSync('android/app/build.gradle.kts','utf8');
 const androidManifest=fs.readFileSync('android/app/src/main/AndroidManifest.xml','utf8');
+const androidMainActivity=fs.readFileSync('android/app/src/main/java/com/skyare/stackupacademy/MainActivity.java','utf8');
 
 assert('original font is locally preloaded',index.includes('fonts/love-ya-like-a-sister.ttf')&&index.includes('as="font"')&&fs.existsSync('fonts/OFL.txt'));
 assert('global font lock uses Love Ya Like A Sister',typography.includes("font-family:'Love Ya Like A Sister',cursive!important"));
@@ -60,7 +61,7 @@ assert('horizontal exercise strips wrap instead of overflowing',visual.includes(
 assert('PH4 logo appears above legal footer copy',releaseCompliance.includes("FOOTER_LOGO_URL = './ph4-footer-logo.webp?v=1'")&&releaseCompliance.includes('footer.append(logo,note,link)')&&fs.existsSync('ph4-footer-logo.webp'));
 assert('lazy feature styles cannot override final layout contract',loader.includes('restackVisualSystem')&&loader.includes("node.tagName==='STYLE'"));
 assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v116'")&&serviceWorker.includes('SW_VERSION=116')&&serviceWorker.includes("['release-compliance.js',2]")&&serviceWorker.includes("'./ph4-footer-logo.webp'")&&serviceWorker.includes("['fundamentals-visual-layer.js',5]")&&serviceWorker.includes("['fundamentals-interactive.js',7]")&&serviceWorker.includes("['modalities-module.js',4]")&&serviceWorker.includes("['mixed-games-module.js',5]")&&serviceWorker.includes("['academy-visual-system.js',5]")&&serviceWorker.includes("['academy-loader.js',15]"));
-assert('fresh TWA cache strategy is preserved',serviceWorker.includes('precacheFresh')&&serviceWorker.includes("fetch(request,{cache:'no-store'})")&&serviceWorker.includes("['portuguese-corrections.js',5]"));
+assert('fresh web cache strategy is preserved',serviceWorker.includes('precacheFresh')&&serviceWorker.includes("fetch(request,{cache:'no-store'})")&&serviceWorker.includes("['portuguese-corrections.js',5]"));
 assert('navigation resets only on a new screen',topReset.includes('next===screen')&&topReset.includes('MutationObserver'));
 assert('header reset avoids delayed forced scrolling',!topReset.includes('1450')&&!topReset.includes("window.addEventListener('scroll'"));
 assert('scrolling screen has no transform or entrance animation',topReset.includes('animation:none!important;transform:none!important'));
@@ -68,9 +69,15 @@ assert('web app is standalone',manifest.display==='standalone');
 assert('web app stays portrait-first',manifest.orientation==='portrait-primary');
 assert('web theme keeps Academy green',String(manifest.theme_color).toLowerCase()==='#0e4b3b');
 assert('Android application id is stable',androidGradle.includes('applicationId = "com.skyare.stackupacademy"'));
+assert('Android release version is 1.0.3 build 4',androidGradle.includes('versionCode = 4')&&androidGradle.includes('versionName = "1.0.3"'));
 assert('Android targets API 36',androidGradle.includes('targetSdk = 36')&&androidGradle.includes('compileSdk = 36'));
 assert('Android blocks cleartext traffic',androidManifest.includes('android:usesCleartextTraffic="false"'));
-assert('Android opens the Academy HTTPS host',androidManifest.includes('android:host="skyarecom.github.io"')&&androidManifest.includes('android:pathPrefix="/stackup.holdem-academy/"'));
+assert('Android production launcher is native MainActivity',androidManifest.includes('android:name="com.skyare.stackupacademy.MainActivity"')&&androidManifest.includes('android.intent.action.MAIN')&&androidManifest.includes('android.intent.category.LAUNCHER'));
+assert('Android production manifest no longer exposes TWA or Custom Tabs launcher',!androidManifest.includes('com.google.androidbrowserhelper.trusted')&&!androidManifest.includes('android.support.customtabs.trusted'));
+assert('Android production has no browser-helper dependency',!androidGradle.includes('com.google.androidbrowserhelper'));
+assert('Android WebView keeps Academy on GitHub Pages for now',androidMainActivity.includes('https://skyarecom.github.io/stackup.holdem-academy/')&&androidMainActivity.includes('new WebView(this)'));
+assert('Android WebView blocks file content and mixed-content access',androidMainActivity.includes('setAllowFileAccess(false)')&&androidMainActivity.includes('setAllowContentAccess(false)')&&androidMainActivity.includes('WebSettings.MIXED_CONTENT_NEVER_ALLOW'));
+assert('Android WebView does not fall back to an exposed browser URL on load failure',!androidMainActivity.includes('openExternalBrowserOrShowError'));
 
 if(process.exitCode)process.exit(process.exitCode);
 console.log('Play release UI guard OK');
