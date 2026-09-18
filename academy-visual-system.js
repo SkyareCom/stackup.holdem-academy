@@ -703,7 +703,7 @@
     }
 
     #root .fv-handbox,
-    #root .fv-table,
+    #root .fv-position-board,
     #root .fv-row,
     #root .fv-format,
     #root .fv-formatline{
