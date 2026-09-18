@@ -147,13 +147,9 @@ jobs:
           emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
           disable-animations: true
           script: |
-            if [ "$STACKUP_SIGNING_READY" = "true" ]; then
-              APK="android/app/build/outputs/apk/release/app-release.apk"
-              PACKAGE="com.skyare.stackupacademy"
-            else
-              APK="android/app/build/outputs/apk/debug/app-debug.apk"
-              PACKAGE="com.skyare.stackupacademy.test"
-            fi
+            APK="android/app/build/outputs/apk/release/app-release.apk"
+            PACKAGE="com.skyare.stackupacademy"
+            test -s "$APK"
             adb install -r "$APK"
             adb shell dumpsys package "$PACKAGE" > /tmp/stackup-package.txt
             grep -q "com.skyare.stackupacademy.MainActivity" /tmp/stackup-package.txt
