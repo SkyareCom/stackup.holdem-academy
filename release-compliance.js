@@ -1,6 +1,7 @@
 (() => {
   const APP_NAME = "StackUp Hold'em Academy";
   const PRIVACY_URL = './privacy.html';
+  const FOOTER_LOGO_URL = './ph4-footer-logo.webp?v=1';
 
   function applyReleaseCompliance(){
     const app=document.querySelector('.app');
@@ -16,6 +17,22 @@
     footer.style.letterSpacing='.035em';
     footer.style.color='#a9957d';
 
+    const logo=document.createElement('img');
+    logo.src=FOOTER_LOGO_URL;
+    logo.alt='PH4 dev&health';
+    logo.width=118;
+    logo.height=118;
+    logo.loading='lazy';
+    logo.decoding='async';
+    Object.assign(logo.style,{
+      display:'block',
+      width:'clamp(88px,24vw,118px)',
+      height:'auto',
+      margin:'0 auto 10px',
+      borderRadius:'14px',
+      objectFit:'contain'
+    });
+
     const note=document.createElement('div');
     note.textContent='CONTEÚDO EDUCACIONAL · SEM APOSTAS, DEPÓSITOS OU PRÊMIOS EM DINHEIRO REAL';
 
@@ -29,7 +46,7 @@
     link.style.textDecoration='underline';
     link.style.textUnderlineOffset='3px';
 
-    footer.append(note,link);
+    footer.append(logo,note,link);
     app.appendChild(footer);
   }
 
