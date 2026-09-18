@@ -95,8 +95,8 @@ jobs:
           mkdir -p android/app/build/outputs/bundle/release
           {
             echo "package=com.skyare.stackupacademy"
-            echo "versionName=1.0.1"
-            echo "versionCode=2"
+            echo "versionName=1.0.2"
+            echo "versionCode=3"
             echo "targetSdk=36"
             echo "signed=${STACKUP_SIGNING_READY}"
           } > android/app/build/outputs/bundle/release/RELEASE-INFO.txt
