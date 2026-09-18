@@ -6,6 +6,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -36,17 +37,17 @@ public class MainActivity extends Activity {
         root = new FrameLayout(this);
         root.setBackgroundColor(Color.rgb(7, 20, 13));
         setContentView(root);
-
         showLoadingMessage();
 
         try {
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
-            openExternalBrowserOrShowError();
+            showPermanentError();
         }
     }
 
     private void showLoadingMessage() {
+        root.removeAllViews();
         TextView loading = new TextView(this);
         loading.setText("STACKUP HOLD'EM ACADEMY\n\nCarregando...");
         loading.setTextColor(Color.WHITE);
@@ -60,8 +61,9 @@ public class MainActivity extends Activity {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void createAndLoadWebView(Bundle savedInstanceState) {
-        webView = new WebView(getApplicationContext());
+        webView = new WebView(this);
         webView.setBackgroundColor(Color.rgb(7, 20, 13));
+        WebView.setWebContentsDebuggingEnabled(BuildConfig.DEBUG);
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -71,7 +73,13 @@ public class MainActivity extends Activity {
         settings.setSupportZoom(false);
         settings.setBuiltInZoomControls(false);
         settings.setDisplayZoomControls(false);
+        settings.setAllowFileAccess(false);
+        settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            settings.setSafeBrowsingEnabled(true);
+        }
 
         webView.setWebChromeClient(new WebChromeClient());
         webView.setWebViewClient(new WebViewClient() {
@@ -89,7 +97,7 @@ public class MainActivity extends Activity {
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 if (request != null && request.isForMainFrame()) {
-                    openExternalBrowserOrShowError();
+                    showPermanentError();
                 }
             }
 
@@ -106,8 +114,15 @@ public class MainActivity extends Activity {
         });
 
         if (savedInstanceState != null && webView.restoreState(savedInstanceState) != null) {
+            if (webView.getParent() == null) {
+                root.removeAllViews();
+                root.addView(webView, new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+            }
             return;
         }
+
         webView.loadUrl(APP_URL);
     }
 
@@ -122,33 +137,32 @@ public class MainActivity extends Activity {
 
         if (uri != null) {
             try {
-                startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                startActivity(intent);
                 return true;
             } catch (ActivityNotFoundException ignored) {
-                return false;
+                return true;
             }
         }
-        return false;
-    }
-
-    private void openExternalBrowserOrShowError() {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(APP_URL));
-            intent.addCategory(Intent.CATEGORY_BROWSABLE);
-            startActivity(intent);
-            finish();
-        } catch (Throwable ignored) {
-            showPermanentError();
-        }
+        return true;
     }
 
     private void showPermanentError() {
         if (root == null) {
             return;
         }
+        if (webView != null) {
+            try {
+                webView.stopLoading();
+            } catch (Throwable ignored) {
+                // Keep the error screen stable even if WebView is already unavailable.
+            }
+        }
+
         root.removeAllViews();
         TextView error = new TextView(this);
-        error.setText("STACKUP HOLD'EM ACADEMY\n\nNao foi possivel abrir o aplicativo.\nVerifique sua conexao com a internet.");
+        error.setText("STACKUP HOLD'EM ACADEMY\n\nNao foi possivel abrir o aplicativo.\nVerifique sua conexao com a internet e abra novamente.");
         error.setTextColor(Color.WHITE);
         error.setTextSize(17f);
         error.setGravity(Gravity.CENTER);
@@ -185,7 +199,7 @@ public class MainActivity extends Activity {
                 webView.removeAllViews();
                 webView.destroy();
             } catch (Throwable ignored) {
-                // Never let WebView cleanup crash the test launcher.
+                // Cleanup must never crash the launcher.
             }
             webView = null;
         }
