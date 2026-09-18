@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v110';
-const SW_VERSION=110;
+const CACHE='stackup-academy-v111';
+const SW_VERSION=111;
 const ASSETS=[
   './fonts/love-ya-like-a-sister.ttf',
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
@@ -35,7 +35,7 @@ const SCRIPTS=[
   ['other-rules-details.js',2],
   ['fundamentals-learning-flow.js',4],
   ['fundamentals-interactive-bank.js',1],
-  ['fundamentals-visual-layer.js',2],
+  ['fundamentals-visual-layer.js',3],
   ['fundamentals-interactive.js',5],
   ['fundamentals-progress-panel.js',4],
   ['modalities-module.js',2],
