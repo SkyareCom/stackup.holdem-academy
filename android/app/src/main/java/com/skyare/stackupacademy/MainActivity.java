@@ -236,11 +236,18 @@ public class MainActivity extends Activity {
     }
 
     private void handleBackNavigation() {
-        if (webView != null && webView.canGoBack()) {
-            webView.goBack();
-        } else {
+        if (webView == null) {
             finish();
+            return;
         }
+
+        webView.evaluateJavascript(
+                "(function(){try{return window.StackUpNativeBack?String(window.StackUpNativeBack()):'false';}catch(e){return 'false';}})();",
+                value -> {
+                    if (!"\"true\"".equals(value)) {
+                        finish();
+                    }
+                });
     }
 
     @Override
