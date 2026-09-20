@@ -24,6 +24,7 @@ const androidGradle=fs.readFileSync('android/app/build.gradle.kts','utf8');
 const androidManifest=fs.readFileSync('android/app/src/main/AndroidManifest.xml','utf8');
 const androidMainActivity=fs.readFileSync('android/app/src/main/java/com/skyare/stackupacademy/MainActivity.java','utf8');
 const androidStyles=fs.readFileSync('android/app/src/main/res/values/styles.xml','utf8');
+const navigationControls=fs.readFileSync('navigation-controls.js','utf8');
 
 assert('original font is locally preloaded',index.includes('fonts/love-ya-like-a-sister.ttf')&&index.includes('as="font"')&&fs.existsSync('fonts/OFL.txt'));
 assert('global font lock uses Love Ya Like A Sister',typography.includes("font-family:'Love Ya Like A Sister',cursive!important"));
@@ -61,7 +62,7 @@ assert('Streets ambiguous questions were clarified',fundamentalsBank.includes('N
 assert('horizontal exercise strips wrap instead of overflowing',visual.includes('#root .fv-steps')&&visual.includes('#root .m2-flow')&&visual.includes('overflow:visible!important'));
 assert('PH4 logo appears above legal footer copy',releaseCompliance.includes("FOOTER_LOGO_URL = './ph4-footer-logo.webp?v=1'")&&releaseCompliance.includes('footer.append(logo,note,link)')&&fs.existsSync('ph4-footer-logo.webp'));
 assert('lazy feature styles cannot override final layout contract',loader.includes('restackVisualSystem')&&loader.includes("node.tagName==='STYLE'"));
-assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v116'")&&serviceWorker.includes('SW_VERSION=116')&&serviceWorker.includes("['release-compliance.js',2]")&&serviceWorker.includes("'./ph4-footer-logo.webp'")&&serviceWorker.includes("['fundamentals-visual-layer.js',5]")&&serviceWorker.includes("['fundamentals-interactive.js',7]")&&serviceWorker.includes("['modalities-module.js',4]")&&serviceWorker.includes("['mixed-games-module.js',5]")&&serviceWorker.includes("['academy-visual-system.js',5]")&&serviceWorker.includes("['academy-loader.js',15]"));
+assert('service worker cache was bumped for audited visual assets',serviceWorker.includes("CACHE='stackup-academy-v117'")&&serviceWorker.includes('SW_VERSION=117')&&serviceWorker.includes("['release-compliance.js',2]")&&serviceWorker.includes("'./ph4-footer-logo.webp'")&&serviceWorker.includes("['fundamentals-visual-layer.js',5]")&&serviceWorker.includes("['fundamentals-interactive.js',7]")&&serviceWorker.includes("['modalities-module.js',4]")&&serviceWorker.includes("['mixed-games-module.js',5]")&&serviceWorker.includes("['academy-visual-system.js',5]")&&serviceWorker.includes("['academy-loader.js',15]"));
 assert('fresh web cache strategy is preserved',serviceWorker.includes('precacheFresh')&&serviceWorker.includes("fetch(request,{cache:'no-store'})")&&serviceWorker.includes("['portuguese-corrections.js',5]"));
 assert('navigation resets only on a new screen',topReset.includes('next===screen')&&topReset.includes('MutationObserver'));
 assert('header reset avoids delayed forced scrolling',!topReset.includes('1450')&&!topReset.includes("window.addEventListener('scroll'"));
@@ -82,6 +83,10 @@ assert('Android WebView does not fall back to an exposed browser URL on load fai
 assert('Android launches in fullscreen theme',androidStyles.includes('android:windowFullscreen')&&androidStyles.includes('true'));
 assert('Android hides status and navigation bars in immersive mode',androidMainActivity.includes('WindowInsetsController')&&androidMainActivity.includes('WindowInsets.Type.statusBars()')&&androidMainActivity.includes('WindowInsets.Type.navigationBars()')&&androidMainActivity.includes('BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE'));
 assert('Android reapplies immersive mode after resume and focus',androidMainActivity.includes('protected void onResume()')&&androidMainActivity.includes('onWindowFocusChanged(boolean hasFocus)')&&androidMainActivity.includes('applyImmersiveFullscreen()'));
+assert('bottom navigation is loaded and cached',index.includes('navigation-controls.js?v=1')&&serviceWorker.includes("'./navigation-controls.js'")&&serviceWorker.includes("['navigation-controls.js',1]"));
+assert('bottom navigation provides back and home controls',navigationControls.includes('stackup-bottom-nav')&&navigationControls.includes("makeButton('‹'")&&navigationControls.includes("makeButton('⌂'"));
+assert('native Android back uses Academy internal history',navigationControls.includes('window.StackUpNativeBack')&&navigationControls.includes("state.type!=='home'")&&androidMainActivity.includes('window.StackUpNativeBack'));
+assert('bottom home control returns to principal menu',navigationControls.includes("typeof window.goHome==='function'")&&navigationControls.includes('window.goHome()'));
 
 if(process.exitCode)process.exit(process.exitCode);
 console.log('Play release UI guard OK');
