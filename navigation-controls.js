@@ -73,8 +73,8 @@
     const {back,home}=labels();
     if(existing){
       const spans=existing.querySelectorAll('.navbtn span:last-child');
-      if(spans[0])spans[0].textContent=back;
-      if(spans[1])spans[1].textContent=home;
+      if(spans[0]&&spans[0].textContent!==back)spans[0].textContent=back;
+      if(spans[1]&&spans[1].textContent!==home)spans[1].textContent=home;
       if(existing.parentElement!==screen)screen.appendChild(existing);
       return;
     }
