@@ -23,6 +23,7 @@ const manifest=JSON.parse(fs.readFileSync('manifest.webmanifest','utf8'));
 const androidGradle=fs.readFileSync('android/app/build.gradle.kts','utf8');
 const androidManifest=fs.readFileSync('android/app/src/main/AndroidManifest.xml','utf8');
 const androidMainActivity=fs.readFileSync('android/app/src/main/java/com/skyare/stackupacademy/MainActivity.java','utf8');
+const androidStyles=fs.readFileSync('android/app/src/main/res/values/styles.xml','utf8');
 
 assert('original font is locally preloaded',index.includes('fonts/love-ya-like-a-sister.ttf')&&index.includes('as="font"')&&fs.existsSync('fonts/OFL.txt'));
 assert('global font lock uses Love Ya Like A Sister',typography.includes("font-family:'Love Ya Like A Sister',cursive!important"));
@@ -69,7 +70,7 @@ assert('web app is standalone',manifest.display==='standalone');
 assert('web app stays portrait-first',manifest.orientation==='portrait-primary');
 assert('web theme keeps Academy green',String(manifest.theme_color).toLowerCase()==='#0e4b3b');
 assert('Android application id is stable',androidGradle.includes('applicationId = "com.skyare.stackupacademy"'));
-assert('Android release version is 1.0.3 build 4',androidGradle.includes('versionCode = 4')&&androidGradle.includes('versionName = "1.0.3"'));
+assert('Android release version is 1.0.4 build 5',androidGradle.includes('versionCode = 5')&&androidGradle.includes('versionName = "1.0.4"'));
 assert('Android targets API 36',androidGradle.includes('targetSdk = 36')&&androidGradle.includes('compileSdk = 36'));
 assert('Android blocks cleartext traffic',androidManifest.includes('android:usesCleartextTraffic="false"'));
 assert('Android production launcher is native MainActivity',androidManifest.includes('android:name="com.skyare.stackupacademy.MainActivity"')&&androidManifest.includes('android.intent.action.MAIN')&&androidManifest.includes('android.intent.category.LAUNCHER'));
@@ -78,6 +79,9 @@ assert('Android production has no browser-helper dependency',!androidGradle.incl
 assert('Android WebView keeps Academy on GitHub Pages for now',androidMainActivity.includes('https://skyarecom.github.io/stackup.holdem-academy/')&&androidMainActivity.includes('new WebView(this)'));
 assert('Android WebView blocks file content and mixed-content access',androidMainActivity.includes('setAllowFileAccess(false)')&&androidMainActivity.includes('setAllowContentAccess(false)')&&androidMainActivity.includes('WebSettings.MIXED_CONTENT_NEVER_ALLOW'));
 assert('Android WebView does not fall back to an exposed browser URL on load failure',!androidMainActivity.includes('openExternalBrowserOrShowError'));
+assert('Android launches in fullscreen theme',androidStyles.includes('android:windowFullscreen')&&androidStyles.includes('true'));
+assert('Android hides status and navigation bars in immersive mode',androidMainActivity.includes('WindowInsetsController')&&androidMainActivity.includes('WindowInsets.Type.statusBars()')&&androidMainActivity.includes('WindowInsets.Type.navigationBars()')&&androidMainActivity.includes('BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE'));
+assert('Android reapplies immersive mode after resume and focus',androidMainActivity.includes('protected void onResume()')&&androidMainActivity.includes('onWindowFocusChanged(boolean hasFocus)')&&androidMainActivity.includes('applyImmersiveFullscreen()'));
 
 if(process.exitCode)process.exit(process.exitCode);
 console.log('Play release UI guard OK');
