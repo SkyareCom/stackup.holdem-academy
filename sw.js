@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v116';
-const SW_VERSION=116;
+const CACHE='stackup-academy-v117';
+const SW_VERSION=117;
 const ASSETS=[
   './fonts/love-ya-like-a-sister.ttf',
   './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
@@ -9,7 +9,7 @@ const ASSETS=[
   './fundamentals-visual-layer.js','./fundamentals-interactive.js','./fundamentals-progress-panel.js','./modalities-module.js',
   './modalities-depth-details.js','./mixed-games-module.js','./practice-module.js','./practice-table.js','./practice-advanced-bank.js',
   './practice-advanced.js','./practice-progress-layout.js','./table-rotation-guard.js','./math-card-structure.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
-  './academy-loader.js','./academy-visual-system.js','./page-top-reset.js','./header-logo-transparent.png','./ph4-footer-logo.webp','./typography-standard.js','./icon-192.png','./icon-512.png'
+  './academy-loader.js','./academy-visual-system.js','./page-top-reset.js','./navigation-controls.js','./header-logo-transparent.png','./ph4-footer-logo.webp','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
   ['session-reset.js',3],
@@ -54,12 +54,13 @@ const SCRIPTS=[
   ['academy-visual-system.js',5],
   ['page-top-reset.js',5],
   ['typography-standard.js',3],
-  ['academy-loader.js',15]
+  ['academy-loader.js',15],
+  ['navigation-controls.js',1]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
   'portuguese-corrections.js','cover-layout.js','release-compliance.js',
-  'academy-visual-system.js','page-top-reset.js','typography-standard.js','academy-loader.js'
+  'academy-visual-system.js','page-top-reset.js','typography-standard.js','academy-loader.js','navigation-controls.js'
 ]);
 
 async function precacheFresh(){
