@@ -19,6 +19,7 @@ import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -66,6 +67,7 @@ public class MainActivity extends Activity {
         }
 
         try {
+            Log.i(TAG, "SHELL_CREATE");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
             showPermanentError();
@@ -155,7 +157,19 @@ public class MainActivity extends Activity {
             settings.setSafeBrowsingEnabled(true);
         }
 
-        webView.setWebChromeClient(new WebChromeClient());
+        root.removeAllViews();
+        root.addView(webView, new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT));
+        Log.i(TAG, "WEBVIEW_ATTACHED recovery=" + webRecoveryPending);
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                Log.d(TAG, "CONSOLE " + consoleMessage.messageLevel() + ": " + consoleMessage.message());
+                return true;
+            }
+        });
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -174,11 +188,16 @@ public class MainActivity extends Activity {
                     return;
                 }
 
+                Log.e(TAG, "MAIN_FRAME_ERROR code=" + error.getErrorCode()
+                        + " description=" + error.getDescription()
+                        + " url=" + request.getUrl());
+
                 if (!nativeRetryAttempted) {
                     nativeRetryAttempted = true;
                     view.stopLoading();
                     view.clearCache(true);
                     view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                    Log.w(TAG, "MAIN_FRAME_RETRY");
                     view.loadUrl(RECOVERY_URL + "&retry=1");
                     return;
                 }
@@ -189,53 +208,44 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+                Log.i(TAG, "PAGE_FINISHED url=" + url + " recovery=" + webRecoveryPending);
 
                 if (webRecoveryPending && url != null && url.startsWith(APP_URL)) {
                     webRecoveryPending = false;
-                    String resetScript =
-                            "(async()=>{try{" +
-                            "if('caches' in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}" +
-                            "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}" +
-                            "}catch(e){}finally{location.replace('" + RECOVERY_URL + "&done=1');}})();";
-                    view.evaluateJavascript(resetScript, null);
-                    return;
-                }
-
-                if (url != null && url.contains("done=1")) {
                     getSharedPreferences(PREFS, MODE_PRIVATE)
                             .edit()
                             .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
                             .apply();
+
+                    String cleanupScript =
+                            "(async()=>{try{" +
+                            "if('caches' in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}" +
+                            "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}" +
+                            "return 'ok';}catch(e){return 'cleanup-error';}})();";
+                    view.evaluateJavascript(
+                            cleanupScript,
+                            value -> Log.i(TAG, "WEB_CACHE_CLEANUP=" + value));
                 }
 
                 view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
-
-                if (root != null && webView != null && webView.getParent() == null) {
-                    root.removeAllViews();
-                    root.addView(webView, new FrameLayout.LayoutParams(
-                            ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
-                }
-
-                view.evaluateJavascript(
-                        "(function(){return !!(document.querySelector('.app')&&document.querySelector('#root .screen'));})();",
-                        value -> Log.i(TAG, "WEB_CONTENT_READY=" + value));
+                view.postDelayed(
+                        () -> view.evaluateJavascript(
+                                "(function(){return !!(document.querySelector('.app')&&document.querySelector('#root .screen'));})();",
+                                value -> Log.i(TAG, "WEB_CONTENT_READY=" + value)),
+                        1200);
             }
         });
 
         if (!webRecoveryPending
                 && savedInstanceState != null
                 && webView.restoreState(savedInstanceState) != null) {
-            if (webView.getParent() == null) {
-                root.removeAllViews();
-                root.addView(webView, new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
-            }
+            Log.i(TAG, "WEBVIEW_STATE_RESTORED");
             return;
         }
 
-        webView.loadUrl(webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_URL);
+        String initialUrl = webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_URL;
+        Log.i(TAG, "LOAD_URL=" + initialUrl);
+        webView.loadUrl(initialUrl);
     }
 
     private boolean handleNavigation(Uri uri) {
@@ -261,6 +271,7 @@ public class MainActivity extends Activity {
     }
 
     private void showPermanentError() {
+        Log.e(TAG, "PERMANENT_ERROR_SCREEN");
         if (root == null) {
             return;
         }

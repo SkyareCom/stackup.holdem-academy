@@ -161,11 +161,25 @@ jobs:
             cat /tmp/stackup-start.txt
             grep -q "Status: ok" /tmp/stackup-start.txt
             grep -q "MainActivity" /tmp/stackup-start.txt
-            sleep 15
-            adb logcat -d -v brief > /tmp/stackup-logcat.txt
-            grep -q "WEB_CONTENT_READY=true" /tmp/stackup-logcat.txt
-            ! grep -q "ERR_CACHE_MISS" /tmp/stackup-logcat.txt
-            ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" /tmp/stackup-logcat.txt
+            sleep 22
+            mkdir -p android-diagnostics
+            adb logcat -d -v time > android-diagnostics/logcat.txt
+            cp /tmp/stackup-start.txt android-diagnostics/start.txt
+            adb exec-out screencap -p > android-diagnostics/screen.png
+            adb shell uiautomator dump /sdcard/stackup-window.xml || true
+            adb pull /sdcard/stackup-window.xml android-diagnostics/window.xml || true
+            grep -E "StackUpAcademy|chromium|WebView|ERR_|FATAL" android-diagnostics/logcat.txt | tail -n 240 || true
+            grep -q "WEB_CONTENT_READY=true" android-diagnostics/logcat.txt
+            ! grep -q "ERR_CACHE_MISS" android-diagnostics/logcat.txt
+            ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" android-diagnostics/logcat.txt
+
+      - name: Upload Android runtime diagnostics
+        if: ${{ always() }}
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: stackup-academy-android-runtime-diagnostics
+          path: android-diagnostics/
+          if-no-files-found: warn
 
       - name: Upload Play AAB artifact
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
