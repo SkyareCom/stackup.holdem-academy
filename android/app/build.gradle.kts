@@ -38,8 +38,11 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".test"
+            applicationIdSuffix = ".test104"
             versionNameSuffix = "-test"
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
         release {
             isMinifyEnabled = false

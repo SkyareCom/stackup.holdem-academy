@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -30,10 +32,18 @@ public class MainActivity extends Activity {
     private static final String APP_URL = "https://skyarecom.github.io/stackup.holdem-academy/";
     private static final String APP_HOST = "skyarecom.github.io";
     private static final String APP_PATH = "/stackup.holdem-academy/";
+    private static final String TAG = "StackUpAcademy";
+    private static final String PREFS = "stackup_android_shell";
+    private static final String CACHE_SCHEMA_KEY = "cache_schema";
+    private static final int CACHE_SCHEMA = 5;
+    private static final String RECOVERY_URL =
+            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=5&cache_reset=1";
 
     private WebView webView;
     private FrameLayout root;
     private OnBackInvokedCallback backCallback;
+    private boolean webRecoveryPending;
+    private boolean nativeRetryAttempted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +130,12 @@ public class MainActivity extends Activity {
                 (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
         WebView.setWebContentsDebuggingEnabled(isDebuggable);
 
+        SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);
+        webRecoveryPending = prefs.getInt(CACHE_SCHEMA_KEY, 0) < CACHE_SCHEMA;
+        if (webRecoveryPending) {
+            webView.clearCache(true);
+        }
+
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -131,6 +147,9 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        if (webRecoveryPending) {
+            settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             settings.setSafeBrowsingEnabled(true);
@@ -151,24 +170,62 @@ public class MainActivity extends Activity {
 
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                if (request != null && request.isForMainFrame()) {
-                    showPermanentError();
+                if (request == null || !request.isForMainFrame()) {
+                    return;
                 }
+
+                if (!nativeRetryAttempted) {
+                    nativeRetryAttempted = true;
+                    view.stopLoading();
+                    view.clearCache(true);
+                    view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                    view.loadUrl(RECOVERY_URL + "&retry=1");
+                    return;
+                }
+
+                showPermanentError();
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
+
+                if (webRecoveryPending && url != null && url.startsWith(APP_URL)) {
+                    webRecoveryPending = false;
+                    String resetScript =
+                            "(async()=>{try{" +
+                            "if('caches' in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}" +
+                            "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}" +
+                            "}catch(e){}finally{location.replace('" + RECOVERY_URL + "&done=1');}})();";
+                    view.evaluateJavascript(resetScript, null);
+                    return;
+                }
+
+                if (url != null && url.contains("done=1")) {
+                    getSharedPreferences(PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
+                            .apply();
+                }
+
+                view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
                 if (root != null && webView != null && webView.getParent() == null) {
                     root.removeAllViews();
                     root.addView(webView, new FrameLayout.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT));
                 }
+
+                view.evaluateJavascript(
+                        "(function(){return !!(document.querySelector('.app')&&document.querySelector('#root .screen'));})();",
+                        value -> Log.i(TAG, "WEB_CONTENT_READY=" + value));
             }
         });
 
-        if (savedInstanceState != null && webView.restoreState(savedInstanceState) != null) {
+        if (!webRecoveryPending
+                && savedInstanceState != null
+                && webView.restoreState(savedInstanceState) != null) {
             if (webView.getParent() == null) {
                 root.removeAllViews();
                 root.addView(webView, new FrameLayout.LayoutParams(
@@ -178,7 +235,7 @@ public class MainActivity extends Activity {
             return;
         }
 
-        webView.loadUrl(APP_URL);
+        webView.loadUrl(webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_URL);
     }
 
     private boolean handleNavigation(Uri uri) {
