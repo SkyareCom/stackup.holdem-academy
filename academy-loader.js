@@ -34,13 +34,13 @@
       ['other-rules-details.js',2],
       ['fundamentals-interactive-bank.js',1],
       ['fundamentals-visual-layer.js',2],
-      ['fundamentals-interactive.js',5],
+      ['fundamentals-interactive.js',8],
       ['fundamentals-progress-panel.js',4]
     ],
     modalidades:[
-      ['modalities-module.js',1],
+      ['modalities-module.js',5],
       ['modalities-depth-details.js',1],
-      ['mixed-games-module.js',2]
+      ['mixed-games-module.js',6]
     ],
     pratica:[
       ['practice-module.js',1],
