@@ -25,7 +25,7 @@ assert('language-card observer is batched',lang.includes('cardFrame=requestAnima
 assert('fundamentals training observer is root-only',interactive.includes("observer.observe(root,{childList:true})")&&!interactive.includes("observe(document.documentElement,{childList:true,subtree:true})"));
 assert('progress observer avoids document-wide scans',progress.includes("observer.observe(root,{childList:true,subtree:true})")&&!progress.includes("document.querySelectorAll('.fi-stats')"));
 assert('learning flow does not compete for scroll ownership',!flow.includes('scrollTo')&&!flow.includes('MutationObserver'));
-assert('first load only boots the lightweight loader',fs.readFileSync('index.html','utf8').includes('academy-loader.js?v=11')&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
+assert('first load only boots the lightweight loader',fs.readFileSync('index.html','utf8').includes('academy-loader.js?v=16')&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
 assert('heavy Academy modules are lazy by stage',loader.includes('const groups={')&&loader.includes('requestIdleCallback')&&loader.includes("new MutationObserver(schedule).observe(root,{childList:true})"));
 assert('lesson navigation opens synchronously without waiting for modules',loader.includes('nativeLesson(stage,index,push);')&&!loader.includes('LESSON_LOAD_TIMEOUT_MS')&&!loader.includes('bounded(ensure(stage)'));
 assert('heavy module execution is serialized to reduce main-thread spikes',loader.includes('files.reduce(')&&loader.includes('chain.then(()=>load(name,version))'));
