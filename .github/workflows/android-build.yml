@@ -96,7 +96,7 @@ jobs:
           {
             echo "package=com.skyare.stackupacademy"
             echo "versionName=1.0.4"
-            echo "versionCode=6"
+            echo "versionCode=8"
             echo "targetSdk=36"
             echo "shell=webview"
             echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy/"
