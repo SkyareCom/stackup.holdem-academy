@@ -27,6 +27,7 @@ assert('progress observer avoids document-wide scans',progress.includes("observe
 assert('learning flow does not compete for scroll ownership',!flow.includes('scrollTo')&&!flow.includes('MutationObserver'));
 assert('first load only boots the lightweight loader',fs.readFileSync('index.html','utf8').includes('academy-loader.js?v=16')&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
 assert('heavy Academy modules are lazy by stage',loader.includes('const groups={')&&loader.includes('requestIdleCallback')&&loader.includes("new MutationObserver(schedule).observe(root,{childList:true})"));
+assert('heavy Academy modules do not start while browsing topic lists',loader.includes("state?.type==='lesson'&&state.stage&&groups[state.stage]"));
 assert('lesson navigation opens synchronously without waiting for modules',loader.includes('nativeLesson(stage,index,push);')&&!loader.includes('LESSON_LOAD_TIMEOUT_MS')&&!loader.includes('bounded(ensure(stage)'));
 assert('heavy module execution is serialized to reduce main-thread spikes',loader.includes('files.reduce(')&&loader.includes('chain.then(()=>load(name,version))'));
 assert('service worker limits legacy document-wide observers',sw.includes('stackup-performance-guard')&&sw.includes('target===document.documentElement'));
