@@ -71,7 +71,7 @@ assert('web app is standalone',manifest.display==='standalone');
 assert('web app stays portrait-first',manifest.orientation==='portrait-primary');
 assert('web theme keeps Academy green',String(manifest.theme_color).toLowerCase()==='#0e4b3b');
 assert('Android application id is stable',androidGradle.includes('applicationId = "com.skyare.stackupacademy"'));
-assert('Android release version is 1.0.4 build 8',androidGradle.includes('versionCode = 8')&&androidGradle.includes('versionName = "1.0.4"'));
+assert('Android release version is 1.0.4 build 100',androidGradle.includes('versionCode = 100')&&androidGradle.includes('versionName = "1.0.4"'));
 assert('Android targets API 36',androidGradle.includes('targetSdk = 36')&&androidGradle.includes('compileSdk = 36'));
 assert('Android blocks cleartext traffic',androidManifest.includes('android:usesCleartextTraffic="false"'));
 assert('Android production launcher is native MainActivity',androidManifest.includes('android:name="com.skyare.stackupacademy.MainActivity"')&&androidManifest.includes('android.intent.action.MAIN')&&androidManifest.includes('android.intent.category.LAUNCHER'));
