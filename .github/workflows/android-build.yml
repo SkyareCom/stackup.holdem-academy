@@ -155,6 +155,8 @@ jobs:
             test -s android/app/build/outputs/apk/release/app-release.apk
             adb install -r android/app/build/outputs/apk/release/app-release.apk
             adb shell pm list packages | grep -q "^package:com.skyare.stackupacademy$"
+            for i in $(seq 1 12); do adb shell ping -c 1 -W 2 skyarecom.github.io >/dev/null 2>&1 && break; sleep 5; done
+            adb shell ping -c 1 -W 2 skyarecom.github.io >/dev/null 2>&1
             adb logcat -c
             adb shell am force-stop com.skyare.stackupacademy
             adb shell am start -W -n com.skyare.stackupacademy/com.skyare.stackupacademy.MainActivity > /tmp/stackup-start.txt
@@ -182,6 +184,7 @@ jobs:
           if-no-files-found: warn
 
       - name: Upload Play AAB artifact
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stackup-academy-play-aab
@@ -192,6 +195,7 @@ jobs:
           if-no-files-found: error
 
       - name: Upload installable test APK
+        if: ${{ always() }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: stackup-academy-android-test-apk
