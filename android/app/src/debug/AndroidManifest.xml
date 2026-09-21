@@ -3,6 +3,6 @@
     <application android:usesCleartextTraffic="false">
         <activity
             android:name="com.skyare.stackupacademy.MainActivity"
-            android:label="StackUp Hold'em Academy TEST" />
+            android:label="StackUp Hold'em Academy TEST 1.0.4" />
     </application>
 </manifest>
