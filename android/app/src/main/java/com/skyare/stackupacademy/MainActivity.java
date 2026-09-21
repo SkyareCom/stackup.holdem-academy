@@ -192,18 +192,20 @@ public class MainActivity extends Activity {
 
                 if (webRecoveryPending && url != null && url.startsWith(APP_URL)) {
                     webRecoveryPending = false;
-                    getSharedPreferences(PREFS, MODE_PRIVATE)
-                            .edit()
-                            .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
-                            .apply();
-
                     String resetScript =
                             "(async()=>{try{" +
                             "if('caches' in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}" +
                             "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}" +
-                            "}catch(e){}finally{location.replace('" + RECOVERY_URL + "');}})();";
+                            "}catch(e){}finally{location.replace('" + RECOVERY_URL + "&done=1');}})();";
                     view.evaluateJavascript(resetScript, null);
                     return;
+                }
+
+                if (url != null && url.contains("done=1")) {
+                    getSharedPreferences(PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
+                            .apply();
                 }
 
                 view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -221,7 +223,9 @@ public class MainActivity extends Activity {
             }
         });
 
-        if (savedInstanceState != null && webView.restoreState(savedInstanceState) != null) {
+        if (!webRecoveryPending
+                && savedInstanceState != null
+                && webView.restoreState(savedInstanceState) != null) {
             if (webView.getParent() == null) {
                 root.removeAllViews();
                 root.addView(webView, new FrameLayout.LayoutParams(
