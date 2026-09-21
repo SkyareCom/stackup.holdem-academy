@@ -93,11 +93,7 @@
 
   function currentStage(){
     const state=history.state;
-    if(state?.stage&&groups[state.stage])return state.stage;
-    const marker=(root.querySelector('.eyebrow,.badge')?.textContent||'').toUpperCase();
-    if(marker.includes('ETAPA 01'))return 'fundamentos';
-    if(marker.includes('ETAPA 02'))return 'modalidades';
-    if(marker.includes('ETAPA 03'))return 'pratica';
+    if(state?.type==='lesson'&&state.stage&&groups[state.stage])return state.stage;
     return '';
   }
 
