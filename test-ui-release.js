@@ -86,6 +86,10 @@ assert('Android reapplies immersive mode after resume and focus',androidMainActi
 assert('bottom navigation is loaded and cached',index.includes('navigation-controls.js?v=1')&&serviceWorker.includes("'./navigation-controls.js'")&&serviceWorker.includes("['navigation-controls.js',1]"));
 assert('bottom navigation provides back and home controls',navigationControls.includes('stackup-bottom-nav')&&navigationControls.includes("makeButton('‹'")&&navigationControls.includes("makeButton('⌂'"));
 assert('native Android back uses Academy internal history',navigationControls.includes('window.StackUpNativeBack')&&navigationControls.includes("state.type!=='home'")&&androidMainActivity.includes('window.StackUpNativeBack'));
+assert('Android shell self-recovers stale WebView cache',androidMainActivity.includes('CACHE_SCHEMA = 5')&&androidMainActivity.includes('webView.clearCache(true)')&&androidMainActivity.includes('WebSettings.LOAD_NO_CACHE'));
+assert('Android shell clears CacheStorage and stale service workers without deleting localStorage',androidMainActivity.includes("caches.keys()")&&androidMainActivity.includes("navigator.serviceWorker.getRegistrations()")&&!androidMainActivity.includes('localStorage.clear()'));
+assert('Android shell retries a main-frame load once before showing a permanent error',androidMainActivity.includes('nativeRetryAttempted')&&androidMainActivity.includes('view.loadUrl(RECOVERY_URL + "&retry=1")'));
+assert('Android CI can verify rendered Academy content',androidMainActivity.includes('WEB_CONTENT_READY=')&&androidMainActivity.includes("document.querySelector('#root .screen')"));
 assert('bottom home control returns to principal menu',navigationControls.includes("typeof window.goHome==='function'")&&navigationControls.includes('window.goHome()'));
 
 if(process.exitCode)process.exit(process.exitCode);
