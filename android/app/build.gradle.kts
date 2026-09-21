@@ -21,7 +21,7 @@ android {
         applicationId = "com.skyare.stackupacademy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 8
+        versionCode = 100
         versionName = "1.0.4"
     }
 
