@@ -92,7 +92,7 @@
     shell.querySelectorAll('[data-seq]').forEach(btn=>btn.onclick=()=>{const v=btn.dataset.seq;const idx=rt.seq.indexOf(v);if(idx>=0)rt.seq.splice(idx,1);else rt.seq.push(v);if(rt.seq.length===spot.answer.length){const selected=[...rt.seq];grade(shell,chapter,spot,selected);}else renderShell(shell,chapter);});
     const prev=shell.querySelector('[data-fi-prev]');if(prev)prev.onclick=()=>{if(rt.cursor>0){rt.cursor--;rt.redo=false;rt.seq=[];renderShell(shell,chapter);}};
     const redo=shell.querySelector('[data-fi-redo]');if(redo)redo.onclick=()=>{rt.redo=true;rt.seq=[];renderShell(shell,chapter);};
-    const next=shell.querySelector('[data-fi-next]');if(next)next.onclick=()=>{nextSpot(rt);renderShell(shell,chapter);shell.scrollIntoView({behavior:'smooth',block:'start'});};
+    const next=shell.querySelector('[data-fi-next]');if(next)next.onclick=()=>{nextSpot(rt);renderShell(shell,chapter);shell.scrollIntoView({behavior:'auto',block:'start'});};
   }
 
   function mount(){

@@ -1,15 +1,23 @@
-const CACHE='stackup-academy-v117';
-const SW_VERSION=117;
-const ASSETS=[
+const CACHE='stackup-academy-v118';
+const SW_VERSION=118;
+const CORE_ASSETS=[
+  './',
+  './index.html',
+  './manifest.webmanifest',
   './fonts/love-ya-like-a-sister.ttf',
-  './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
-  './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
-  './strategic-concepts-details.js','./terminology-extra-terms.js','./cash-tournament-details.js','./highlight-card-style.js',
-  './etiquette-details.js','./other-rules-details.js','./fundamentals-learning-flow.js','./fundamentals-interactive-bank.js',
-  './fundamentals-visual-layer.js','./fundamentals-interactive.js','./fundamentals-progress-panel.js','./modalities-module.js',
-  './modalities-depth-details.js','./mixed-games-module.js','./practice-module.js','./practice-table.js','./practice-advanced-bank.js',
-  './practice-advanced.js','./practice-progress-layout.js','./table-rotation-guard.js','./math-card-structure.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
-  './academy-loader.js','./academy-visual-system.js','./page-top-reset.js','./navigation-controls.js','./header-logo-transparent.png','./ph4-footer-logo.webp','./typography-standard.js','./icon-192.png','./icon-512.png'
+  './language-selector.js',
+  './portuguese-corrections.js',
+  './cover-layout.js',
+  './release-compliance.js',
+  './academy-loader.js',
+  './academy-visual-system.js',
+  './page-top-reset.js',
+  './navigation-controls.js',
+  './header-logo-transparent.png',
+  './ph4-footer-logo.webp',
+  './typography-standard.js',
+  './icon-192.png',
+  './icon-512.png'
 ];
 const SCRIPTS=[
   ['session-reset.js',3],
@@ -36,11 +44,11 @@ const SCRIPTS=[
   ['fundamentals-learning-flow.js',4],
   ['fundamentals-interactive-bank.js',2],
   ['fundamentals-visual-layer.js',5],
-  ['fundamentals-interactive.js',7],
+  ['fundamentals-interactive.js',8],
   ['fundamentals-progress-panel.js',4],
-  ['modalities-module.js',4],
+  ['modalities-module.js',5],
   ['modalities-depth-details.js',1],
-  ['mixed-games-module.js',5],
+  ['mixed-games-module.js',6],
   ['practice-module.js',1],
   ['practice-table.js',3],
   ['practice-advanced-bank.js',2],
@@ -54,8 +62,8 @@ const SCRIPTS=[
   ['academy-visual-system.js',5],
   ['page-top-reset.js',5],
   ['typography-standard.js',3],
-  ['academy-loader.js',15],
-  ['navigation-controls.js',1]
+  ['academy-loader.js',16],
+  ['navigation-controls.js',2]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
@@ -65,7 +73,7 @@ const AUTO_SCRIPTS=new Set([
 
 async function precacheFresh(){
   const cache=await caches.open(CACHE);
-  await Promise.all(ASSETS.map(async asset=>{
+  await Promise.all(CORE_ASSETS.map(async asset=>{
     const request=new Request(asset,{cache:'reload'});
     const response=await fetch(request);
     if(response.ok)await cache.put(request,response);
@@ -141,6 +149,24 @@ async function networkFirst(request){
   }
 }
 
+async function staleWhileRevalidate(request){
+  const cached=await caches.match(request);
+  const fresh=fetch(request,{cache:'no-store'})
+    .then(response=>{
+      if(response.ok){
+        const copy=response.clone();
+        caches.open(CACHE).then(cache=>cache.put(request,copy));
+      }
+      return response;
+    })
+    .catch(()=>null);
+  if(cached){
+    fresh.catch(()=>{});
+    return cached;
+  }
+  return (await fresh)||(await caches.match(request,{ignoreSearch:true}))||new Response('Offline',{status:503});
+}
+
 async function cacheFirst(request){
   const cached=await caches.match(request);
   if(cached)return cached;
@@ -163,5 +189,5 @@ self.addEventListener('fetch',event=>{
     return;
   }
   const freshCode=url.origin===self.location.origin&&(/\.(?:js|css|json)$/i.test(url.pathname)||url.pathname.endsWith('.webmanifest'));
-  event.respondWith(freshCode?networkFirst(event.request):cacheFirst(event.request));
+  event.respondWith(freshCode?staleWhileRevalidate(event.request):cacheFirst(event.request));
 });

@@ -34,13 +34,13 @@
       ['other-rules-details.js',2],
       ['fundamentals-interactive-bank.js',1],
       ['fundamentals-visual-layer.js',2],
-      ['fundamentals-interactive.js',5],
+      ['fundamentals-interactive.js',8],
       ['fundamentals-progress-panel.js',4]
     ],
     modalidades:[
-      ['modalities-module.js',1],
+      ['modalities-module.js',5],
       ['modalities-depth-details.js',1],
-      ['mixed-games-module.js',2]
+      ['mixed-games-module.js',6]
     ],
     pratica:[
       ['practice-module.js',1],
@@ -81,7 +81,10 @@
   function ensure(stage){
     const files=groups[stage];
     if(!files||groupTasks.has(stage))return groupTasks.get(stage)||Promise.resolve();
-    const task=Promise.all(files.map(([name,version])=>load(name,version)))
+    const task=files.reduce(
+      (chain,[name,version])=>chain.then(()=>load(name,version)),
+      Promise.resolve()
+    )
       .then(value=>{queueRestack();return value;})
       .catch(err=>{groupTasks.delete(stage);throw err;});
     groupTasks.set(stage,task);
@@ -107,41 +110,20 @@
       if(stage)ensure(stage).catch(err=>console.error('[STACKUP] Lazy module load failed.',err));
       queueRestack();
     };
-    idleId=1;
-    queueMicrotask(run);
+    if('requestIdleCallback' in window){
+      idleId=requestIdleCallback(run,{timeout:900});
+    }else{
+      idleId=setTimeout(run,0);
+    }
   }
 
-  const LESSON_LOAD_TIMEOUT_MS=6000;
-  function bounded(task,label){
-    return new Promise((resolve,reject)=>{
-      const timer=setTimeout(()=>reject(new Error(`${label} timed out`)),LESSON_LOAD_TIMEOUT_MS);
-      task.then(
-        value=>{clearTimeout(timer);resolve(value);},
-        err=>{clearTimeout(timer);reject(err);}
-      );
-    });
-  }
-
-  // Fetch on menu entry. A missing/slow enhancement must never leave a tap frozen:
-  // after the bounded wait, open the base lesson and let any late module finish later.
+  // Navigation must never wait for network/module parsing. Open the base lesson
+  // synchronously, paint it, then enhance it in the background.
   const nativeLesson=window.lesson;
-  let navigation=0;
   window.lesson=function(stage,index,push=0){
-    const ticket=++navigation;
-    const screen=root.firstElementChild;
-    let opened=false;
-    const open=()=>{
-      if(opened||ticket!==navigation||root.firstElementChild!==screen)return;
-      opened=true;
-      nativeLesson(stage,index,push);
-      queueRestack();
-    };
-    return bounded(ensure(stage),`Lesson modules for ${stage}`)
-      .then(open)
-      .catch(err=>{
-        console.error('[STACKUP] Lesson modules were not ready; opening base lesson.',err);
-        open();
-      });
+    nativeLesson(stage,index,push);
+    queueRestack();
+    schedule();
   };
 
   new MutationObserver(schedule).observe(root,{childList:true});

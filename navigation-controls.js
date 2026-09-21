@@ -104,7 +104,7 @@
     });
   }
 
-  new MutationObserver(schedule).observe(root,{childList:true,subtree:true});
+  new MutationObserver(schedule).observe(root,{childList:true});
   if(topNav)new MutationObserver(schedule).observe(topNav,{childList:true,subtree:true,characterData:true});
   window.addEventListener('popstate',schedule,{passive:true});
   schedule();
