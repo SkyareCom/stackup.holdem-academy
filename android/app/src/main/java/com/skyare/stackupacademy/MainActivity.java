@@ -52,12 +52,12 @@ public class MainActivity extends Activity {
 
         getWindow().setStatusBarColor(Color.rgb(5, 72, 37));
         getWindow().setNavigationBarColor(Color.rgb(44, 32, 20));
-        applyImmersiveFullscreen();
 
         root = new FrameLayout(this);
         root.setBackgroundColor(Color.rgb(7, 20, 13));
         setContentView(root);
         showLoadingMessage();
+        root.post(this::applyImmersiveFullscreen);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             backCallback = this::handleBackNavigation;
@@ -76,18 +76,24 @@ public class MainActivity extends Activity {
 
     @SuppressWarnings("deprecation")
     private void applyImmersiveFullscreen() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = getWindow().getInsetsController();
-            if (controller != null) {
-                controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-            }
+        View decor = getWindow().getDecorView();
+        if (decor == null || !decor.isAttachedToWindow()) {
             return;
         }
 
-        getWindow().getDecorView().setSystemUiVisibility(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+            WindowInsetsController controller = decor.getWindowInsetsController();
+            if (controller == null) {
+                return;
+            }
+            controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
+            controller.setSystemBarsBehavior(
+                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+            return;
+        }
+
+        decor.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                         | View.SYSTEM_UI_FLAG_FULLSCREEN
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
@@ -99,7 +105,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        applyImmersiveFullscreen();
+        if (root != null) {
+            root.post(this::applyImmersiveFullscreen);
+        }
     }
 
     @Override
