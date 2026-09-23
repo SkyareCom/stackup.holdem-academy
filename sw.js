@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v118';
-const SW_VERSION=118;
+const CACHE='stackup-academy-v119';
+const SW_VERSION=119;
 const CORE_ASSETS=[
   './',
   './index.html',
@@ -21,6 +21,10 @@ const CORE_ASSETS=[
 ];
 const SCRIPTS=[
   ['session-reset.js',3],
+  ['academy-progression.js',2],
+  ['academy-xp-panel.js',2],
+  ['academy-my-evolution.js',2],
+  ['i18n-en-us-progression.js',1],
   ['language-selector.js',4],
   ['i18n-en-us-phrases-1.js',2],
   ['i18n-en-us-phrases-2.js',2],
