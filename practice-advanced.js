@@ -22,13 +22,13 @@
   const shuffleOptions=item=>seeded(item.options,item.id?hash(item.id):1);
 
   const SIM_FILTERS=[
-    {key:'HNL',label:'HNL',match:s=>norm(s.game).includes('TEXAS HOLD')},
+    {key:'NLH',label:'NLH',match:s=>norm(s.game).includes('TEXAS HOLD')},
     {key:'PLO4',label:'PLO4',match:s=>norm(s.game)==='PLO4'},
     {key:'PLO5',label:'PLO5',match:s=>norm(s.game)==='PLO5'},
     {key:'PLO6',label:'PLO6',match:s=>norm(s.game)==='PLO6'},
     {key:'MAIS',label:'MAIS',match:s=>!['TEXAS HOLD\'EM','PLO4','PLO5','PLO6'].includes(norm(s.game))}
   ];
-  if(!SIM_FILTERS.some(f=>f.key===state.sim.filter))state.sim.filter='HNL';
+  if(!SIM_FILTERS.some(f=>f.key===state.sim.filter))state.sim.filter='NLH';
   const activeSimFilter=()=>SIM_FILTERS.find(f=>f.key===state.sim.filter)||SIM_FILTERS[0];
   const simBank=()=>B.sim.filter(activeSimFilter().match);
   const simFilterBar=()=>`<div class="p3x-sim-filters" role="group" aria-label="Filtrar modalidade do simulador">${SIM_FILTERS.map(f=>`<button type="button" class="p3x-filter-btn ${f.key===state.sim.filter?'active':''}" data-sim-filter="${f.key}">${f.label}</button>`).join('')}</div>`;
@@ -167,7 +167,7 @@
     const item=current[mode];
     shell.querySelectorAll('.p3x-opt').forEach(btn=>btn.addEventListener('click',()=>{
       if(answered[mode])return;answered[mode]=true;
-      const selected=btn.dataset.answer,ok=selected===item.answer;state[mode].results[item.id]=ok;save();
+      const selected=btn.dataset.answer,ok=selected===item.answer;state[mode].results[item.id]=ok;save();if(window.StackupAcademyProgression)window.StackupAcademyProgression.award({id:'practice:'+mode+':'+item.id,correct:ok,difficulty:item.difficulty,stage:mode,mode});
       shell.querySelectorAll('.p3x-opt').forEach(b=>{b.disabled=true;if(b.dataset.answer===item.answer)b.classList.add('ok');else if(b===btn&&!ok)b.classList.add('bad')});
       const fb=shell.querySelector('[data-feedback]');fb.classList.add('show');fb.innerHTML=`<strong>${ok?'CORRETO':'RESPOSTA CORRETA: '+esc(item.answer)}</strong><br>${esc(item.why)}`;
       const old=shell.querySelector('.p3x-counter');if(old)old.outerHTML=counter(mode,total);
@@ -206,7 +206,7 @@
 
   function setTheory(lesson,mode){
     const blocks=lesson.querySelector('.blocks');if(!blocks)return;
-    if(mode==='sim')blocks.innerHTML=`<div class="block"><h3>SIMULAÇÃO DE JOGO</h3><p>A mão acontece visualmente na mesa: dealer, blinds, distribuição, stacks, apostas, pote, valor a pagar, board e showdown. A pergunta aparece como decisão dentro da situação.</p></div><div class="block"><h3>FILTROS PRIORITÁRIOS</h3><p><strong>HNL, PLO4, PLO5 e PLO6</strong> ficam separados para treino direcionado. <strong>MAIS</strong> reúne as demais modalidades.</p></div><div class="block"><h3>ESTATÍSTICAS POR FILTRO</h3><p>CERTOS, REALIZADOS e TOTAL mostram somente os spots da modalidade selecionada, preservando o progresso de cada grupo.</p></div>`;
+    if(mode==='sim')blocks.innerHTML=`<div class="block"><h3>SIMULAÇÃO DE JOGO</h3><p>A mão acontece visualmente na mesa: dealer, blinds, distribuição, stacks, apostas, pote, valor a pagar, board e showdown. A pergunta aparece como decisão dentro da situação.</p></div><div class="block"><h3>FILTROS PRIORITÁRIOS</h3><p><strong>NLH, PLO4, PLO5 e PLO6</strong> ficam separados para treino direcionado. <strong>MAIS</strong> reúne as demais modalidades.</p></div><div class="block"><h3>ESTATÍSTICAS POR FILTRO</h3><p>CERTOS, REALIZADOS e TOTAL mostram somente os spots da modalidade selecionada, preservando o progresso de cada grupo.</p></div>`;
     if(mode==='quiz')blocks.innerHTML=`<div class="block"><h3>150 PERGUNTAS INÉDITAS</h3><p>Perguntas gerais sobre tudo que foi ensinado no app: conceitos, jogo, regras, terminologias, modalidades e comportamento.</p></div><div class="block"><h3>SEM REPETIR O EXERCÍCIO DO CAPÍTULO</h3><p>O Quiz reformula o conhecimento e cobra aplicação fora do contexto exato em que ele foi apresentado.</p></div>`;
     if(mode==='math')blocks.innerHTML=`<div class="block"><h3>MATEMÁTICA QUE VOCÊ USA NA MESA</h3><p>Cada cálculo explica para que serve, como usar e um atalho mental. Inclui Regra do 2 e do 4, outs, pot odds, SPR, EV, MDF, alpha e probabilidades de referência.</p></div>`;
   }
