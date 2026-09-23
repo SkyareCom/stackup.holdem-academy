@@ -1,3 +1,4 @@
+window.StackupI18nWords=Object.assign(window.StackupI18nWords||{}, {'EVOLUÇÃO':'PROGRESS','evolução':'progress','DOMÍNIO':'MASTERY','domínio':'mastery'});
 window.StackupI18nPhrases=(window.StackupI18nPhrases||[]).concat([
   ['MINHA EVOLUÇÃO','MY PROGRESS'],
   ['Seu ranking pessoal: XP, nível, domínio, acertos e evolução.','Your personal progress: XP, level, mastery, correct answers, and improvement.'],
