@@ -22,13 +22,13 @@
   const shuffleOptions=item=>seeded(item.options,item.id?hash(item.id):1);
 
   const SIM_FILTERS=[
-    {key:'HNL',label:'HNL',match:s=>norm(s.game).includes('TEXAS HOLD')},
+    {key:'NLH',label:'NLH',match:s=>norm(s.game).includes('TEXAS HOLD')},
     {key:'PLO4',label:'PLO4',match:s=>norm(s.game)==='PLO4'},
     {key:'PLO5',label:'PLO5',match:s=>norm(s.game)==='PLO5'},
     {key:'PLO6',label:'PLO6',match:s=>norm(s.game)==='PLO6'},
     {key:'MAIS',label:'MAIS',match:s=>!['TEXAS HOLD\'EM','PLO4','PLO5','PLO6'].includes(norm(s.game))}
   ];
-  if(!SIM_FILTERS.some(f=>f.key===state.sim.filter))state.sim.filter='HNL';
+  if(!SIM_FILTERS.some(f=>f.key===state.sim.filter))state.sim.filter='NLH';
   const activeSimFilter=()=>SIM_FILTERS.find(f=>f.key===state.sim.filter)||SIM_FILTERS[0];
   const simBank=()=>B.sim.filter(activeSimFilter().match);
   const simFilterBar=()=>`<div class="p3x-sim-filters" role="group" aria-label="Filtrar modalidade do simulador">${SIM_FILTERS.map(f=>`<button type="button" class="p3x-filter-btn ${f.key===state.sim.filter?'active':''}" data-sim-filter="${f.key}">${f.label}</button>`).join('')}</div>`;
@@ -167,7 +167,7 @@
     const item=current[mode];
     shell.querySelectorAll('.p3x-opt').forEach(btn=>btn.addEventListener('click',()=>{
       if(answered[mode])return;answered[mode]=true;
-      const selected=btn.dataset.answer,ok=selected===item.answer;state[mode].results[item.id]=ok;save();
+      const selected=btn.dataset.answer,ok=selected===item.answer;const firstResult=state[mode].results[item.id]===undefined;state[mode].results[item.id]=ok;save();if(firstResult&&window.StackupAcademyProgression)window.StackupAcademyProgression.award({id:'practice:'+mode+':'+item.id,correct:ok,difficulty:item.difficulty,stage:mode,mode});
       shell.querySelectorAll('.p3x-opt').forEach(b=>{b.disabled=true;if(b.dataset.answer===item.answer)b.classList.add('ok');else if(b===btn&&!ok)b.classList.add('bad')});
       const fb=shell.querySelector('[data-feedback]');fb.classList.add('show');fb.innerHTML=`<strong>${ok?'CORRETO':'RESPOSTA CORRETA: '+esc(item.answer)}</strong><br>${esc(item.why)}`;
       const old=shell.querySelector('.p3x-counter');if(old)old.outerHTML=counter(mode,total);
