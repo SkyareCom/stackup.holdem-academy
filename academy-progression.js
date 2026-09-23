@@ -28,7 +28,7 @@
     const m=s.mastery[id]||{attempts:0,correct:0};m.attempts++;if(ok)m.correct++;s.mastery[id]=m;
     const area=String(meta.area||meta.stage||meta.mode||'GERAL').toUpperCase();
     const ar=s.areas[area]||{attempts:0,correct:0,xp:0};ar.attempts++;if(ok)ar.correct++;ar.xp+=gained;s.areas[area]=ar;
-    const now=new Date(),day=now.toISOString().slice(0,10);const h=s.history[day]||{attempts:0,correct:0,xp:0};h.attempts++;if(ok)h.correct++;h.xp+=gained;s.history[day]=h;
+    const now=new Date(),day=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');const h=s.history[day]||{attempts:0,correct:0,xp:0};h.attempts++;if(ok)h.correct++;h.xp+=gained;s.history[day]=h;
     write(s);window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
     return {awarded:gained,...snapshot(s)};
   }
