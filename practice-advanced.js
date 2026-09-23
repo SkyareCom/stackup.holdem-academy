@@ -167,7 +167,7 @@
     const item=current[mode];
     shell.querySelectorAll('.p3x-opt').forEach(btn=>btn.addEventListener('click',()=>{
       if(answered[mode])return;answered[mode]=true;
-      const selected=btn.dataset.answer,ok=selected===item.answer;const firstResult=state[mode].results[item.id]===undefined;state[mode].results[item.id]=ok;save();if(firstResult&&window.StackupAcademyProgression)window.StackupAcademyProgression.award({id:'practice:'+mode+':'+item.id,correct:ok,difficulty:item.difficulty,stage:mode,mode});
+      const selected=btn.dataset.answer,ok=selected===item.answer;state[mode].results[item.id]=ok;save();if(window.StackupAcademyProgression)window.StackupAcademyProgression.award({id:'practice:'+mode+':'+item.id,correct:ok,difficulty:item.difficulty,stage:mode,mode});
       shell.querySelectorAll('.p3x-opt').forEach(b=>{b.disabled=true;if(b.dataset.answer===item.answer)b.classList.add('ok');else if(b===btn&&!ok)b.classList.add('bad')});
       const fb=shell.querySelector('[data-feedback]');fb.classList.add('show');fb.innerHTML=`<strong>${ok?'CORRETO':'RESPOSTA CORRETA: '+esc(item.answer)}</strong><br>${esc(item.why)}`;
       const old=shell.querySelector('.p3x-counter');if(old)old.outerHTML=counter(mode,total);
