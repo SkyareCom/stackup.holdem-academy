@@ -129,22 +129,22 @@
   FACTS.forEach((f,fi)=>WRAP.forEach((w,wi)=>QUIZ.push({id:`Q${String(QUIZ.length+1).padStart(3,'0')}`,question:w(f[0]),options:[f[1],...f[2]],answer:f[1],why:f[3],topic:fi<10?'FUNDAMENTOS':fi<24?'MODALIDADES':'CONCEITOS'})));
 
   const MATH_THEORY=[
+    {title:'RECEBER AA',use:'Serve para calibrar expectativas sobre mãos premium.',formula:'AA pré-flop ≈ 0,45% das mãos = cerca de 1 em 221',tip:'Não confunda frequência de receber AA com chance de AA vencer uma mão.'},
+    {title:'RECEBER QUALQUER POCKET PAIR',use:'Serve para entender frequência de pares iniciais.',formula:'Qualquer par de mão ≈ 5,88% = cerca de 1 em 17',tip:'São 78 combinações de pocket pairs entre 1.326 combinações iniciais possíveis.'},
+    {title:'DUAS CARTAS DO MESMO NAIPE',use:'Serve como referência pré-flop para suited hands.',formula:'Com duas hole cards do mesmo naipe, chance de formar flush até o river ≈ 6,4%',tip:'Flopar o flush diretamente é raro: cerca de 0,84%. A maior parte dos flushes chega depois.'},
+    {title:'PAR DE MÃO → TRINCA NO FLOP',use:'Serve para saber com que frequência um pocket pair melhora forte já no flop.',formula:'Chance de flopar trinca ou melhor ≈ 11,8%',tip:'Regra prática: cerca de 1 vez a cada 8,5 flops.'},
+    {title:'AA × KK PRÉ-FLOP',use:'Serve como referência de equity em confronto premium heads-up antes do flop.',formula:'AA costuma ter cerca de 81–82% contra KK',tip:'O valor exato varia ligeiramente conforme os naipes. Use como referência, não como garantia de resultado.'},
     {title:'OUTS',use:'Serve para estimar quantas cartas ainda podem melhorar sua mão para o resultado que você procura.',formula:'OUTS = cartas limpas que completam sua mão',tip:'Não conte a mesma carta duas vezes e elimine outs que podem completar uma mão ainda melhor para o adversário.'},
     {title:'REGRA DO 2 E DO 4',use:'Serve para estimar rapidamente a chance de completar um draw sem calculadora.',formula:'No flop, até o river ≈ outs × 4. No turn, uma carta por vir ≈ outs × 2.',tip:'Ex.: 9 outs de flush no flop ≈ 36% pela regra do 4; o valor exato é cerca de 35%.'},
     {title:'PROBABILIDADE EXATA DE 1 CARTA',use:'Serve quando você quer uma aproximação mais precisa para a próxima carta.',formula:'chance ≈ outs ÷ cartas desconhecidas',tip:'No turn de Hold’em há 46 cartas desconhecidas. Com 9 outs: 9/46 ≈ 19,6%.'},
+    {title:'FLUSH DRAW NO FLOP',use:'Serve como referência pronta quando você tem 9 outs limpos para flush.',formula:'9 outs: próxima carta ≈ 19%; até o river ≈ 35%',tip:'Regra rápida: 9×2 = 18% em uma carta; 9×4 = 36% até o river.'},
+    {title:'GUTSHOT',use:'Serve para avaliar uma sequência interna com 4 outs.',formula:'4 outs: próxima carta ≈ 8,5%; até o river ≈ 16,5%',tip:'Regra rápida: 4×2 = 8%; 4×4 = 16%.'},
+    {title:'OESD — STRAIGHT DRAW',use:'Serve para reconhecer o valor de um open-ended straight draw de 8 outs.',formula:'8 outs: próxima carta ≈ 17%; até o river ≈ 31,5%',tip:'Regra rápida: 8×2 = 16%; 8×4 = 32%.'},
     {title:'POT ODDS',use:'Serve para saber a equity mínima necessária para pagar uma aposta.',formula:'equity mínima = call ÷ (pote antes do call + aposta rival + call)',tip:'Pote 100, vilão aposta 50: você paga 50 para disputar 200. Precisa de 25%.'},
     {title:'SPR',use:'Serve para medir quanto stack efetivo resta em relação ao pote e orientar o compromisso da mão.',formula:'SPR = stack efetivo ÷ pote no início da street',tip:'Pote 20 BB e stack efetivo 60 BB → SPR 3.'},
     {title:'EV',use:'Serve para comparar decisões pelo resultado médio esperado no longo prazo.',formula:'EV simples do call = equity × pote final − custo do call',tip:'Use apenas quando o modelo do cenário estiver claro; futuras apostas mudam o cálculo.'},
-    {title:'MDF',use:'Serve como referência teórica de frequência mínima de defesa contra uma aposta.',formula:'MDF = pote ÷ (pote + aposta)',tip:'Aposta de 50 em pote 100 → MDF ≈ 66,7%. Isso não obriga cada mão individual a defender.'},
     {title:'ALPHA DO BLUFF',use:'Serve para estimar quantos folds um bluff sem equity precisa gerar para empatar.',formula:'alpha = aposta ÷ (pote + aposta)',tip:'Aposta 50 em pote 100 → precisa de cerca de 33,3% de folds.'},
-    {title:'FLUSH DRAW NO FLOP',use:'Serve como referência pronta quando você tem 9 outs limpos para flush.',formula:'9 outs: próxima carta ≈ 19%; até o river ≈ 35%',tip:'Regra rápida: 9×2 = 18% em uma carta; 9×4 = 36% até o river.'},
-    {title:'OESD — STRAIGHT DRAW',use:'Serve para reconhecer o valor de um open-ended straight draw de 8 outs.',formula:'8 outs: próxima carta ≈ 17%; até o river ≈ 31,5%',tip:'Regra rápida: 8×2 = 16%; 8×4 = 32%.'},
-    {title:'GUTSHOT',use:'Serve para avaliar uma sequência interna com 4 outs.',formula:'4 outs: próxima carta ≈ 8,5%; até o river ≈ 16,5%',tip:'Regra rápida: 4×2 = 8%; 4×4 = 16%.'},
-    {title:'PAR DE MÃO → TRINCA NO FLOP',use:'Serve para saber com que frequência um pocket pair melhora forte já no flop.',formula:'Chance de flopar trinca ou melhor ≈ 11,8%',tip:'Regra prática: cerca de 1 vez a cada 8,5 flops.'},
-    {title:'DUAS CARTAS DO MESMO NAIPE',use:'Serve como referência pré-flop para suited hands.',formula:'Com duas hole cards do mesmo naipe, chance de formar flush até o river ≈ 6,4%',tip:'Flopar o flush diretamente é raro: cerca de 0,84%. A maior parte dos flushes chega depois.'},
-    {title:'RECEBER AA',use:'Serve para calibrar expectativas sobre mãos premium.',formula:'AA pré-flop ≈ 0,45% das mãos = cerca de 1 em 221',tip:'Não confunda frequência de receber AA com chance de AA vencer uma mão.'},
-    {title:'RECEBER QUALQUER POCKET PAIR',use:'Serve para entender frequência de pares iniciais.',formula:'Qualquer par de mão ≈ 5,88% = cerca de 1 em 17',tip:'São 78 combinações de pocket pairs entre 1.326 combinações iniciais possíveis.'},
-    {title:'AA × KK PRÉ-FLOP',use:'Serve como referência de equity em confronto premium heads-up antes do flop.',formula:'AA costuma ter cerca de 81–82% contra KK',tip:'O valor exato varia ligeiramente conforme os naipes. Use como referência, não como garantia de resultado.'}
+    {title:'MDF',use:'Serve como referência teórica de frequência mínima de defesa contra uma aposta.',formula:'MDF = pote ÷ (pote + aposta)',tip:'Aposta de 50 em pote 100 → MDF ≈ 66,7%. Isso não obriga cada mão individual a defender.'}
   ];
 
   const MATH=[];
