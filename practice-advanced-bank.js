@@ -118,15 +118,14 @@
     ['Se todos os adversários foldam, é obrigatório mostrar sua mão para ganhar o pote?','NÃO',['SIM','SÓ COM ÁS'],'O último jogador restante vence sem showdown obrigatório, salvo regra específica da casa.'],
     ['Em Mixed Games, qual habilidade evita erros na transição entre mãos?','CONFIRMAR MODALIDADE E LIMITE ATIVOS',['MEMORIZAR APENAS HOLD’EM','IGNORAR A ROTAÇÃO'],'Identificar o jogo ativo é essencial antes de aplicar regras e avaliar mãos.']
   ];
-  const WRAP=[
-    q=>`Cenário de mesa: ${q}`,
-    q=>`Durante uma revisão de mão, responda: ${q}`,
-    q=>`Um jogador iniciante pergunta: ${q}`,
-    q=>`Em uma simulação prática: ${q}`,
-    q=>`Para confirmar que você entendeu o conceito: ${q}`
-  ];
+  // Cada item do quiz deve testar um alvo cognitivo único.
+  // Não multiplicamos uma mesma pergunta apenas trocando o texto de abertura.
   const QUIZ=[];
-  FACTS.forEach((f,fi)=>WRAP.forEach((w,wi)=>QUIZ.push({id:`Q${String(QUIZ.length+1).padStart(3,'0')}`,question:w(f[0]),options:[f[1],...f[2]],answer:f[1],why:f[3],topic:fi<10?'FUNDAMENTOS':fi<24?'MODALIDADES':'CONCEITOS'})));
+  FACTS.forEach((f,fi)=>QUIZ.push({
+    id:`Q${String(QUIZ.length+1).padStart(3,'0')}`,
+    question:f[0],options:[f[1],...f[2]],answer:f[1],why:f[3],
+    topic:fi<10?'FUNDAMENTOS':fi<24?'MODALIDADES':'CONCEITOS'
+  }));
 
   const MATH_THEORY=[
     {title:'OUTS',use:'Serve para estimar quantas cartas ainda podem melhorar sua mão para o resultado que você procura.',formula:'OUTS = cartas limpas que completam sua mão',tip:'Não conte a mesma carta duas vezes e elimine outs que podem completar uma mão ainda melhor para o adversário.'},
