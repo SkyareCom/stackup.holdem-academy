@@ -7,7 +7,7 @@
     return '<div class="academy-xp-panel" data-academy-xp-panel><div class="academy-xp-stat"><b>'+p.xp+'</b><span>XP</span></div><div class="academy-xp-stat"><b>'+p.mastery+'%</b><span>DOMÍNIO</span></div><div class="academy-xp-stat"><b>'+p.correct+'/'+p.attempts+'</b><span>ACERTOS</span></div><div class="academy-xp-level">'+p.level+(p.nextLevel?' · '+next+' XP PARA '+p.nextLevel:' · NÍVEL MÁXIMO')+'</div></div>';
   }
   function mount(){
-    const lesson=document.querySelector('#root .card.lesson');if(!lesson||lesson.querySelector('[data-academy-xp-panel]'))return;
+    const lesson=document.querySelector('#root .card.lesson:not(.evolution-page)');if(!lesson||lesson.querySelector('[data-academy-xp-panel]'))return;
     const holder=document.createElement('div');holder.innerHTML=html();const panel=holder.firstElementChild;if(panel)lesson.insertBefore(panel,lesson.firstChild);
   }
   const root=document.getElementById('root');if(root)new MutationObserver(()=>queueMicrotask(mount)).observe(root,{childList:true});mount();
