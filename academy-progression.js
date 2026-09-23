@@ -18,7 +18,7 @@
   };
   function award(meta={}){
     const id=String(meta.id||'').trim(); if(!id)return {awarded:0,...snapshot()};
-    const s=read();s.xp=Number(s.xp)||0;s.correct=Number(s.correct)||0;s.attempts=Number(s.attempts)||0;s.mastery=s.mastery||{};s.awards=s.awards||{};
+    const s=read();s.xp=Number(s.xp)||0;s.correct=Number(s.correct)||0;s.attempts=Number(s.attempts)||0;s.mastery=s.mastery||{};s.awards=s.awards||{};s.areas=s.areas||{};s.history=s.history||{};
     s.attempts++;
     const ok=!!meta.correct;
     if(ok)s.correct++;
@@ -26,13 +26,21 @@
     let gained=0;
     if(ok&&first){gained=base;s.xp+=gained;s.awards[id]={xp:gained,difficulty:d,at:Date.now()};}
     const m=s.mastery[id]||{attempts:0,correct:0};m.attempts++;if(ok)m.correct++;s.mastery[id]=m;
+    const area=String(meta.area||meta.stage||meta.mode||'GERAL').toUpperCase();
+    const ar=s.areas[area]||{attempts:0,correct:0,xp:0};ar.attempts++;if(ok)ar.correct++;ar.xp+=gained;s.areas[area]=ar;
+    const now=new Date(),day=now.toISOString().slice(0,10);const h=s.history[day]||{attempts:0,correct:0,xp:0};h.attempts++;if(ok)h.correct++;h.xp+=gained;s.history[day]=h;
     write(s);window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
     return {awarded:gained,...snapshot(s)};
   }
   function snapshot(source){
     const s=source||read(),xp=Number(s.xp)||0,l=level(xp),next=LEVELS[LEVELS.indexOf(l)+1]||null;
     const mastery=s.attempts?Math.round((Number(s.correct)||0)*100/(Number(s.attempts)||1)):0;
-    return {xp,level:l.name,nextLevel:next?.name||null,nextXP:next?.xp||null,mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0};
+    const areas=Object.entries(s.areas||{}).map(([name,v])=>({name,attempts:Number(v.attempts)||0,correct:Number(v.correct)||0,xp:Number(v.xp)||0,mastery:v.attempts?Math.round((Number(v.correct)||0)*100/Number(v.attempts)):0})).sort((a,b)=>b.attempts-a.attempts);
+    const days=Object.entries(s.history||{}).sort((a,b)=>a[0].localeCompare(b[0]));
+    const recent=days.slice(-7).reduce((a,[,v])=>({attempts:a.attempts+(Number(v.attempts)||0),correct:a.correct+(Number(v.correct)||0),xp:a.xp+(Number(v.xp)||0)}),{attempts:0,correct:0,xp:0});
+    const previous=days.slice(-14,-7).reduce((a,[,v])=>({attempts:a.attempts+(Number(v.attempts)||0),correct:a.correct+(Number(v.correct)||0),xp:a.xp+(Number(v.xp)||0)}),{attempts:0,correct:0,xp:0});
+    recent.mastery=recent.attempts?Math.round(recent.correct*100/recent.attempts):0;previous.mastery=previous.attempts?Math.round(previous.correct*100/previous.attempts):0;
+    return {xp,level:l.name,nextLevel:next?.name||null,nextXP:next?.xp||null,mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0,areas,recent,previous};
   }
   window.StackupAcademyProgression={award,snapshot,levels:LEVELS,xpTable:XP};
 })();
