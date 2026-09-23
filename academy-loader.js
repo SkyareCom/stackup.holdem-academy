@@ -98,23 +98,28 @@
   }
 
   let idleId=0;
+  let lastScheduledStage='';
   function schedule(){
+    const stage=currentStage();
+    if(!stage||groupTasks.has(stage)||stage===lastScheduledStage)return;
+    lastScheduledStage=stage;
     if(idleId)return;
     const run=()=>{
       idleId=0;
-      const stage=currentStage();
-      if(stage)ensure(stage).catch(err=>console.error('[STACKUP] Lazy module load failed.',err));
-      queueRestack();
+      const target=lastScheduledStage;
+      lastScheduledStage='';
+      if(!target||groupTasks.has(target))return;
+      ensure(target).catch(err=>console.error('[STACKUP] Lazy module load failed.',err));
     };
     if('requestIdleCallback' in window){
       idleId=requestIdleCallback(run,{timeout:900});
     }else{
-      idleId=setTimeout(run,0);
+      idleId=setTimeout(run,16);
     }
   }
 
-  // Navigation must never wait for network/module parsing. Open the base lesson
-  // synchronously, paint it, then enhance it in the background.
+  // Navigation paints immediately. Heavy stage enhancement is scheduled once,
+  // after the base lesson is visible, and never retriggered by its own DOM work.
   const nativeLesson=window.lesson;
   window.lesson=function(stage,index,push=0){
     nativeLesson(stage,index,push);
@@ -122,7 +127,6 @@
     schedule();
   };
 
-  new MutationObserver(schedule).observe(root,{childList:true});
   window.addEventListener('popstate',schedule,{passive:true});
   schedule();
 })();
