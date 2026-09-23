@@ -15,7 +15,7 @@
     const next=p.nextXP?Math.max(0,p.nextXP-p.xp):0;
     return '<section class="my-evolution" data-my-evolution><h3>MINHA EVOLUÇÃO</h3><div class="me-sub">EU × EU MESMO</div><div class="me-grid"><div class="me-stat"><b>'+p.xp+'</b><span>XP TOTAL</span></div><div class="me-stat"><b>'+p.mastery+'%</b><span>DOMÍNIO</span></div><div class="me-stat"><b>'+p.correct+'/'+p.attempts+'</b><span>ACERTOS</span></div></div><div class="me-level"><strong>'+p.level+'</strong>'+(p.nextLevel?' · FALTAM '+next+' XP PARA '+p.nextLevel:' · NÍVEL MÁXIMO')+'</div><div class="me-compare"><div class="me-period"><b>'+(hasBaseline?p.previous.mastery+'%':'—')+'</b><span>PERÍODO ANTERIOR</span></div><div class="me-arrow">'+trend+'</div><div class="me-period"><b>'+p.recent.mastery+'%</b><span>ÚLTIMOS 7 DIAS</span></div></div>'+(areas?'<div class="me-areas">'+areas+'</div>':'<div class="me-empty">COMPLETE EXERCÍCIOS PARA CONSTRUIR SEU HISTÓRICO DE EVOLUÇÃO.</div>')+'</section>';
   }
-  function mount(){addStyle();const lesson=document.querySelector('#root .card.lesson');if(!lesson)return;let old=lesson.querySelector('[data-my-evolution]');const h=document.createElement('div');h.innerHTML=render();const n=h.firstElementChild;if(!n)return;if(old)old.replaceWith(n);else lesson.appendChild(n)}
-  const root=document.getElementById('root');if(root)new MutationObserver(()=>queueMicrotask(()=>{if(!document.querySelector('[data-my-evolution]'))mount()})).observe(root,{childList:true});
-  window.addEventListener('stackup:xp',mount);mount();
+  function mountPage(){addStyle();const host=document.querySelector('[data-evolution-page]');if(!host)return;host.innerHTML=render()}
+  const root=document.getElementById('root');if(root)new MutationObserver(()=>queueMicrotask(mountPage)).observe(root,{childList:true,subtree:true});
+  window.addEventListener('stackup:xp',mountPage);window.StackupMyEvolution={mountPage,render};mountPage();
 })();
