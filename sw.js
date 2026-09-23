@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v119';
-const SW_VERSION=119;
+const CACHE='stackup-academy-v120';
+const SW_VERSION=120;
 const CORE_ASSETS=[
   './',
   './index.html',
