@@ -41,7 +41,15 @@
     const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);const recentStart=new Date(today);recentStart.setDate(today.getDate()-6);const previousStart=new Date(today);previousStart.setDate(today.getDate()-13);
     const recent=sumDays(recentStart,tomorrow),previous=sumDays(previousStart,recentStart);
     recent.mastery=recent.attempts?Math.round(recent.correct*100/recent.attempts):0;previous.mastery=previous.attempts?Math.round(previous.correct*100/previous.attempts):0;
-    return {xp,level:l.name,nextLevel:next?.name||null,nextXP:next?.xp||null,mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0,areas,recent,previous};
+    const areaMap=Object.fromEntries(areas.map(a=>[a.name,a]));
+    const requirements={
+      xp:xp>=5000,
+      sim:(areaMap.SIM||{attempts:0,mastery:0}).attempts>=50&&(areaMap.SIM||{}).mastery>=70,
+      quiz:(areaMap.QUIZ||{attempts:0,mastery:0}).attempts>=50&&(areaMap.QUIZ||{}).mastery>=70,
+      math:(areaMap.MATH||{attempts:0,mastery:0}).attempts>=20&&(areaMap.MATH||{}).mastery>=70
+    };
+    const academyComplete=requirements.xp&&requirements.sim&&requirements.quiz&&requirements.math;
+    return {xp,level:academyComplete?'ACADEMY':(l.name==='ACADEMY'?'ESTRATEGISTA':l.name),nextLevel:academyComplete?null:(l.name==='ACADEMY'?'ACADEMY':next?.name||null),nextXP:academyComplete?null:(l.name==='ACADEMY'?5000:next?.xp||null),mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0,areas,recent,previous,requirements,academyComplete};
   }
   window.StackupAcademyProgression={award,snapshot,levels:LEVELS,xpTable:XP};
 })();
