@@ -36,9 +36,10 @@
     const s=source||read(),xp=Number(s.xp)||0,l=level(xp),next=LEVELS[LEVELS.indexOf(l)+1]||null;
     const mastery=s.attempts?Math.round((Number(s.correct)||0)*100/(Number(s.attempts)||1)):0;
     const areas=Object.entries(s.areas||{}).map(([name,v])=>({name,attempts:Number(v.attempts)||0,correct:Number(v.correct)||0,xp:Number(v.xp)||0,mastery:v.attempts?Math.round((Number(v.correct)||0)*100/Number(v.attempts)):0})).sort((a,b)=>b.attempts-a.attempts);
-    const days=Object.entries(s.history||{}).sort((a,b)=>a[0].localeCompare(b[0]));
-    const recent=days.slice(-7).reduce((a,[,v])=>({attempts:a.attempts+(Number(v.attempts)||0),correct:a.correct+(Number(v.correct)||0),xp:a.xp+(Number(v.xp)||0)}),{attempts:0,correct:0,xp:0});
-    const previous=days.slice(-14,-7).reduce((a,[,v])=>({attempts:a.attempts+(Number(v.attempts)||0),correct:a.correct+(Number(v.correct)||0),xp:a.xp+(Number(v.xp)||0)}),{attempts:0,correct:0,xp:0});
+    const history=s.history||{},today=new Date();today.setHours(0,0,0,0);
+    const sumDays=(from,to)=>Object.entries(history).reduce((a,[day,v])=>{const d=new Date(day+'T00:00:00');if(d>=from&&d<to){a.attempts+=Number(v.attempts)||0;a.correct+=Number(v.correct)||0;a.xp+=Number(v.xp)||0}return a},{attempts:0,correct:0,xp:0});
+    const tomorrow=new Date(today);tomorrow.setDate(today.getDate()+1);const recentStart=new Date(today);recentStart.setDate(today.getDate()-6);const previousStart=new Date(today);previousStart.setDate(today.getDate()-13);
+    const recent=sumDays(recentStart,tomorrow),previous=sumDays(previousStart,recentStart);
     recent.mastery=recent.attempts?Math.round(recent.correct*100/recent.attempts):0;previous.mastery=previous.attempts?Math.round(previous.correct*100/previous.attempts):0;
     return {xp,level:l.name,nextLevel:next?.name||null,nextXP:next?.xp||null,mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0,areas,recent,previous};
   }
