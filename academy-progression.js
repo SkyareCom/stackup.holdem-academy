@@ -1,8 +1,8 @@
 (() => {
   const KEY='stackup-academy-xp-v1';
   const LEVELS=[
-    {name:'INICIANTE',xp:0},{name:'APRENDIZ',xp:500},{name:'RECREATIVO',xp:1500},
-    {name:'COMPETIDOR',xp:3500},{name:'GRINDER',xp:7500},{name:'AVANÇADO',xp:15000},{name:'ELITE',xp:30000}
+    {name:'INICIANTE',xp:0},{name:'APRENDIZ',xp:500},{name:'JOGADOR',xp:1500},
+    {name:'ESTRATEGISTA',xp:3000},{name:'ACADEMY',xp:5000}
   ];
   const XP={basic:10,intermediate:20,advanced:35,challenge:50};
   const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){return {}}};
