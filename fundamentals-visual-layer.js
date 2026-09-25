@@ -106,18 +106,36 @@
 
   function sceneFor(chapter,i,spot){
     switch(chapter){
-      case 'POSIÇÕES NA MESA': return {kind:'table',highlight:seats[i%seats.length],label:'IDENTIFIQUE A POSIÇÃO DESTACADA'};
-      case 'SMALL BLIND, BIG BLIND E ANTE': return {kind:'blinds',button:seats[(i+7)%seats.length],sb:'SB',bb:'BB',ante:i%3===0?'BBA':i%3===1?'ANTE':'SEM ANTE'};
+      case 'POSIÇÕES NA MESA': return null;
+      case 'SMALL BLIND, BIG BLIND E ANTE': return null;
       case 'STREETS': return streetScene(spot);
-      case 'SEQUÊNCIA DE APOSTAS': return {kind:'timeline',actions:[['UTG','RAISE','2.5 BB'],['CO',i%2?'CALL':'3-BET',i%2?'2.5 BB':'8 BB'],['BTN',i%3?'FOLD':'CALL',i%3?'—':'8 BB']]};
-      case 'EMBARALHANDO AS CARTAS': return {kind:'steps',steps:['RECOLHER','EMBARALHAR','QUADRAR','CORTAR','DISTRIBUIR'],active:i%5};
-      case 'MISDEAL': return {kind:'scene',icon:'⚠',title:i%2?'CARTA EXPOSTA':'DISTRIBUIÇÃO IRREGULAR',lines:[i%2?'UMA CARTA FOI EXPOSTA PELO DEALER':'UM JOGADOR RECEBEU NÚMERO ERRADO DE CARTAS','DECIDA SE CORRIGE, CONTINUA OU É MISDEAL']};
-      case 'FUNÇÕES DO STAFF': return {kind:'scene',icon:'♣',title:staff[i%staff.length],lines:['SITUAÇÃO DE MESA','QUEM DEVE AGIR OU SER CHAMADO?']};
-      case 'TERMINOLOGIAS BÁSICAS': return {kind:'scene',icon:'◆',title:['KICKER','SNAP CALL','DRAWING DEAD','HERO CALL','BLUFF CATCHER','COOLER'][i%6],lines:['RECONHEÇA O TERMO PELA SITUAÇÃO','USE O CONTEXTO, NÃO APENAS A DEFINIÇÃO']};
+      case 'SEQUÊNCIA DE APOSTAS': return null;
+      case 'EMBARALHANDO AS CARTAS': return null;
+      case 'MISDEAL': return null;
+      case 'FUNÇÕES DO STAFF': return null;
+      case 'TERMINOLOGIAS BÁSICAS': return null;
       case 'PERFIS DE JOGADORES': {const p=profileStats[i%profileStats.length]; return {kind:'stats',name:p[0],vpip:p[1],pfr:p[2],three:p[3]};}
       case 'CASH GAME E TIPOS': {const x=cashFormats[i%cashFormats.length]; return {kind:'cash',title:x[0],seats:x[1],stack:x[2],buyin:i%2?'BUY-IN 50–200 BB':'BUY-IN 40–100 BB'};}
       case 'TORNEIO E TIPOS': {const x=tourFormats[i%tourFormats.length]; return {kind:'tournament',title:x[0],stack:x[1],phase:x[2],blinds:`BLINDS ${500*(i%4+1)}/${1000*(i%4+1)}`};}
-      case 'BONS MODOS': return {kind:'scene',icon:['▣','☏','♠','●','!'][i%5],title:['FICHAS VISÍVEIS','CELULAR NA MÃO','MOSTRAR CARTAS','SPLASH POT','AÇÃO FORA DE VEZ'][i%5],lines:['OBSERVE A CENA','AVALIE SE O COMPORTAMENTO É CORRETO']};
+      case 'BONS MODOS': {
+        const text=(String(spot?.prompt||'')+' '+String(spot?.answer||'')).toUpperCase();
+        const scenes=[
+          [/FICHA|STACK|EMPILH|DENOMINA/,['▣','FICHAS / STACK']],
+          [/CELULAR|TELEFONE|DISPOSITIVO|SOLVER|ASSISTÊNCIA/,['☏','DISPOSITIVOS NA MESA']],
+          [/MOSTRAR|EXPOR|CARTA.*AÇÃO|MÃO.*ATIVA/,['♠','CARTAS EXPOSTAS']],
+          [/SPLASH|POTE/,['●','FICHAS NO POTE']],
+          [/FORA DE VEZ|AÇÃO PENDENTE|ANTES DA VEZ/,['!','ORDEM DA AÇÃO']],
+          [/STALL|ATRASAR|DEMORAR|TEMPO/,['◷','RITMO DE JOGO']],
+          [/ÁLCOOL|AGRESSIV|AMEAÇA|INSULTO|RESPEIT/,['!','CONDUTA À MESA']],
+          [/DEALER|FLOOR|STAFF|RULING|PENAL/,['♣','DEALER / FLOOR']],
+          [/FOLD|MUCK|DESCART/,['♠','DESCARTE DE CARTAS']],
+          [/ANGLE|COLLUSION|SOFT PLAY|CHIP DUMP/,['!','INTEGRIDADE DO JOGO']],
+          [/CONSELHO|COMENTAR|INFORMAÇÃO|OUTS/,['◆','INFORMAÇÃO DA MÃO']],
+          [/LEVANTAR|AUSENTE|MESA/,['◇','PRESENÇA À MESA']]
+        ];
+        const hit=scenes.find(([re])=>re.test(text));
+        return hit?{kind:'scene',icon:hit[1][0],title:hit[1][1],lines:['CENÁRIO RELACIONADO À PERGUNTA','AVALIE A CONDUTA DESCRITA']}:null;
+      }
       case 'OUTRAS REGRAS BÁSICAS': return {kind:'scene',icon:'§',title:['TABLE STAKES','MISSED BLIND','RUN IT TWICE','DEAD BUTTON','SHOW ONE, SHOW ALL','STRADDLE'][i%6],lines:['SITUAÇÃO PRÁTICA DE MESA','ESCOLHA O PROCEDIMENTO CORRETO']};
       default:return null;
     }
