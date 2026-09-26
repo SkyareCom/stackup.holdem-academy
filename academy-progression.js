@@ -32,6 +32,13 @@
     write(s);window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
     return {awarded:gained,...snapshot(s)};
   }
+  function reset(){
+    try{localStorage.removeItem(KEY)}catch(_){}
+    const fresh=snapshot({});
+    window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{reset:true,...fresh}}));
+    window.dispatchEvent(new CustomEvent('stackup:progress-reset',{detail:fresh}));
+    return fresh;
+  }
   function snapshot(source){
     const s=source||read(),xp=Number(s.xp)||0,l=level(xp),next=LEVELS[LEVELS.indexOf(l)+1]||null;
     const mastery=s.attempts?Math.round((Number(s.correct)||0)*100/(Number(s.attempts)||1)):0;
@@ -51,5 +58,5 @@
     const academyComplete=requirements.xp&&requirements.sim&&requirements.quiz&&requirements.math;
     return {xp,level:academyComplete?'ACADEMY':(l.name==='ACADEMY'?'ESTRATEGISTA':l.name),nextLevel:academyComplete?null:(l.name==='ACADEMY'?'ACADEMY':next?.name||null),nextXP:academyComplete?null:(l.name==='ACADEMY'?5000:next?.xp||null),mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0,areas,recent,previous,requirements,academyComplete};
   }
-  window.StackupAcademyProgression={award,snapshot,levels:LEVELS,xpTable:XP};
+  window.StackupAcademyProgression={award,snapshot,reset,levels:LEVELS,xpTable:XP};
 })();
