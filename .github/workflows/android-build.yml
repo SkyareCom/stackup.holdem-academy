@@ -95,8 +95,8 @@ jobs:
           mkdir -p android/app/build/outputs/bundle/release
           {
             echo "package=com.skyare.stackupacademy"
-            echo "versionName=1.0.4"
-            echo "versionCode=100"
+            echo "versionName=1.0.6"
+            echo "versionCode=102"
             echo "targetSdk=36"
             echo "shell=webview"
             echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy/"
