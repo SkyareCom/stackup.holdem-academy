@@ -201,3 +201,5 @@ jobs:
           name: stackup-academy-android-test-apk
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
+
+# release-build: 1.0.7-103-final
