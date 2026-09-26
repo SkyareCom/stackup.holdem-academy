@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - test/protest-riot-font
     paths:
       - 'android/**'
       - '.github/workflows/android-build.yml'
