@@ -17,12 +17,12 @@
       --type-small:clamp(12px,3.6vw,14px);
       --type-meta:clamp(11px,3.1vw,12px);
       --type-micro:11px;
-      font-family:'Love Ya Like A Sister',cursive!important;
+      font-family:'Coming Soon',cursive!important;
     }
 
     html,body,
     body *{
-      font-family:'Love Ya Like A Sister',cursive!important;
+      font-family:'Coming Soon',cursive!important;
     }
 
     .navicon,
