@@ -21,17 +21,17 @@
   // 175 spots de Texas Hold'em: 7 famílias x 25.
   for(let i=0;i<25;i++){
     const hero=POS[i%8];
-    add("Texas Hold'em",{kind:'sequencia',hero,street:'PRÉ-FLOP',context:`Mão ${i+1}: o dealer terminou de embaralhar. Você está em ${hero}.`,question:'Qual é a próxima etapa antes da primeira decisão dos jogadores?',options:choice('DISTRIBUIR AS CARTAS','ABRIR O FLOP','FAZER O SHOWDOWN'),answer:'DISTRIBUIR AS CARTAS',why:'Depois de embaralhar e preparar a mão, o dealer distribui as cartas próprias antes da ação pré-flop.',phase:'EMBARALHANDO'});
+    add("Texas Hold'em",{kind:'sequencia',hero,street:'PRÉ-FLOP',context:`Mão ${i+1}: o dealer terminou de embaralhar. Você está em ${hero}.`,question:`Na mão ${i+1}, estando em ${hero}, qual etapa vem antes da primeira decisão dos jogadores?`,options:choice('DISTRIBUIR AS CARTAS','ABRIR O FLOP','FAZER O SHOWDOWN'),answer:'DISTRIBUIR AS CARTAS',why:'Depois de embaralhar e preparar a mão, o dealer distribui as cartas próprias antes da ação pré-flop.',phase:'EMBARALHANDO'});
   }
   for(let i=0;i<25;i++){
     const hero=POS[i%8], stack=40+(i%5)*20;
-    add("Texas Hold'em",{kind:'aposta',hero,street:'PRÉ-FLOP',context:`Blinds 0,5/1 BB. A ação chega limpa até você em ${hero}. Stack ${stack} BB.`,question:'Se você quiser abrir com raise, qual é o menor total permitido em uma estrutura No-Limit padrão?',options:choice('2 BB','1,5 BB','3 BB'),answer:'2 BB',why:'Sem straddle ou regra especial, o Big Blind é 1 BB e o menor raise deve aumentar a aposta em pelo menos mais 1 BB, totalizando 2 BB.',phase:'AÇÃO PRÉ-FLOP'});
+    add("Texas Hold'em",{kind:'aposta',hero,street:'PRÉ-FLOP',context:`Blinds 0,5/1 BB. A ação chega limpa até você em ${hero}. Stack ${stack} BB.`,question:`Em ${hero}, com stack de ${stack} BB e blinds 0,5/1, qual é o menor total permitido para abrir com raise?`,options:choice('2 BB','1,5 BB','3 BB'),answer:'2 BB',why:'Sem straddle ou regra especial, o Big Blind é 1 BB e o menor raise deve aumentar a aposta em pelo menos mais 1 BB, totalizando 2 BB.',phase:'AÇÃO PRÉ-FLOP'});
   }
   const opens=[2,2.5,3,3.5,4];
   for(let i=0;i<25;i++){
     const open=opens[i%opens.length], raiser=['UTG1','LJ','HJ','CO','BTN'][i%5], hero=NEXT[raiser];
     const min=(open+(open-1)).toFixed(open%1?1:0)+' BB';
-    add("Texas Hold'em",{kind:'reraise',hero,villain:raiser,street:'PRÉ-FLOP',context:`${raiser} aumenta de 1 BB para ${open} BB. Você está em ${hero} e quer reaumentar.`,question:'Qual é o menor total permitido para o seu re-raise?',options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+0.5).toFixed((open+0.5)%1?1:0)+' BB'),answer:min,why:`O aumento anterior foi de ${(open-1).toFixed(open%1?1:0)} BB. O próximo raise precisa aumentar pelo menos o mesmo incremento: ${open} + ${(open-1).toFixed(open%1?1:0)} = ${min}.`,phase:'AÇÃO PRÉ-FLOP'});
+    add("Texas Hold'em",{kind:'reraise',hero,villain:raiser,street:'PRÉ-FLOP',context:`${raiser} aumenta de 1 BB para ${open} BB. Você está em ${hero} e quer reaumentar.`,question:`Contra o raise de ${raiser} para ${open} BB, estando em ${hero}, qual é o menor total permitido para o seu re-raise?`,options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+0.5).toFixed((open+0.5)%1?1:0)+' BB'),answer:min,why:`O aumento anterior foi de ${(open-1).toFixed(open%1?1:0)} BB. O próximo raise precisa aumentar pelo menos o mesmo incremento: ${open} + ${(open-1).toFixed(open%1?1:0)} = ${min}.`,phase:'AÇÃO PRÉ-FLOP'});
   }
   const actions=[
     ['igualar exatamente a aposta feita','CALL','CHECK','FOLD','Call é a ação de igualar a aposta pendente.'],
@@ -42,34 +42,34 @@
   ];
   for(let i=0;i<25;i++){
     const a=actions[i%actions.length], hero=POS[(i+3)%8];
-    add("Texas Hold'em",{kind:'acao',hero,street:['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5],context:`Você está em ${hero}. A mesa para e espera sua decisão.`,question:`Você quer ${a[0]}. Qual ação deve anunciar?`,options:choice(a[1],a[2],a[3]),answer:a[1],why:a[4],phase:'SUA AÇÃO'});
+    add("Texas Hold'em",{kind:'acao',hero,street:['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5],context:`Você está em ${hero}. A mesa para e espera sua decisão.`,question:`Em ${hero}, na street ${['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5]}, você quer ${a[0]}. Qual ação deve anunciar neste cenário ${i+1}?`,options:choice(a[1],a[2],a[3]),answer:a[1],why:a[4],phase:'SUA AÇÃO'});
   }
   for(let i=0;i<25;i++){
     const hero=['SB','BB','UTG1','HJ','CO','BTN'][i%6];
     const post=i%2===0;
-    add("Texas Hold'em",{kind:'ordem',hero,street:post?'FLOP':'PRÉ-FLOP',context:post?'Todos os jogadores ativos chegaram ao flop.':'Blinds postados e cartas distribuídas.',question:post?'Em uma mão com 3 ou mais jogadores, quem normalmente age primeiro pós-flop?':'Quem inicia a ação voluntária pré-flop?',options:post?choice('PRIMEIRO ATIVO À ESQUERDA DO BUTTON','BUTTON','BIG BLIND SEMPRE'):choice('PRIMEIRO ATIVO À ESQUERDA DO BB','BUTTON','SMALL BLIND'),answer:post?'PRIMEIRO ATIVO À ESQUERDA DO BUTTON':'PRIMEIRO ATIVO À ESQUERDA DO BB',why:post?'No pós-flop, a ação começa no primeiro jogador ativo à esquerda do Button.':'No pré-flop, depois das apostas obrigatórias, a ação voluntária começa no primeiro jogador ativo à esquerda do Big Blind.',phase:post?'FLOP':'PRÉ-FLOP'});
+    add("Texas Hold'em",{kind:'ordem',hero,street:post?'FLOP':'PRÉ-FLOP',context:post?'Todos os jogadores ativos chegaram ao flop.':'Blinds postados e cartas distribuídas.',question:post?`No cenário ${i+1}, com você em ${hero}, quem normalmente inicia a ação pós-flop numa mão com 3 ou mais jogadores?`:`No cenário ${i+1}, com você em ${hero}, quem inicia a ação voluntária pré-flop após os blinds?`,options:post?choice('PRIMEIRO ATIVO À ESQUERDA DO BUTTON','BUTTON','BIG BLIND SEMPRE'):choice('PRIMEIRO ATIVO À ESQUERDA DO BB','BUTTON','SMALL BLIND'),answer:post?'PRIMEIRO ATIVO À ESQUERDA DO BUTTON':'PRIMEIRO ATIVO À ESQUERDA DO BB',why:post?'No pós-flop, a ação começa no primeiro jogador ativo à esquerda do Button.':'No pré-flop, depois das apostas obrigatórias, a ação voluntária começa no primeiro jogador ativo à esquerda do Big Blind.',phase:post?'FLOP':'PRÉ-FLOP'});
   }
   for(let i=0;i<25;i++){
     const s=showdowns[i%showdowns.length], hero=['BB','UTG1','HJ','CO','BTN'][i%5], villain=['BTN','CO','LJ','HJ','SB'][i%5];
-    add("Texas Hold'em",{kind:'showdown',hero,villain,street:'SHOWDOWN',context:`Você está em ${hero}; o adversário em ${villain}. Compare as melhores 5 cartas.`,heroCards:s.hero,villainCards:s.villain,board:s.board,question:'Quem vence esta mão no showdown?',options:choice('HERÓI','VILÃO','EMPATE'),answer:s.answer,why:s.why,phase:'SHOWDOWN'});
+    add("Texas Hold'em",{kind:'showdown',hero,villain,street:'SHOWDOWN',context:`Você está em ${hero}; o adversário em ${villain}. Compare as melhores 5 cartas.`,heroCards:s.hero,villainCards:s.villain,board:s.board,question:`No confronto ${i+1}, ${s.hero} contra ${s.villain} no board ${s.board}, quem vence o showdown?`,options:choice('HERÓI','VILÃO','EMPATE'),answer:s.answer,why:s.why,phase:'SHOWDOWN'});
   }
   const streets=[['PRÉ-FLOP','FLOP'],['FLOP','TURN'],['TURN','RIVER'],['RIVER','SHOWDOWN'],['BLINDS','DISTRIBUIÇÃO']];
   for(let i=0;i<25;i++){
     const st=streets[i%streets.length], hero=POS[(i+5)%8];
-    add("Texas Hold'em",{kind:'sequencia',hero,street:st[0],context:`A mão está na etapa ${st[0]}. Você está em ${hero}.`,question:'Qual é a próxima etapa normal do fluxo da mão?',options:choice(st[1],st[0],['TURN','PRÉ-FLOP','FLOP','TURN','PRÉ-FLOP'][i%5]),answer:st[1],why:`No fluxo padrão desta situação, depois de ${st[0]} vem ${st[1]}.`,phase:st[0]});
+    add("Texas Hold'em",{kind:'sequencia',hero,street:st[0],context:`A mão está na etapa ${st[0]}. Você está em ${hero}.`,question:`No cenário ${i+1}, estando em ${hero} durante ${st[0]}, qual é a próxima etapa normal do fluxo da mão?`,options:choice(st[1],st[0],['TURN','PRÉ-FLOP','FLOP','TURN','PRÉ-FLOP'][i%5]),answer:st[1],why:`No fluxo padrão desta situação, depois de ${st[0]} vem ${st[1]}.`,phase:st[0]});
   }
 
   // 50 spots de Omaha (PLO4/PLO5/PLO6).
   const plos=['PLO4','PLO5','PLO6','PLO4','PLO5'];
   for(let i=0;i<25;i++){
     const game=plos[i%plos.length], holes=game==='PLO4'?4:game==='PLO5'?5:6, hero=['UTG1','HJ','CO','BTN','BB'][i%5];
-    add(game,{kind:'omaha-regra',hero,street:['FLOP','TURN','RIVER'][i%3],context:`Você joga ${game} e recebeu ${holes} cartas próprias.`,question:'Quantas cartas próprias e quantas do board devem formar sua mão final?',options:choice('EXATAMENTE 2 DA MÃO + 3 DO BOARD','1 DA MÃO + 4 DO BOARD','QUALQUER 5 CARTAS'),answer:'EXATAMENTE 2 DA MÃO + 3 DO BOARD',why:'Em qualquer Omaha, inclusive PLO4, PLO5 e PLO6, a mão final usa exatamente 2 hole cards e exatamente 3 cartas comunitárias.',phase:'OMAHA'});
+    add(game,{kind:'omaha-regra',hero,street:['FLOP','TURN','RIVER'][i%3],context:`Você joga ${game} e recebeu ${holes} cartas próprias.`,question:`No cenário ${i+1} de ${game}, com ${holes} cartas próprias, quantas cartas da mão e do board devem formar a combinação final?`,options:choice('EXATAMENTE 2 DA MÃO + 3 DO BOARD','1 DA MÃO + 4 DO BOARD','QUALQUER 5 CARTAS'),answer:'EXATAMENTE 2 DA MÃO + 3 DO BOARD',why:'Em qualquer Omaha, inclusive PLO4, PLO5 e PLO6, a mão final usa exatamente 2 hole cards e exatamente 3 cartas comunitárias.',phase:'OMAHA'});
   }
   const pots=[6,8,10,12,15], bets=[2,3,4,5,6];
   for(let i=0;i<25;i++){
     const game=plos[(i+2)%plos.length], p=pots[i%5], b=bets[i%5], hero=['CO','BTN','BB','HJ','LJ'][i%5];
     const max=p+3*b;
-    add(game,{kind:'pot-limit',hero,street:['FLOP','TURN'][i%2],context:`Pote antes da aposta: ${p} BB. O vilão aposta ${b} BB. Você ainda não investiu nesta street.`,question:'Qual é o maior total aproximado que você pode colocar ao fazer um raise de pote?',options:choice(`${max} BB`,`${p+2*b} BB`,`${p+b} BB`),answer:`${max} BB`,why:`No heads-up desta street: você chama ${b}, o pote passa a ${p+2*b}; pode aumentar mais esse valor. Total colocado = ${b} + ${p+2*b} = ${max} BB.`,phase:'POT-LIMIT'});
+    add(game,{kind:'pot-limit',hero,street:['FLOP','TURN'][i%2],context:`Pote antes da aposta: ${p} BB. O vilão aposta ${b} BB. Você ainda não investiu nesta street.`,question:`No cenário ${i+1} de ${game}, com pote de ${p} BB e aposta rival de ${b} BB, qual é o maior total que você pode colocar ao fazer um raise de pote?`,options:choice(`${max} BB`,`${p+2*b} BB`,`${p+b} BB`),answer:`${max} BB`,why:`No heads-up desta street: você chama ${b}, o pote passa a ${p+2*b}; pode aumentar mais esse valor. Total colocado = ${b} + ${p+2*b} = ${max} BB.`,phase:'POT-LIMIT'});
   }
 
   // 25 spots nas demais modalidades.
@@ -82,7 +82,7 @@
   ];
   for(let i=0;i<25;i++){
     const o=others[i%others.length], hero=POS[(i+1)%8];
-    add(o[0],{kind:'outras',hero,street:o[1],context:o[2],question:o[3],options:choice(o[4],o[5][0],o[5][1]),answer:o[4],why:o[6],phase:o[1]});
+    add(o[0],{kind:'outras',hero,street:o[1],context:o[2],question:`Cenário ${i+1} de ${o[0]}: ${o[3]}`,options:choice(o[4],o[5][0],o[5][1]),answer:o[4],why:o[6],phase:o[1]});
   }
 
   // Quiz: 30 conceitos x 5 formulações = 150 questões, sem copiar literalmente os exercícios dos capítulos.
