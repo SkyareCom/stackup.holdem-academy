@@ -35,8 +35,8 @@ const server=http.createServer((req,res)=>{
       await page.evaluate(k=>stage(k,1),key);
       await page.waitForTimeout(1500);
       await check(key);
-      const count=await page.evaluate(k=>D[k].i.length,key);
-      for(let i=0;i<count;i++){
+      // Lazy modules normalize the lesson catalog after the first lesson opens.
+      for(let i=0;i<await page.evaluate(k=>D[k].i.length,key);i++){
         await page.evaluate(([k,n])=>lesson(k,n,1),[key,i]);
         await check(key+'/'+i);
       }
@@ -45,5 +45,10 @@ const server=http.createServer((req,res)=>{
     fs.mkdirSync('test-diagnostics',{recursive:true});
     await page.evaluate(()=>home());
     await page.screenshot({path:'test-diagnostics/browser-home.png',fullPage:true});
+    for (const name of ['privacy.html','privacy-policy.html']) {
+      await page.goto(`http://127.0.0.1:${server.address().port}/${name}`);
+      await page.evaluate(()=>document.fonts.ready);
+      await check(name);
+    }
   }finally{await browser.close();server.close();}
 })().catch(e=>{console.error(e);server.close();process.exitCode=1;});

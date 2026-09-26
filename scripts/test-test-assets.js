@@ -7,6 +7,9 @@ require('./prepare-test-assets.js');
 const dir = path.join(root,'android/app/build/generated/testAssets/academy');
 const html = fs.readFileSync(path.join(dir,'index.html'),'utf8');
 assert(html.includes('academy-test.css'));
+for (const name of fs.readdirSync(root).filter(f=>f.endsWith('.html'))) {
+  assert(fs.readFileSync(path.join(dir,name),'utf8').includes('academy-test.css'), name+' TEST font');
+}
 for (const module of ['academy-visual-system.js','typography-standard.js','release-compliance.js','session-reset.js']) assert(html.includes(module),module+' must be bootstrapped');
 assert(!html.includes("navigator.serviceWorker.register("));
 assert(fs.readFileSync(path.join(dir,'academy-test.css'),'utf8').includes('Protest Riot'));

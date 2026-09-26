@@ -21,6 +21,10 @@ const registration = "if('serviceWorker'in navigator)addEventListener('load',()=
 if (!html.includes(registration)) throw new Error('Service worker registration changed; review the offline snapshot.');
 html = html.replace(registration,'').replace('</head>','<link rel="stylesheet" href="./academy-test.css"></head>');
 fs.writeFileSync(path.join(out,'index.html'),html);
+for (const name of fs.readdirSync(out).filter(f=>f.endsWith('.html')&&f!=='index.html')) {
+  const file=path.join(out,name);
+  fs.writeFileSync(file,fs.readFileSync(file,'utf8').replace('</head>','<link rel="stylesheet" href="./academy-test.css"></head>'));
+}
 fs.writeFileSync(path.join(out,'academy-test.css'), `@font-face {
   font-family: 'Protest Riot';
   src: url('./fonts/ProtestRiot-Regular.ttf') format('truetype');
