@@ -232,6 +232,24 @@ public class MainActivity extends Activity {
                 }
 
                 view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
+                // TEST BUILD ONLY: visually override the hosted Academy typography with Protest Riot.
+                if ((getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0) {
+                    String protestRiotScript =
+                            "(function(){try{" +
+                            "var id='academy-protest-riot-test';" +
+                            "if(!document.getElementById(id)){" +
+                            "var s=document.createElement('style');s.id=id;" +
+                            "s.textContent=\"@import url('https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap');html,body,.app,.app *{font-family:'Protest Riot',sans-serif!important;} .rank,.suit,.navicon{font-family:Arial,sans-serif!important;}\";" +
+                            "document.head.appendChild(s);}" +
+                            "document.documentElement.setAttribute('data-font-test','protest-riot');" +
+                            "return 'protest-riot-applied';" +
+                            "}catch(e){return 'font-error:'+e;}})();";
+                    view.evaluateJavascript(
+                            protestRiotScript,
+                            value -> Log.i(TAG, "FONT_TEST=" + value));
+                }
+
                 view.postDelayed(
                         () -> view.evaluateJavascript(
                                 "(function(){return !!(document.querySelector('.app')&&document.querySelector('#root .screen'));})();",
