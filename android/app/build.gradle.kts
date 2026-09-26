@@ -38,11 +38,9 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".test104"
+            applicationIdSuffix = ".test"
             versionNameSuffix = "-test"
-            if (hasReleaseSigning) {
-                signingConfig = signingConfigs.getByName("release")
-            }
+            signingConfig = signingConfigs.getByName("debug")
         }
         release {
             isMinifyEnabled = false
@@ -60,4 +58,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+    sourceSets.getByName("debug").assets.srcDir(layout.buildDirectory.dir("generated/testAssets"))
+}
+
+val prepareTestAssets by tasks.registering(Exec::class) {
+    workingDir(rootProject.projectDir.parentFile)
+    commandLine("node", "scripts/prepare-test-assets.js")
+}
+tasks.matching { it.name == "preDebugBuild" }.configureEach {
+    dependsOn(prepareTestAssets)
 }

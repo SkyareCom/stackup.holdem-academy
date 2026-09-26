@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
     <application android:usesCleartextTraffic="false">
         <activity
             android:name="com.skyare.stackupacademy.MainActivity"
-            android:label="StackUp Hold'em Academy TEST 1.0.4" />
+            tools:node="remove" />
+        <activity android:name="com.skyare.stackupacademy.TestActivity"
+            android:exported="true" android:launchMode="singleTask" android:theme="@style/AppTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

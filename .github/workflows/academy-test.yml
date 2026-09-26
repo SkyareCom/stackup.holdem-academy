@@ -1,0 +1,95 @@
+name: Academy TEST APK
+on:
+  push:
+    branches: ['codex/academy-test-protest-riot']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@9fc6c4e9069bf8d3d10b2204b1fb8f6ef7065407
+        with:
+          packages: platform-tools
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a
+        with:
+          gradle-version: '9.6.0'
+      - name: Verify web and TEST isolation
+        run: |
+          node scripts/security-guard.js
+          node scripts/test-test-assets.js
+          for t in test-engine.js test-navigation.js test-performance.js test-typography.js; do node "$t"; done
+      - name: Report pre-existing content audits
+        continue-on-error: true
+        run: |
+          mkdir -p test-diagnostics
+          status=0
+          for t in test-i18n.js test-quiz-quality.js test-table-layout.js test-ui-release.js; do
+            node "$t" > "test-diagnostics/$t.txt" 2>&1 || status=1
+          done
+          exit "$status"
+      - name: Verify mobile browser behavior
+        run: |
+          npm install --prefix "$RUNNER_TEMP/academy-browser" playwright
+          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium
+          NODE_PATH="$RUNNER_TEMP/academy-browser/node_modules" node scripts/test-test-browser.js
+          NODE_PATH="$RUNNER_TEMP/academy-browser/node_modules" node test-mobile-scroll.js
+      - name: Build and lint debug only
+        run: gradle -p android :app:assembleDebug :app:lintDebug --stacktrace
+      - name: Verify package, label, font and signature
+        run: |
+          APK=android/app/build/outputs/apk/debug/app-debug.apk
+          mkdir -p test-diagnostics
+          "$ANDROID_HOME/build-tools/36.0.0/aapt" dump badging "$APK" | tee test-diagnostics/badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test'" test-diagnostics/badging.txt
+          grep -q "application-label:'StackUp Academy TEST'" test-diagnostics/badging.txt
+          grep -q "launchable-activity: name='com.skyare.stackupacademy.TestActivity'" test-diagnostics/badging.txt
+          "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose "$APK" | tee test-diagnostics/signature.txt
+          unzip -p "$APK" assets/academy/fonts/ProtestRiot-Regular.ttf > /tmp/apk-font.ttf
+          cmp /tmp/apk-font.ttf android/app/src/debug/assets/test-fonts/ProtestRiot-Regular.ttf
+          sha256sum "$APK" | tee test-diagnostics/SHA256.txt
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - name: Install and launch offline on Android
+        uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          emulator-options: -no-window -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          disable-animations: true
+          script: |
+            adb install android/app/build/outputs/apk/debug/app-debug.apk
+            adb shell svc wifi disable
+            adb shell svc data disable
+            adb logcat -c
+            adb shell am start -W -n com.skyare.stackupacademy.test/com.skyare.stackupacademy.TestActivity | tee test-diagnostics/start.txt
+            sleep 20
+            adb logcat -d > test-diagnostics/logcat.txt
+            adb exec-out screencap -p > test-diagnostics/screen.png
+            grep -q 'Status: ok' test-diagnostics/start.txt
+            grep -q 'WEB_CONTENT_READY=true' test-diagnostics/logcat.txt
+            ! grep -E 'TEST_ASSET_MISSING|FATAL EXCEPTION' test-diagnostics/logcat.txt
+      - name: Upload APK and evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: StackUp-Academy-TEST-Protest-Riot
+          path: |
+            android/app/build/outputs/apk/debug/*.apk
+            test-diagnostics/
+          if-no-files-found: error
