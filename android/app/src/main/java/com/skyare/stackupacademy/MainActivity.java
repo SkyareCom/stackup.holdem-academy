@@ -50,9 +50,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getWindow().setStatusBarColor(Color.rgb(5, 72, 37));
-        getWindow().setNavigationBarColor(Color.rgb(44, 32, 20));
-
         root = new FrameLayout(this);
         root.setBackgroundColor(Color.rgb(7, 20, 13));
         setContentView(root);
@@ -82,7 +79,6 @@ public class MainActivity extends Activity {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().setDecorFitsSystemWindows(false);
             WindowInsetsController controller = decor.getWindowInsetsController();
             if (controller == null) {
                 return;
