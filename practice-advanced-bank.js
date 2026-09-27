@@ -42,7 +42,7 @@
   ];
   for(let i=0;i<25;i++){
     const a=actions[i%actions.length], hero=POS[(i+3)%8];
-    add("Texas Hold'em",{kind:'acao',hero,street:['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5],context:`Você está em ${hero}. A mesa para e espera sua decisão.`,question:`Em ${hero}, na street ${['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5]}, você quer ${a[0]}. Qual ação deve anunciar neste cenário ${i+1}?`,options:choice(a[1],a[2],a[3]),answer:a[1],why:a[4],phase:'SUA AÇÃO'});
+    add("Texas Hold'em",{kind:'acao',hero,street:['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5],context:`Cenário ${i+1}: você está em ${hero}. A mesa para e espera sua decisão.`,question:`Em ${hero}, na street ${['FLOP','TURN','RIVER','PRÉ-FLOP','FLOP'][i%5]}, você quer ${a[0]}. Qual ação deve anunciar?`,options:choice(a[1],a[2],a[3]),answer:a[1],why:a[4],phase:'SUA AÇÃO'});
   }
   for(let i=0;i<25;i++){
     const hero=['SB','BB','UTG1','HJ','CO','BTN'][i%6];
