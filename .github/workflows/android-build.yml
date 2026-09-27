@@ -95,8 +95,8 @@ jobs:
           mkdir -p android/app/build/outputs/bundle/release
           {
             echo "package=com.skyare.stackupacademy"
-            echo "versionName=1.0.8"
-            echo "versionCode=104"
+            echo "versionName=1.0.9"
+            echo "versionCode=105"
             echo "targetSdk=36"
             echo "shell=webview"
             echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy/"
@@ -202,4 +202,4 @@ jobs:
           path: android/app/build/outputs/apk/debug/*.apk
           if-no-files-found: error
 
-# release-build: 1.0.8-104-final
+# release-build: 1.0.9-105-final
