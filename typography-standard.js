@@ -38,9 +38,22 @@
       font-style:normal!important;
     }
 
+    .navbtn,.navbtn *,
+    .idx,.arrow,.foot,.foot *,
+    .topic,.topic *,
+    .stage,.stage *,
     .navicon,
     .rank,.suit,
     .fv-rank,.fv-suit{
+      font-family:'Coming Soon',cursive!important;
+      font-weight:700!important;
+      font-style:italic!important;
+    }
+
+    .navbtn,.navbtn *,
+    .idx,.arrow,.foot,.foot *,
+    .topic,.topic *,
+    .stage,.stage *{
       font-family:'Coming Soon',cursive!important;
       font-weight:700!important;
       font-style:italic!important;
