@@ -18,17 +18,32 @@
       --type-meta:clamp(11px,3.1vw,12px);
       --type-micro:11px;
       font-family:'Coming Soon',cursive!important;
+      font-weight:700!important;
+      font-style:italic!important;
     }
 
     html,body,
     body *{
       font-family:'Coming Soon',cursive!important;
+      font-weight:700!important;
+      font-style:italic!important;
+    }
+
+    /* Brand/header display type: the only secondary font allowed. */
+    .brand .name,
+    .brand .sub,
+    .brand-course{
+      font-family:'Road Rage','Coming Soon',cursive!important;
+      font-weight:400!important;
+      font-style:normal!important;
     }
 
     .navicon,
     .rank,.suit,
     .fv-rank,.fv-suit{
-      font-family:Arial,sans-serif!important;
+      font-family:'Coming Soon',cursive!important;
+      font-weight:700!important;
+      font-style:italic!important;
     }
 
     .name{font-size:clamp(20px,6vw,24px)!important;line-height:1.02!important}
