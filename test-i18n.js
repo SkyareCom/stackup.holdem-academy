@@ -35,7 +35,7 @@ for(const file of sourceFiles){const src=fs.readFileSync(path.join(ROOT,file),'u
 check('zero high-confidence Portuguese residue after EN-US translation',residue.length===0,residue.slice(0,100).join(' | '));
 
 const index=fs.readFileSync(path.join(ROOT,'index.html'),'utf8');
-check('logo preserved',index.includes('src="./header-logo-transparent.png?v=1"'));
+check('logo preserved',index.includes('src="./header-logo-transparent.webp?v=2"'));
 check('Coming Soon preserved',index.includes('family=Coming+Soon')&&index.includes("font-family:'Coming Soon',cursive"));
 const positions=fs.readFileSync(path.join(ROOT,'positions-table.js'),'utf8');
 check('positions lesson centered',positions.includes('align-items:center')&&positions.includes('margin:14px auto 0'));
