@@ -26,8 +26,8 @@ const androidMainActivity=fs.readFileSync('android/app/src/main/java/com/skyare/
 const androidStyles=fs.readFileSync('android/app/src/main/res/values/styles.xml','utf8');
 const navigationControls=fs.readFileSync('navigation-controls.js','utf8');
 
-assert('original font is locally preloaded',index.includes('fonts/love-ya-like-a-sister.ttf')&&index.includes('as="font"')&&fs.existsSync('fonts/OFL.txt'));
-assert('global font lock uses Love Ya Like A Sister',typography.includes("font-family:'Love Ya Like A Sister',cursive!important"));
+assert('Coming Soon font is loaded',index.includes('family=Coming+Soon'));
+assert('global font lock uses Coming Soon',typography.includes("font-family:'Coming Soon',cursive!important"));
 assert('typography scales down on narrow phones',typography.includes('clamp('));
 assert('horizontal overflow is blocked globally',visual.includes('overflow-x:hidden!important'));
 assert('visual system caps app content to viewport',visual.includes('max-width:100%!important'));
@@ -71,7 +71,7 @@ assert('web app is standalone',manifest.display==='standalone');
 assert('web app stays portrait-first',manifest.orientation==='portrait-primary');
 assert('web theme keeps Academy green',String(manifest.theme_color).toLowerCase()==='#0e4b3b');
 assert('Android application id is stable',androidGradle.includes('applicationId = "com.skyare.stackupacademy"'));
-assert('Android release version is 1.0.4 build 100',androidGradle.includes('versionCode = 100')&&androidGradle.includes('versionName = "1.0.4"'));
+assert('Android release version is 1.0.8 build 104',androidGradle.includes('versionCode = 104')&&androidGradle.includes('versionName = "1.0.8"'));
 assert('Android targets API 36',androidGradle.includes('targetSdk = 36')&&androidGradle.includes('compileSdk = 36'));
 assert('Android blocks cleartext traffic',androidManifest.includes('android:usesCleartextTraffic="false"'));
 assert('Android production launcher is native MainActivity',androidManifest.includes('android:name="com.skyare.stackupacademy.MainActivity"')&&androidManifest.includes('android.intent.action.MAIN')&&androidManifest.includes('android.intent.category.LAUNCHER'));
