@@ -5,8 +5,8 @@
     {name:'ESTRATEGISTA',xp:3000},{name:'ACADEMY',xp:5000}
   ];
   const XP={basic:10,intermediate:20,advanced:35,challenge:50};
-  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){return {}}};
-  const write=s=>{try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}};
+  const read=()=>window.StackupPlatform?.storage?.getJSON(KEY,{})||(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){return {}}})();
+  const write=s=>{if(window.StackupPlatform?.storage?.setJSON)return window.StackupPlatform.storage.setJSON(KEY,s);try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(_){return false}};
   const level=xp=>{let out=LEVELS[0];for(const x of LEVELS)if(xp>=x.xp)out=x;return out};
   const difficulty=(meta={})=>{
     if(meta.difficulty&&XP[meta.difficulty])return meta.difficulty;
@@ -29,12 +29,12 @@
     const area=String(meta.area||meta.stage||meta.mode||'GERAL').toUpperCase();
     const ar=s.areas[area]||{attempts:0,correct:0,xp:0};ar.attempts++;if(ok)ar.correct++;ar.xp+=gained;s.areas[area]=ar;
     const now=new Date(),day=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');const h=s.history[day]||{attempts:0,correct:0,xp:0};h.attempts++;if(ok)h.correct++;h.xp+=gained;s.history[day]=h;
-    write(s);window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
+    write(s);window.StackupPlatform?.analytics?.track('question_answered',{exercise_id:id,area,difficulty:d,correct:ok,xp_awarded:gained});window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
     return {awarded:gained,...snapshot(s)};
   }
   function reset(){
-    try{localStorage.removeItem(KEY)}catch(_){}
-    const fresh=snapshot({});
+    if(window.StackupPlatform?.storage?.remove)window.StackupPlatform.storage.remove(KEY);else try{localStorage.removeItem(KEY)}catch(_){}
+    const fresh=snapshot({});window.StackupPlatform?.analytics?.track('progress_reset');
     window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{reset:true,...fresh}}));
     window.dispatchEvent(new CustomEvent('stackup:progress-reset',{detail:fresh}));
     return fresh;
