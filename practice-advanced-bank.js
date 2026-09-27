@@ -31,7 +31,7 @@
   for(let i=0;i<25;i++){
     const open=opens[i%opens.length], raiser=['UTG1','LJ','HJ','CO','BTN'][i%5], hero=NEXT[raiser];
     const min=(open+(open-1)).toFixed(open%1?1:0)+' BB';
-    add("Texas Hold'em",{kind:'reraise',hero,villain:raiser,street:'PRÉ-FLOP',context:`${raiser} aumenta de 1 BB para ${open} BB. Você está em ${hero} e quer reaumentar.`,question:`Contra o raise de ${raiser} para ${open} BB, estando em ${hero}, qual é o menor total permitido para o seu re-raise?`,options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+0.5).toFixed((open+0.5)%1?1:0)+' BB'),answer:min,why:`O aumento anterior foi de ${(open-1).toFixed(open%1?1:0)} BB. O próximo raise precisa aumentar pelo menos o mesmo incremento: ${open} + ${(open-1).toFixed(open%1?1:0)} = ${min}.`,phase:'AÇÃO PRÉ-FLOP'});
+    add("Texas Hold'em",{kind:'reraise',hero,villain:raiser,street:'PRÉ-FLOP',context:`Cenário ${i+1}: ${raiser} aumenta de 1 BB para ${open} BB. Você está em ${hero} e quer reaumentar.`,question:`Neste cenário ${i+1}, contra o raise de ${raiser} para ${open} BB, estando em ${hero}, qual é o menor total permitido para o seu re-raise?`,options:choice(min,(open*2).toFixed(open%1?1:0)+' BB',(open+0.5).toFixed((open+0.5)%1?1:0)+' BB'),answer:min,why:`O aumento anterior foi de ${(open-1).toFixed(open%1?1:0)} BB. O próximo raise precisa aumentar pelo menos o mesmo incremento: ${open} + ${(open-1).toFixed(open%1?1:0)} = ${min}.`,phase:'AÇÃO PRÉ-FLOP'});
   }
   const actions=[
     ['igualar exatamente a aposta feita','CALL','CHECK','FOLD','Call é a ação de igualar a aposta pendente.'],
