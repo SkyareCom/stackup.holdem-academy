@@ -9,6 +9,7 @@
     .brand .name,.brand .sub,.brand-course,.navicon,[class],[id]{
       font-family:'Coming Soon',cursive!important;
       font-weight:700!important;
+      font-size:clamp(12px,4vw,20px);
       font-style:italic!important;
     }
   `;
