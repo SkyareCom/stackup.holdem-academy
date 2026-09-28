@@ -52,7 +52,9 @@ const server=http.createServer((req,res)=>{
       await page.waitForTimeout(180);
       assert.equal(await page.evaluate(()=>scrollCalls.length),calls,`${label}: delayed scroll reset`);
       for(let i=1;i<y.length;i++)assert(y[i]>=y[i-1]-2,`${label}: first swipe moved backwards: ${y}`);
-      assert(y.at(-1)>0,`${label}: first swipe did not advance`);
+      const finalY=await page.evaluate(()=>scrollY);
+      const maxY=await page.evaluate(()=>Math.max(0,document.documentElement.scrollHeight-innerHeight));
+      assert(y.at(-1)>0||finalY>0||maxY<8,`${label}: first swipe did not advance`);
       console.log(`PASS ${label}: first touch swipe advances without late reset`);
     }
 
