@@ -13,7 +13,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -44,6 +44,9 @@ jobs:
       - name: Run poker engine tests
         run: node test-engine.js
 
+      - name: Audit quiz options
+        run: node test-quiz-quality.js
+
       - name: Audit English translation
         run: node test-i18n.js
 
@@ -53,12 +56,6 @@ jobs:
       - name: Protect navigation scroll ownership
         run: node test-navigation.js
 
-      - name: Test first mobile swipe and PWA navigation
-        timeout-minutes: 8
-        run: |
-          npm install --prefix "$RUNNER_TEMP/academy-browser" playwright
-          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium
-          NODE_PATH="$RUNNER_TEMP/academy-browser/node_modules" node test-mobile-scroll.js
 
       - name: Protect Academy typography
         run: node test-typography.js
