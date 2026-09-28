@@ -22,15 +22,8 @@
   }
 
   function buildHomeCard(){
-    const homeList=root?.querySelector('.screen .intro + .list');
-    if(!homeList || homeList.querySelector('[data-stackup-language-card]'))return;
-
-    const button=document.createElement('button');
-    button.className='card stage';
-    button.type='button';
-    button.dataset.stackupLanguageCard='1';
-    button.innerHTML=`<div class="kicker">CONFIGURAÇÃO</div><div class="stitle">IDIOMA</div><div class="desc">Escolha Português ou Inglês para usar o aplicativo.</div><div class="foot"><span>${languageLabel(getLanguage())}</span><span class="arrow">›</span></div>`;
-    homeList.insertBefore(button,homeList.firstChild);
+    // Language now lives in the entry flow and persistent footer, not on Home.
+    root?.querySelector('[data-stackup-language-card]')?.remove();
   }
 
   function renderLanguageScreen(){
@@ -72,6 +65,7 @@
     else reloadHome();
   });
 
+  window.addEventListener('stackup:open-language',openLanguageScreen);
   applyDocumentLanguage(getLanguage());
   let cardFrame=0;
   const observer=new MutationObserver(()=>{if(cardFrame)return;cardFrame=requestAnimationFrame(()=>{cardFrame=0;buildHomeCard();});});
