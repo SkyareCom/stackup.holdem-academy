@@ -35,14 +35,8 @@ const server=http.createServer((req,res)=>{
     ]);
 
     async function firstSwipe(label){
-      const metrics=await page.evaluate(()=>({
-        viewport:innerHeight,
-        rootHeight:document.documentElement.scrollHeight,
-        bodyHeight:document.body.scrollHeight,
-        screenHeight:document.querySelector('.screen')?.scrollHeight||0
-      }));
-      const maxHeight=Math.max(metrics.rootHeight,metrics.bodyHeight,metrics.screenHeight);
-      if(maxHeight<=metrics.viewport+8){
+      const canScroll=await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+4);
+      if(!canScroll){
         console.log(`PASS ${label}: screen is not vertically scrollable`);
         return;
       }
@@ -58,15 +52,7 @@ const server=http.createServer((req,res)=>{
       await page.waitForTimeout(180);
       assert.equal(await page.evaluate(()=>scrollCalls.length),calls,`${label}: delayed scroll reset`);
       for(let i=1;i<y.length;i++)assert(y[i]>=y[i-1]-2,`${label}: first swipe moved backwards: ${y}`);
-      const finalY=await page.evaluate(()=>scrollY);
-      const maxY=Math.max(0,maxHeight-metrics.viewport);
-      if(!(y.at(-1)>0||finalY>0||maxY<8)){
-        // Chromium headless can ignore synthetic touch scrolling even when the page is healthy.
-        // Verify the actual scroll container can move instead of failing deployment on CDP gesture emulation.
-        const programmaticY=await page.evaluate(()=>{window.scrollBy(0,64);return scrollY;});
-        assert(programmaticY>0,`${label}: document cannot scroll (maxY=${maxY}, metrics=${JSON.stringify(metrics)})`);
-        await page.evaluate(()=>window.scrollTo(0,0));
-      }
+      assert(y.at(-1)>0,`${label}: first swipe did not advance`);
       console.log(`PASS ${label}: first touch swipe advances without late reset`);
     }
 

@@ -901,22 +901,6 @@
         grid-template-columns:repeat(3,minmax(0,1fr))!important;
       }
     }
-    /* Coming Soon audit: spacing, hierarchy and overflow contract */
-    #root .screen{padding-top:22px!important;padding-bottom:calc(36px + env(safe-area-inset-bottom))!important}
-    #root .head{padding-bottom:18px!important}
-    #root .intro{padding-bottom:20px!important}
-    #root .card.lesson>h2,#root .head>h2{margin-top:6px!important;margin-bottom:12px!important;line-height:1.14!important}
-    #root .card.lesson>.lead{margin-bottom:18px!important;line-height:1.55!important}
-    #root .card.stage .stitle{line-height:1.18!important;margin-top:5px!important}
-    #root .card.stage .desc{line-height:1.5!important;margin-top:8px!important}
-    #root .card.topic{height:auto!important;min-height:96px!important}
-    #root .card.topic .ttitle{line-height:1.25!important}
-    #root .card.topic .tnote{line-height:1.45!important}
-    #root .block,#root .detail-card,#root .rrow{height:auto!important;min-height:0!important}
-    #root button,#root .navbtn,#root .card,#root .badge,#root .me-area,#root .me-level{white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important}
-    #root h1,#root h2,#root h3,#root h4,#root p,#root li,#root span,#root strong,#root b{max-width:100%!important}
-    .brand-course{max-width:100%!important;line-height:1.3!important;white-space:normal!important;overflow-wrap:anywhere!important}
-
   `;
 
   document.head.appendChild(style);

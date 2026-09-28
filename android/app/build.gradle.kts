@@ -21,8 +21,8 @@ android {
         applicationId = "com.skyare.stackupacademy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 105
-        versionName = "1.0.9"
+        versionCode = 102
+        versionName = "1.0.6"
     }
 
     signingConfigs {
