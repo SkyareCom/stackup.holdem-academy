@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v122';
-const SW_VERSION=122;
+const CACHE='stackup-academy-v123';
+const SW_VERSION=123;
 const CORE_ASSETS=[
   './',
   './index.html',
@@ -16,6 +16,7 @@ const CORE_ASSETS=[
   './ph4-footer-logo.webp',
   './stackup-platform.js',
   './academy-entry.js',
+  './academy-shortcuts.js',
   './typography-standard.js',
   './icon-192.png',
   './icon-512.png'
@@ -68,6 +69,7 @@ const SCRIPTS=[
   ['page-top-reset.js',5],
   ['stackup-platform.js',1],
   ['academy-entry.js',1],
+  ['academy-shortcuts.js',1],
   ['typography-standard.js',5],
   ['academy-loader.js',16],
   ['navigation-controls.js',2]
@@ -75,7 +77,7 @@ const SCRIPTS=[
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
   'portuguese-corrections.js','cover-layout.js','release-compliance.js',
-  'academy-visual-system.js','page-top-reset.js','stackup-platform.js','academy-entry.js','typography-standard.js','academy-loader.js','navigation-controls.js'
+  'academy-visual-system.js','page-top-reset.js','stackup-platform.js','academy-entry.js','academy-shortcuts.js','typography-standard.js','academy-loader.js','navigation-controls.js'
 ]);
 
 async function precacheFresh(){
