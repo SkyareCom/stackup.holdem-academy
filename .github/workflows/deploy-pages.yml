@@ -1,5 +1,4 @@
 name: Deploy to GitHub Pages
-# redeploy after advanced quiz uniqueness fix
 
 on:
   push:

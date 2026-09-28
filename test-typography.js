@@ -1,15 +1,11 @@
 const fs=require('fs');
 const typography=fs.readFileSync('typography-standard.js','utf8');
-if(!typography.includes("font-family:'Coming Soon',cursive!important")){
+if(!typography.includes("font-family:'Love Ya Like A Sister',cursive!important")){
   console.error('FAIL: Academy font lock is missing');
   process.exit(1);
 }
-if(!typography.includes('font-weight:700!important')||!typography.includes('font-style:italic!important')){
-  console.error('FAIL: Academy typography must be Coming Soon bold italic globally');
+if(!typography.includes('.navicon')||!typography.includes('Arial,sans-serif!important')){
+  console.error('FAIL: Poker/icon font exceptions are missing');
   process.exit(1);
 }
-if(/Arial,sans-serif!important|Road Rage/i.test(typography)){
-  console.error('FAIL: Legacy font exception detected');
-  process.exit(1);
-}
-console.log('Typography identity OK: Coming Soon');
+console.log('Typography identity OK: Love Ya Like A Sister');

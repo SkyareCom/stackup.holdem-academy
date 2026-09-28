@@ -5,8 +5,8 @@
     {name:'ESTRATEGISTA',xp:3000},{name:'ACADEMY',xp:5000}
   ];
   const XP={basic:10,intermediate:20,advanced:35,challenge:50};
-  const read=()=>window.StackupPlatform?.storage?.getJSON(KEY,{})||(()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){return {}}})();
-  const write=s=>{if(window.StackupPlatform?.storage?.setJSON)return window.StackupPlatform.storage.setJSON(KEY,s);try{localStorage.setItem(KEY,JSON.stringify(s));return true}catch(_){return false}};
+  const read=()=>{try{return JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(_){return {}}};
+  const write=s=>{try{localStorage.setItem(KEY,JSON.stringify(s))}catch(_){}};
   const level=xp=>{let out=LEVELS[0];for(const x of LEVELS)if(xp>=x.xp)out=x;return out};
   const difficulty=(meta={})=>{
     if(meta.difficulty&&XP[meta.difficulty])return meta.difficulty;
@@ -29,15 +29,8 @@
     const area=String(meta.area||meta.stage||meta.mode||'GERAL').toUpperCase();
     const ar=s.areas[area]||{attempts:0,correct:0,xp:0};ar.attempts++;if(ok)ar.correct++;ar.xp+=gained;s.areas[area]=ar;
     const now=new Date(),day=[now.getFullYear(),String(now.getMonth()+1).padStart(2,'0'),String(now.getDate()).padStart(2,'0')].join('-');const h=s.history[day]||{attempts:0,correct:0,xp:0};h.attempts++;if(ok)h.correct++;h.xp+=gained;s.history[day]=h;
-    write(s);window.StackupPlatform?.analytics?.track('question_answered',{exercise_id:id,area,difficulty:d,correct:ok,xp_awarded:gained});window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
+    write(s);window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{gained,...snapshot(s)}}));
     return {awarded:gained,...snapshot(s)};
-  }
-  function reset(){
-    if(window.StackupPlatform?.storage?.remove)window.StackupPlatform.storage.remove(KEY);else try{localStorage.removeItem(KEY)}catch(_){}
-    const fresh=snapshot({});window.StackupPlatform?.analytics?.track('progress_reset');
-    window.dispatchEvent(new CustomEvent('stackup:xp',{detail:{reset:true,...fresh}}));
-    window.dispatchEvent(new CustomEvent('stackup:progress-reset',{detail:fresh}));
-    return fresh;
   }
   function snapshot(source){
     const s=source||read(),xp=Number(s.xp)||0,l=level(xp),next=LEVELS[LEVELS.indexOf(l)+1]||null;
@@ -58,5 +51,5 @@
     const academyComplete=requirements.xp&&requirements.sim&&requirements.quiz&&requirements.math;
     return {xp,level:academyComplete?'ACADEMY':(l.name==='ACADEMY'?'ESTRATEGISTA':l.name),nextLevel:academyComplete?null:(l.name==='ACADEMY'?'ACADEMY':next?.name||null),nextXP:academyComplete?null:(l.name==='ACADEMY'?5000:next?.xp||null),mastery,correct:Number(s.correct)||0,attempts:Number(s.attempts)||0,areas,recent,previous,requirements,academyComplete};
   }
-  window.StackupAcademyProgression={award,snapshot,reset,levels:LEVELS,xpTable:XP};
+  window.StackupAcademyProgression={award,snapshot,levels:LEVELS,xpTable:XP};
 })();

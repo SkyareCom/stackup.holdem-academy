@@ -4,6 +4,7 @@ const CORE_ASSETS=[
   './',
   './index.html',
   './manifest.webmanifest',
+  './fonts/love-ya-like-a-sister.ttf',
   './language-selector.js',
   './portuguese-corrections.js',
   './cover-layout.js',
@@ -12,11 +13,8 @@ const CORE_ASSETS=[
   './academy-visual-system.js',
   './page-top-reset.js',
   './navigation-controls.js',
-  './header-logo-transparent.webp',
+  './header-logo-transparent.png',
   './ph4-footer-logo.webp',
-  './stackup-platform.js',
-  './academy-entry.js',
-  './academy-shortcuts.js',
   './typography-standard.js',
   './icon-192.png',
   './icon-512.png'
@@ -67,17 +65,14 @@ const SCRIPTS=[
   ['release-compliance.js',2],
   ['academy-visual-system.js',5],
   ['page-top-reset.js',5],
-  ['stackup-platform.js',1],
-  ['academy-entry.js',1],
-  ['academy-shortcuts.js',1],
-  ['typography-standard.js',7],
+  ['typography-standard.js',3],
   ['academy-loader.js',16],
   ['navigation-controls.js',2]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
   'portuguese-corrections.js','cover-layout.js','release-compliance.js',
-  'academy-visual-system.js','page-top-reset.js','stackup-platform.js','academy-entry.js','academy-shortcuts.js','typography-standard.js','academy-loader.js','navigation-controls.js'
+  'academy-visual-system.js','page-top-reset.js','typography-standard.js','academy-loader.js','navigation-controls.js'
 ]);
 
 async function precacheFresh(){
@@ -117,6 +112,9 @@ function enhanceHtml(source){
   }
   if(!html.includes('stackup-header-logo-size')){
     html=html.replace('</head>','<style id="stackup-header-logo-size">.brandin .logo[data-stackup-logo="1"]{width:80px!important;height:80px!important;flex:0 0 80px!important;object-fit:contain!important;background:transparent!important}</style></head>');
+  }
+  if(!html.includes('stackup-font-lock')){
+    html=html.replace('</head>','<style id="stackup-font-lock">html,body,body *{font-family:\'Love Ya Like A Sister\',cursive!important}.navicon,.rank,.suit,.fv-rank,.fv-suit{font-family:Arial,sans-serif!important}</style></head>');
   }
   for(const [name,version] of SCRIPTS){
     if(AUTO_SCRIPTS.has(name)&&!html.includes(name))html=html.replace('</body>',`<script src="./${name}?v=${version}"></script></body>`);
