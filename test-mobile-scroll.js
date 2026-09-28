@@ -35,7 +35,7 @@ const server=http.createServer((req,res)=>{
     ]);
 
     async function firstSwipe(label){
-      const canScroll=await page.evaluate(()=>document.documentElement.scrollHeight>innerHeight+4);
+      const canScroll=await page.evaluate(()=>Math.max(document.documentElement.scrollHeight,document.body.scrollHeight)>innerHeight+4);
       if(!canScroll){
         console.log(`PASS ${label}: screen is not vertically scrollable`);
         return;
@@ -53,7 +53,7 @@ const server=http.createServer((req,res)=>{
       assert.equal(await page.evaluate(()=>scrollCalls.length),calls,`${label}: delayed scroll reset`);
       for(let i=1;i<y.length;i++)assert(y[i]>=y[i-1]-2,`${label}: first swipe moved backwards: ${y}`);
       const finalY=await page.evaluate(()=>scrollY);
-      const maxY=await page.evaluate(()=>Math.max(0,document.documentElement.scrollHeight-innerHeight));
+      const maxY=await page.evaluate(()=>Math.max(0,Math.max(document.documentElement.scrollHeight,document.body.scrollHeight)-innerHeight));
       assert(y.at(-1)>0||finalY>0||maxY<8,`${label}: first swipe did not advance`);
       console.log(`PASS ${label}: first touch swipe advances without late reset`);
     }
