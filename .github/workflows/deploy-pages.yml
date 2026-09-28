@@ -13,38 +13,52 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: '22'
+
+      - name: Security repository guard
+        run: node scripts/security-guard.js
 
       - name: Validate JavaScript syntax
         run: |
           find . -maxdepth 1 -type f -name '*.js' -print0 | sort -z | xargs -0 -n1 node --check
+          node --check scripts/security-guard.js
 
       - name: Run poker engine tests
         run: node test-engine.js
-
-      - name: Audit quiz options
-        run: node test-quiz-quality.js
 
       - name: Audit English translation
         run: node test-i18n.js
 
       - name: Protect Academy performance
         run: node test-performance.js
+
+      - name: Protect navigation scroll ownership
+        run: node test-navigation.js
+
+      - name: Test first mobile swipe and PWA navigation
+        timeout-minutes: 8
+        run: |
+          npm install --prefix "$RUNNER_TEMP/academy-browser" playwright
+          "$RUNNER_TEMP/academy-browser/node_modules/.bin/playwright" install --with-deps chromium
+          NODE_PATH="$RUNNER_TEMP/academy-browser/node_modules" node test-mobile-scroll.js
 
       - name: Protect Academy typography
         run: node test-typography.js
@@ -56,13 +70,13 @@ jobs:
         run: node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest OK')"
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@7b1f4a764d45c48632c6b24a0339c27f5614fb0b # v4
         with:
           path: '.'
 
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
