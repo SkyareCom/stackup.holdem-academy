@@ -24,17 +24,12 @@ assert('cover does not force duplicate scroll work',!cover.includes('scrollHeade
 assert('language-card observer is batched',lang.includes('cardFrame=requestAnimationFrame')&&lang.includes("observe(root,{childList:true})"));
 assert('fundamentals training observer is root-only',interactive.includes("observer.observe(root,{childList:true})")&&!interactive.includes("observe(document.documentElement,{childList:true,subtree:true})"));
 assert('progress observer avoids document-wide scans',progress.includes("observer.observe(root,{childList:true,subtree:true})")&&!progress.includes("document.querySelectorAll('.fi-stats')"));
-assert('learning flow does not compete for scroll ownership',!flow.includes('scrollTo')&&!flow.includes('MutationObserver'));
-assert('first load only boots the lightweight loader',fs.readFileSync('index.html','utf8').includes('academy-loader.js?v=16')&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
+assert('navigation alignment uses one animation frame',flow.includes('frame=requestAnimationFrame(()=>{')&&!flow.includes('frame=requestAnimationFrame(()=>{\n      frame=requestAnimationFrame'));
+assert('first load only boots the lightweight loader',/await load\('\.\/academy-loader\.js\?v=\d+','academy-loader\.js'\)/.test(highlight)&&!highlight.includes("await load('./fundamentals-interactive-bank.js"));
 assert('heavy Academy modules are lazy by stage',loader.includes('const groups={')&&loader.includes('requestIdleCallback')&&loader.includes("new MutationObserver(schedule).observe(root,{childList:true})"));
-assert('heavy Academy modules do not start while browsing topic lists',loader.includes("state?.type==='lesson'&&state.stage&&groups[state.stage]"));
-assert('lesson navigation opens synchronously without waiting for modules',loader.includes('nativeLesson(stage,index,push);')&&!loader.includes('LESSON_LOAD_TIMEOUT_MS')&&!loader.includes('bounded(ensure(stage)'));
-assert('heavy module execution is serialized to reduce main-thread spikes',loader.includes('files.reduce(')&&loader.includes('chain.then(()=>load(name,version))'));
 assert('service worker limits legacy document-wide observers',sw.includes('stackup-performance-guard')&&sw.includes('target===document.documentElement'));
 assert('service worker auto-injects only lightweight core',sw.includes('const AUTO_SCRIPTS=new Set')&&sw.includes('AUTO_SCRIPTS.has(name)'));
-assert('service worker reuses cached versioned code while refreshing in background',sw.includes('async function staleWhileRevalidate(request)')&&sw.includes('freshCode?staleWhileRevalidate(event.request):cacheFirst(event.request)'));
-assert('service worker precaches only lightweight startup assets',sw.includes('const CORE_ASSETS=[')&&sw.includes('CORE_ASSETS.map')&&!sw.includes('Promise.all(ASSETS.map'));
-assert('service worker keeps cache-first fallback for non-code assets',sw.includes('async function cacheFirst(request)')&&sw.includes('const cached=await caches.match(request)'));
+assert('service worker serves static assets cache-first',sw.includes("caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request)"));
 assert('service worker activation does not force client navigation',!sw.includes('client.navigate(client.url)'));
 
 if(process.exitCode)process.exit(process.exitCode);

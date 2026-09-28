@@ -9,3 +9,6 @@ Public URL: `https://skyarecom.github.io/stackup.holdem-academy/`
 This snapshot is the product baseline for the first Android / Google Play release. New product features must not be added to the frozen branch. Only critical release-blocking fixes should be backported after explicit review.
 
 Android packaging lives under `/android` on `main` and must not change the frozen web snapshot.
+
+
+<!-- restore-clean-original security-check trigger -->

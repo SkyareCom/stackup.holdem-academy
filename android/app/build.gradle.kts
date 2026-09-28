@@ -21,8 +21,8 @@ android {
         applicationId = "com.skyare.stackupacademy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 102
-        versionName = "1.0.6"
+        versionCode = 1
+        versionName = "1.0.0"
     }
 
     signingConfigs {
@@ -37,13 +37,6 @@ android {
     }
 
     buildTypes {
-        debug {
-            applicationIdSuffix = ".test104"
-            versionNameSuffix = "-test"
-            if (hasReleaseSigning) {
-                signingConfig = signingConfigs.getByName("release")
-            }
-        }
         release {
             isMinifyEnabled = false
             if (hasReleaseSigning) {
@@ -60,4 +53,8 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+dependencies {
+    implementation("com.google.androidbrowserhelper:androidbrowserhelper:2.7.3")
 }
