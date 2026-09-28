@@ -34,4 +34,33 @@
   document.body.appendChild(nav);
   const update=()=>{const hash=(location.hash||'#home').toLowerCase();nav.querySelectorAll('button').forEach(b=>b.classList.toggle('active',b.dataset.key==='home'?hash==='#home'||!hash:hash.includes(b.dataset.key)))};
   addEventListener('hashchange',update,{passive:true});addEventListener('popstate',update,{passive:true});update();
+
+  // Horizontal swipe between the five footer destinations.
+  const keys=items.map(x=>x[2]);
+  const current=()=>{
+    const h=(location.hash||'#home').toLowerCase();
+    if(h.includes('fundamentos'))return 'fundamentos';
+    if(h.includes('modalidades'))return 'modalidades';
+    if(h.includes('pratica'))return 'pratica';
+    if(document.getElementById('stackup-entry')?.style.display!=='none' && document.querySelector('#stackup-entry .se-card.open'))return 'idioma';
+    return 'home';
+  };
+  let sx=0,sy=0,started=false;
+  const surface=root;
+  surface.addEventListener('touchstart',e=>{
+    if(e.touches.length!==1)return;
+    const t=e.touches[0];sx=t.clientX;sy=t.clientY;started=true;
+  },{passive:true});
+  surface.addEventListener('touchend',e=>{
+    if(!started||!e.changedTouches.length)return;started=false;
+    const t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.25)return;
+    const tag=e.target?.closest?.('input,textarea,select,button,a');
+    if(tag)return;
+    const i=keys.indexOf(current());
+    const next=dx<0?i+1:i-1;
+    if(next<0||next>=keys.length)return;
+    surface.animate([{opacity:1,transform:'translateX(0)'},{opacity:.72,transform:`translateX(${dx<0?'-18px':'18px'})`}],{duration:130,easing:'ease-out'});
+    setTimeout(()=>go(keys[next]),105);
+  },{passive:true});
 })();
