@@ -1,7 +1,4 @@
 (() => {
-  if(window.__stackupPortugueseCorrections)return;
-  window.__stackupPortugueseCorrections=1;
-
   const CORRECTIONS=[
     ['SMALL BLIND, BIG BLIND E ANTE','SMALL, BIG E ANTE'],
     ['Small Blind, Big Blind e Ante','Small, Big e Ante'],
@@ -32,75 +29,44 @@
     ['então jogador e dealer recebem 5 cartas.','então, o jogador e o dealer recebem 5 cartas.'],
     ['Em Mixed Games, regras de distribuição, limite e avaliação mudam;','Em Mixed Games, as regras de distribuição, limite e avaliação mudam;'],
     ['Qual o máximo de uma aposta?','Qual é o máximo de uma aposta?'],
-    ['No No-Limit o jogador pode comprometer até todo o stack.','No No-Limit, o jogador pode comprometer até todo o stack.'],
-    ['ACTION REACHES ATIS YOU','ACTION IS ON YOU'],
-    ['ACTION REACHES UP TO YOU','ACTION IS ON YOU'],
-    ['ACTION REACHES YOU','ACTION IS ON YOU'],
-    ['MATH OF THE POKER','POKER MATH']
+    ['No No-Limit o jogador pode comprometer até todo o stack.','No No-Limit, o jogador pode comprometer até todo o stack.']
   ];
 
   function fixText(text){
     let out=text;
     for(const [from,to] of CORRECTIONS){
-      if(out.includes(from))out=out.split(from).join(to);
+      if(out.includes(from)) out=out.split(from).join(to);
     }
     return out;
   }
 
-  function fixAttributes(el){
-    for(const attr of ['aria-label','title','placeholder']){
-      if(!el.hasAttribute(attr))continue;
-      const old=el.getAttribute(attr)||'';
-      const fixed=fixText(old);
-      if(fixed!==old)el.setAttribute(attr,fixed);
-    }
-  }
-
-  function fixElement(el){
-    fixAttributes(el);
-    if(el.matches?.('.ttitle')&&(el.textContent||'').trim()==='Matemática do poker simplificada'){
-      el.textContent='Matemática do poker';
-      return;
-    }
-    const walker=document.createTreeWalker(el,NodeFilter.SHOW_TEXT);
-    while(walker.nextNode()){
-      const node=walker.currentNode;
+  function apply(root=document.getElementById('root')){
+    if(!root) return;
+    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    const nodes=[];
+    while(walker.nextNode()) nodes.push(walker.currentNode);
+    for(const node of nodes){
       const fixed=fixText(node.nodeValue||'');
-      if(fixed!==node.nodeValue)node.nodeValue=fixed;
+      if(fixed!==node.nodeValue) node.nodeValue=fixed;
     }
-    el.querySelectorAll?.('[aria-label],[title],[placeholder]').forEach(fixAttributes);
-    el.querySelectorAll?.('.ttitle').forEach(title=>{
-      if((title.textContent||'').trim()==='Matemática do poker simplificada')title.textContent='Matemática do poker';
+    root.querySelectorAll('[aria-label],[title],[placeholder]').forEach(el=>{
+      for(const attr of ['aria-label','title','placeholder']){
+        if(!el.hasAttribute(attr)) continue;
+        const old=el.getAttribute(attr)||'';
+        const fixed=fixText(old);
+        if(fixed!==old) el.setAttribute(attr,fixed);
+      }
     });
-  }
-
-  function fixNode(node){
-    if(node.nodeType===Node.TEXT_NODE){
-      const fixed=fixText(node.nodeValue||'');
-      if(fixed!==node.nodeValue)node.nodeValue=fixed;
-      return;
-    }
-    if(node.nodeType===Node.ELEMENT_NODE)fixElement(node);
   }
 
   const root=document.getElementById('root');
-  if(!root)return;
-
-  fixElement(root);
-
-  let queued=false;
-  const pending=[];
-  new MutationObserver(records=>{
-    for(const record of records){
-      if(record.type==='characterData')pending.push(record.target);
-      for(const node of record.addedNodes||[])pending.push(node);
-    }
-    if(queued||!pending.length)return;
-    queued=true;
-    requestAnimationFrame(()=>{
-      queued=false;
-      const batch=pending.splice(0,pending.length);
-      for(const node of batch)fixNode(node);
-    });
-  }).observe(root,{childList:true,subtree:true,characterData:true});
+  if(root){
+    let queued=false;
+    new MutationObserver(()=>{
+      if(queued) return;
+      queued=true;
+      requestAnimationFrame(()=>{queued=false;apply(root);});
+    }).observe(root,{childList:true});
+  }
+  apply(root);
 })();

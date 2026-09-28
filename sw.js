@@ -1,30 +1,17 @@
-const CACHE='stackup-academy-v120';
-const SW_VERSION=120;
-const CORE_ASSETS=[
-  './',
-  './index.html',
-  './manifest.webmanifest',
-  './fonts/love-ya-like-a-sister.ttf',
-  './language-selector.js',
-  './portuguese-corrections.js',
-  './cover-layout.js',
-  './release-compliance.js',
-  './academy-loader.js',
-  './academy-visual-system.js',
-  './page-top-reset.js',
-  './navigation-controls.js',
-  './header-logo-transparent.png',
-  './ph4-footer-logo.webp',
-  './typography-standard.js',
-  './icon-192.png',
-  './icon-512.png'
+const CACHE='stackup-academy-v102';
+const SW_VERSION=102;
+const ASSETS=[
+  './','./index.html','./privacy.html','./manifest.webmanifest','./engine.js','./session-reset.js','./language-selector.js','./i18n-en-us-phrases-1.js','./i18n-en-us-phrases-2.js','./i18n-en-us-phrases-3.js','./i18n-en-us-words.js','./i18n-en-us-words-extra-1.js','./i18n-en-us-words-extra-2.js','./i18n-en-us-words-extra-3.js','./i18n-en-us-words-extra-4.js','./i18n-en-us.js',
+  './positions-table.js','./fundamentals-details.js','./misdeal-staff-details.js','./terminology-profiles-details.js',
+  './strategic-concepts-details.js','./terminology-extra-terms.js','./cash-tournament-details.js','./highlight-card-style.js',
+  './etiquette-details.js','./other-rules-details.js','./fundamentals-learning-flow.js','./fundamentals-interactive-bank.js',
+  './fundamentals-visual-layer.js','./fundamentals-interactive.js','./fundamentals-progress-panel.js','./modalities-module.js',
+  './modalities-depth-details.js','./mixed-games-module.js','./practice-module.js','./practice-table.js','./practice-advanced-bank.js',
+  './practice-advanced.js','./table-rotation-guard.js','./math-card-structure.js','./practice-math-odds.js','./portuguese-corrections.js','./cover-layout.js','./release-compliance.js',
+  './academy-loader.js','./academy-visual-system.js','./page-top-reset.js','./header-logo-transparent.png','./typography-standard.js','./icon-192.png','./icon-512.png'
 ];
 const SCRIPTS=[
   ['session-reset.js',3],
-  ['academy-progression.js',2],
-  ['academy-xp-panel.js',2],
-  ['academy-my-evolution.js',2],
-  ['i18n-en-us-progression.js',1],
   ['language-selector.js',4],
   ['i18n-en-us-phrases-1.js',2],
   ['i18n-en-us-phrases-2.js',2],
@@ -33,7 +20,7 @@ const SCRIPTS=[
   ['i18n-en-us-words-extra-1.js',1],
   ['i18n-en-us-words-extra-2.js',1],
   ['i18n-en-us-words-extra-3.js',1],
-  ['i18n-en-us-words-extra-4.js',3],
+  ['i18n-en-us-words-extra-4.js',2],
   ['i18n-en-us.js',5],
   ['positions-table.js',6],
   ['fundamentals-details.js',3],
@@ -42,17 +29,17 @@ const SCRIPTS=[
   ['strategic-concepts-details.js',1],
   ['terminology-extra-terms.js',2],
   ['cash-tournament-details.js',1],
-  ['highlight-card-style.js',41],
+  ['highlight-card-style.js',37],
   ['etiquette-details.js',2],
   ['other-rules-details.js',2],
-  ['fundamentals-learning-flow.js',4],
-  ['fundamentals-interactive-bank.js',2],
-  ['fundamentals-visual-layer.js',5],
-  ['fundamentals-interactive.js',8],
-  ['fundamentals-progress-panel.js',4],
-  ['modalities-module.js',5],
+  ['fundamentals-learning-flow.js',3],
+  ['fundamentals-interactive-bank.js',1],
+  ['fundamentals-visual-layer.js',2],
+  ['fundamentals-interactive.js',5],
+  ['fundamentals-progress-panel.js',3],
+  ['modalities-module.js',1],
   ['modalities-depth-details.js',1],
-  ['mixed-games-module.js',6],
+  ['mixed-games-module.js',3],
   ['practice-module.js',1],
   ['practice-table.js',3],
   ['practice-advanced-bank.js',2],
@@ -60,32 +47,22 @@ const SCRIPTS=[
   ['table-rotation-guard.js',3],
   ['math-card-structure.js',2],
   ['practice-math-odds.js',2],
-  ['portuguese-corrections.js',5],
+  ['portuguese-corrections.js',2],
   ['cover-layout.js',10],
-  ['release-compliance.js',2],
-  ['academy-visual-system.js',5],
-  ['page-top-reset.js',5],
+  ['release-compliance.js',1],
+  ['academy-visual-system.js',3],
+  ['page-top-reset.js',3],
   ['typography-standard.js',3],
-  ['academy-loader.js',16],
-  ['navigation-controls.js',2]
+  ['academy-loader.js',9]
 ];
 const AUTO_SCRIPTS=new Set([
   'session-reset.js','highlight-card-style.js','fundamentals-learning-flow.js',
   'portuguese-corrections.js','cover-layout.js','release-compliance.js',
-  'academy-visual-system.js','page-top-reset.js','typography-standard.js','academy-loader.js','navigation-controls.js'
+  'academy-visual-system.js','page-top-reset.js','typography-standard.js','academy-loader.js'
 ]);
 
-async function precacheFresh(){
-  const cache=await caches.open(CACHE);
-  await Promise.all(CORE_ASSETS.map(async asset=>{
-    const request=new Request(asset,{cache:'reload'});
-    const response=await fetch(request);
-    if(response.ok)await cache.put(request,response);
-  }));
-}
-
 self.addEventListener('install',event=>{
-  event.waitUntil(precacheFresh().then(()=>self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));
 });
 
 self.addEventListener('activate',event=>{
@@ -125,12 +102,10 @@ function enhanceHtml(source){
 async function appShellResponse(request){
   let response;
   try{
-    response=await fetch(request,{cache:'no-store'});
+    response=await fetch(request);
     if(!response.ok)throw new Error(`HTTP ${response.status}`);
-    const copy=response.clone();
-    caches.open(CACHE).then(cache=>cache.put(request,copy));
   }catch(_){
-    response=await caches.match(request)||await caches.match('./index.html');
+    response=await caches.match('./index.html');
   }
   if(!response)return new Response('Offline',{status:503,headers:{'content-type':'text/plain; charset=utf-8'}});
   const type=response.headers.get('content-type')||'';
@@ -141,57 +116,29 @@ async function appShellResponse(request){
   return new Response(html,{status:200,statusText:'OK',headers});
 }
 
-async function networkFirst(request){
-  try{
-    const response=await fetch(request,{cache:'no-store'});
-    if(!response.ok)throw new Error(`HTTP ${response.status}`);
-    const copy=response.clone();
-    caches.open(CACHE).then(cache=>cache.put(request,copy));
-    return response;
-  }catch(_){
-    return (await caches.match(request))||(await caches.match(request,{ignoreSearch:true}))||new Response('Offline',{status:503});
-  }
-}
-
-async function staleWhileRevalidate(request){
-  const cached=await caches.match(request);
-  const fresh=fetch(request,{cache:'no-store'})
-    .then(response=>{
-      if(response.ok){
-        const copy=response.clone();
-        caches.open(CACHE).then(cache=>cache.put(request,copy));
-      }
-      return response;
-    })
-    .catch(()=>null);
-  if(cached){
-    fresh.catch(()=>{});
-    return cached;
-  }
-  return (await fresh)||(await caches.match(request,{ignoreSearch:true}))||new Response('Offline',{status:503});
-}
-
-async function cacheFirst(request){
-  const cached=await caches.match(request);
-  if(cached)return cached;
-  try{
-    const response=await fetch(request);
-    if(response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy));}
-    return response;
-  }catch(_){
-    return (await caches.match(request,{ignoreSearch:true}))||new Response('Offline',{status:503});
-  }
-}
-
 self.addEventListener('fetch',event=>{
   if(event.request.method!=='GET')return;
-  const url=new URL(event.request.url);
   if(event.request.mode==='navigate'){
+    const url=new URL(event.request.url);
     const isAppShell=url.pathname.endsWith('/')||url.pathname.endsWith('/index.html');
-    if(isAppShell){event.respondWith(appShellResponse(event.request));return;}
-    event.respondWith(networkFirst(event.request));
+    if(isAppShell){
+      event.respondWith(appShellResponse(event.request));
+      return;
+    }
+    event.respondWith(
+      fetch(event.request).then(response=>{
+        const copy=response.clone();
+        caches.open(CACHE).then(cache=>cache.put(event.request,copy));
+        return response;
+      }).catch(()=>caches.match(event.request,{ignoreSearch:true}))
+    );
     return;
   }
-  const freshCode=url.origin===self.location.origin&&(/\.(?:js|css|json)$/i.test(url.pathname)||url.pathname.endsWith('.webmanifest'));
-  event.respondWith(freshCode?staleWhileRevalidate(event.request):cacheFirst(event.request));
+  event.respondWith(
+    caches.match(event.request,{ignoreSearch:true}).then(cached=>cached||fetch(event.request).then(response=>{
+      const copy=response.clone();
+      caches.open(CACHE).then(cache=>cache.put(event.request,copy));
+      return response;
+    }))
+  );
 });
