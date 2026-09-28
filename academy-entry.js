@@ -6,14 +6,14 @@
   #stackup-entry .se-wrap{width:min(430px,100%);margin:auto}
   #stackup-entry .se-hero{height:150px;padding:24px 22px 12px;display:flex;align-items:center;gap:16px;text-align:left}
   #stackup-entry .se-logo{width:86px;height:86px;object-fit:contain;display:block;margin:0}
-  #stackup-entry h1{font-family:'Road Rage','Coming Soon',cursive!important;font-weight:400!important;font-style:normal!important;color:#fff7df;font-size:29px;line-height:1;margin:0}
+  #stackup-entry h1{font-family:'Coming Soon',cursive!important;font-weight:700!important;font-style:italic!important;color:#fff7df;font-size:29px;line-height:1;margin:0}
   #stackup-entry .se-sub{margin:7px 0 0;font-size:11px;letter-spacing:.4px;color:#fff7df;text-transform:uppercase}
   #stackup-entry .se-intro{text-align:center;padding:22px 24px 24px}
-  #stackup-entry .se-intro strong{display:block;font-family:'Road Rage','Coming Soon',cursive!important;font-weight:400!important;font-style:normal!important;font-size:38px;line-height:1.04;color:#fff8e7}
+  #stackup-entry .se-intro strong{display:block;font-family:'Coming Soon',cursive!important;font-weight:700!important;font-style:italic!important;font-size:38px;line-height:1.04;color:#fff8e7}
   #stackup-entry .se-intro span{display:block;font-size:15px;line-height:1.7;color:#d8c8b6;margin-top:14px}
   #stackup-entry .se-card{margin:0 17px 16px;border:1.5px solid #d7aa50;border-radius:28px;background:linear-gradient(145deg,#fff8df,#f2e7c9);box-shadow:0 3px 0 #0003;overflow:hidden;color:#21130d}
   #stackup-entry .se-head{width:100%;min-height:164px;border:0;background:transparent;color:#21130d;display:grid;grid-template-columns:1fr 24px;gap:10px;align-items:end;text-align:left;padding:20px 21px;cursor:pointer}
-  #stackup-entry .se-icon{display:none}.se-title{display:block;font-family:'Road Rage','Coming Soon',cursive!important;font-weight:400!important;font-style:normal!important;color:#21130d;font-size:32px;text-transform:uppercase}.se-note{display:block;font-size:13px;line-height:1.6;color:#76675a;margin-top:12px}.se-chevron{font-size:22px;color:#b1843c}
+  #stackup-entry .se-icon{display:none}.se-title{display:block;font-family:'Coming Soon',cursive!important;font-weight:700!important;font-style:italic!important;color:#21130d;font-size:32px;text-transform:uppercase}.se-note{display:block;font-size:13px;line-height:1.6;color:#76675a;margin-top:12px}.se-chevron{font-size:22px;color:#b1843c}
   #stackup-entry .se-body{display:none;border-top:1px solid #d9c9a6;margin:0 21px;padding:14px 0 20px}#stackup-entry .se-card.open .se-body{display:block}
   #stackup-entry label{display:block;font-size:10px;color:#a77b39;margin:8px 0 5px;text-transform:uppercase}
   #stackup-entry input,#stackup-entry select{width:100%;min-height:46px;border:1px solid #d4bc8c;border-radius:12px;background:#fffaf0;color:#332117;padding:10px 12px;font-size:13px;outline:none}
