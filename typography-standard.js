@@ -33,9 +33,9 @@
     .brand .name,
     .brand .sub,
     .brand-course{
-      font-family:'Road Rage','Coming Soon',cursive!important;
-      font-weight:400!important;
-      font-style:normal!important;
+      font-family:'Coming Soon',cursive!important;
+      font-weight:700!important;
+      font-style:italic!important;
     }
 
     .navbtn,.navbtn *,
