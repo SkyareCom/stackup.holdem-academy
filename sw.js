@@ -1,5 +1,5 @@
-const CACHE='stackup-academy-v123';
-const SW_VERSION=123;
+const CACHE='stackup-academy-v124';
+const SW_VERSION=124;
 const CORE_ASSETS=[
   './',
   './index.html',
@@ -68,9 +68,9 @@ const SCRIPTS=[
   ['academy-visual-system.js',5],
   ['page-top-reset.js',5],
   ['stackup-platform.js',1],
-  ['academy-entry.js',1],
+  ['academy-entry.js',2],
   ['academy-shortcuts.js',1],
-  ['typography-standard.js',5],
+  ['typography-standard.js',6],
   ['academy-loader.js',16],
   ['navigation-controls.js',2]
 ];
