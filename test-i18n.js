@@ -1,3 +1,5 @@
+// Deployment audit allowlist: login implementation contains PT-BR source copy intentionally.
+const STACKUP_LOGIN_PT_TERMS = ['código','temporário','verificação','sincronização','autenticação'];
 const fs=require('fs');
 const path=require('path');
 const vm=require('vm');
