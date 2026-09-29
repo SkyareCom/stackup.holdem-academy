@@ -222,24 +222,25 @@ public class MainActivity extends Activity {
                         && url != null
                         && url.startsWith(APP_URL)) {
                     cleanupStarted = true;
+                    webRecoveryPending = false;
+                    getSharedPreferences(PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
+                            .apply();
+
                     String cleanupScript =
                             "(async()=>{try{" +
                             "if('caches' in window){const ks=await caches.keys();" +
                             "await Promise.all(ks.map(k=>caches.delete(k)));}" +
                             "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();" +
                             "await Promise.all(rs.map(r=>r.unregister()));}" +
-                            "return 'ok';}catch(e){return 'cleanup-error';}})();";
+                            "}catch(e){}finally{" +
+                            "window.location.replace('" + APP_URL + "?android_build=210&migrated=1');" +
+                            "}})();";
 
-                    view.evaluateJavascript(cleanupScript, value -> {
-                        Log.i(TAG, "WEB_CACHE_CLEANUP=" + value);
-                        getSharedPreferences(PREFS, MODE_PRIVATE)
-                                .edit()
-                                .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
-                                .apply();
-                        webRecoveryPending = false;
-                        view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                        view.loadUrl(APP_URL + "?android_build=210&migrated=1");
-                    });
+                    view.evaluateJavascript(
+                            cleanupScript,
+                            value -> Log.i(TAG, "WEB_CACHE_CLEANUP_STARTED=" + value));
                     return;
                 }
 

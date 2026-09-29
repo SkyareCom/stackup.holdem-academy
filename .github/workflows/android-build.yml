@@ -162,8 +162,12 @@ jobs:
             cat /tmp/stackup-start.txt
             grep -q "Status: ok" /tmp/stackup-start.txt
             grep -q "MainActivity" /tmp/stackup-start.txt
-            sleep 30
             mkdir -p android-diagnostics
+            for i in $(seq 1 18); do
+              sleep 5
+              adb logcat -d -v time > android-diagnostics/logcat.txt
+              grep -q "WEB_CONTENT_READY=true" android-diagnostics/logcat.txt && break
+            done
             adb logcat -d -v time > android-diagnostics/logcat.txt
             cp /tmp/stackup-start.txt android-diagnostics/start.txt
             adb exec-out screencap -p > android-diagnostics/screen.png
