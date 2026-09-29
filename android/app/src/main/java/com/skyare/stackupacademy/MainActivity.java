@@ -13,17 +13,14 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
-import android.view.WindowInsetsController;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 import android.webkit.ConsoleMessage;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
-import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -37,14 +34,15 @@ public class MainActivity extends Activity {
     private static final String TAG = "StackUpAcademy";
     private static final String PREFS = "stackup_android_shell";
     private static final String CACHE_SCHEMA_KEY = "cache_schema";
-    private static final int CACHE_SCHEMA = 5;
+    private static final int CACHE_SCHEMA = 210;
     private static final String RECOVERY_URL =
-            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=5&cache_reset=1";
+            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=210&cache_reset=1";
 
     private WebView webView;
     private FrameLayout root;
     private OnBackInvokedCallback backCallback;
     private boolean webRecoveryPending;
+    private boolean cleanupStarted;
     private boolean nativeRetryAttempted;
     private boolean rendererRecoveryAttempted;
 
@@ -52,11 +50,13 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        getWindow().setStatusBarColor(Color.rgb(3, 23, 11));
+        getWindow().setNavigationBarColor(Color.rgb(3, 23, 11));
+
         root = new FrameLayout(this);
-        root.setBackgroundColor(Color.rgb(7, 20, 13));
+        root.setBackgroundColor(Color.rgb(3, 23, 11));
         setContentView(root);
         showLoadingMessage();
-        root.post(this::applyImmersiveFullscreen);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             backCallback = this::handleBackNavigation;
@@ -66,57 +66,16 @@ public class MainActivity extends Activity {
         }
 
         try {
-            Log.i(TAG, "SHELL_CREATE");
+            Log.i(TAG, "SHELL_CREATE version=210");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
+            Log.e(TAG, "SHELL_CREATE_FAILED", error);
             showPermanentError();
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private void applyImmersiveFullscreen() {
-        View decor = getWindow().getDecorView();
-        if (decor == null || !decor.isAttachedToWindow()) {
-            return;
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            WindowInsetsController controller = decor.getWindowInsetsController();
-            if (controller == null) {
-                return;
-            }
-            controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-            controller.setSystemBarsBehavior(
-                    WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
-            return;
-        }
-
-        decor.setSystemUiVisibility(
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (root != null) {
-            root.post(this::applyImmersiveFullscreen);
-        }
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus) {
-            applyImmersiveFullscreen();
-        }
-    }
-
     private void showLoadingMessage() {
+        if (root == null) return;
         root.removeAllViews();
         TextView loading = new TextView(this);
         loading.setText("STACKUP HOLD'EM ACADEMY\n\nCarregando...");
@@ -138,7 +97,8 @@ public class MainActivity extends Activity {
             showPermanentError();
             return;
         }
-        webView.setBackgroundColor(Color.rgb(7, 20, 13));
+
+        webView.setBackgroundColor(Color.rgb(3, 23, 11));
 
         boolean isDebuggable =
                 (getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE) != 0;
@@ -161,6 +121,7 @@ public class MainActivity extends Activity {
         settings.setAllowFileAccess(false);
         settings.setAllowContentAccess(false);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_NEVER_ALLOW);
+        settings.setMediaPlaybackRequiresUserGesture(true);
         if (webRecoveryPending) {
             settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         }
@@ -173,15 +134,16 @@ public class MainActivity extends Activity {
         root.addView(webView, new FrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        Log.i(TAG, "WEBVIEW_ATTACHED recovery=" + webRecoveryPending);
 
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                Log.d(TAG, "CONSOLE " + consoleMessage.messageLevel() + ": " + consoleMessage.message());
+                Log.d(TAG, "CONSOLE " + consoleMessage.messageLevel() + ": "
+                        + consoleMessage.message());
                 return true;
             }
         });
+
         webView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
@@ -196,18 +158,22 @@ public class MainActivity extends Activity {
 
             @Override
             public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                Log.e(TAG, "WEB_RENDERER_GONE crashed=" + (detail != null && detail.didCrash()));
+                Log.e(TAG, "WEB_RENDERER_GONE");
                 if (view != null) {
                     try {
-                        ViewGroup parent = (ViewGroup) view.getParent();
-                        if (parent != null) parent.removeView(view);
+                        if (view.getParent() instanceof ViewGroup) {
+                            ((ViewGroup) view.getParent()).removeView(view);
+                        }
                         view.destroy();
-                    } catch (Throwable ignored) {}
+                    } catch (Throwable ignored) {
+                    }
                 }
                 webView = null;
+
                 if (!rendererRecoveryAttempted) {
                     rendererRecoveryAttempted = true;
                     root.postDelayed(() -> {
+                        showLoadingMessage();
                         try {
                             createAndLoadWebView(null);
                         } catch (Throwable error) {
@@ -222,7 +188,10 @@ public class MainActivity extends Activity {
             }
 
             @Override
-            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+            public void onReceivedError(
+                    WebView view,
+                    WebResourceRequest request,
+                    WebResourceError error) {
                 if (request == null || !request.isForMainFrame()) {
                     return;
                 }
@@ -236,7 +205,6 @@ public class MainActivity extends Activity {
                     view.stopLoading();
                     view.clearCache(true);
                     view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                    Log.w(TAG, "MAIN_FRAME_RETRY");
                     view.loadUrl(RECOVERY_URL + "&retry=1");
                     return;
                 }
@@ -249,29 +217,38 @@ public class MainActivity extends Activity {
                 super.onPageFinished(view, url);
                 Log.i(TAG, "PAGE_FINISHED url=" + url + " recovery=" + webRecoveryPending);
 
-                if (webRecoveryPending && url != null && url.startsWith(APP_URL)) {
-                    webRecoveryPending = false;
-                    getSharedPreferences(PREFS, MODE_PRIVATE)
-                            .edit()
-                            .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
-                            .apply();
-
+                if (webRecoveryPending
+                        && !cleanupStarted
+                        && url != null
+                        && url.startsWith(APP_URL)) {
+                    cleanupStarted = true;
                     String cleanupScript =
                             "(async()=>{try{" +
-                            "if('caches' in window){const ks=await caches.keys();await Promise.all(ks.map(k=>caches.delete(k)));}" +
-                            "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();await Promise.all(rs.map(r=>r.unregister()));}" +
+                            "if('caches' in window){const ks=await caches.keys();" +
+                            "await Promise.all(ks.map(k=>caches.delete(k)));}" +
+                            "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();" +
+                            "await Promise.all(rs.map(r=>r.unregister()));}" +
                             "return 'ok';}catch(e){return 'cleanup-error';}})();";
-                    view.evaluateJavascript(
-                            cleanupScript,
-                            value -> Log.i(TAG, "WEB_CACHE_CLEANUP=" + value));
+
+                    view.evaluateJavascript(cleanupScript, value -> {
+                        Log.i(TAG, "WEB_CACHE_CLEANUP=" + value);
+                        getSharedPreferences(PREFS, MODE_PRIVATE)
+                                .edit()
+                                .putInt(CACHE_SCHEMA_KEY, CACHE_SCHEMA)
+                                .apply();
+                        webRecoveryPending = false;
+                        view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                        view.loadUrl(APP_URL + "?android_build=210&migrated=1");
+                    });
+                    return;
                 }
 
                 view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
                 view.postDelayed(
                         () -> view.evaluateJavascript(
-                                "(function(){return !!(document.querySelector('.app')&&document.querySelector('#root .screen'));})();",
+                                "(function(){return !!(document.querySelector('#app')&&document.querySelector('.screen'));})();",
                                 value -> Log.i(TAG, "WEB_CONTENT_READY=" + value)),
-                        1200);
+                        1500);
             }
         });
 
@@ -301,9 +278,7 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 intent.addCategory(Intent.CATEGORY_BROWSABLE);
                 startActivity(intent);
-                return true;
             } catch (ActivityNotFoundException ignored) {
-                return true;
             }
         }
         return true;
@@ -311,14 +286,12 @@ public class MainActivity extends Activity {
 
     private void showPermanentError() {
         Log.e(TAG, "PERMANENT_ERROR_SCREEN");
-        if (root == null) {
-            return;
-        }
+        if (root == null) return;
+
         if (webView != null) {
             try {
                 webView.stopLoading();
             } catch (Throwable ignored) {
-                // Keep the error screen stable even if WebView is already unavailable.
             }
         }
 
@@ -335,6 +308,18 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) webView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        if (webView != null) webView.onPause();
+        super.onPause();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (webView != null) {
             webView.saveState(outState);
@@ -343,18 +328,11 @@ public class MainActivity extends Activity {
     }
 
     private void handleBackNavigation() {
-        if (webView == null) {
+        if (webView != null && webView.canGoBack()) {
+            webView.goBack();
+        } else {
             finish();
-            return;
         }
-
-        webView.evaluateJavascript(
-                "(function(){try{return window.StackUpNativeBack?String(window.StackUpNativeBack()):'false';}catch(e){return 'false';}})();",
-                value -> {
-                    if (!"\"true\"".equals(value)) {
-                        finish();
-                    }
-                });
     }
 
     @Override
@@ -374,14 +352,17 @@ public class MainActivity extends Activity {
             getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
             backCallback = null;
         }
+
         if (webView != null) {
             try {
                 webView.stopLoading();
                 webView.loadUrl("about:blank");
+                if (webView.getParent() instanceof ViewGroup) {
+                    ((ViewGroup) webView.getParent()).removeView(webView);
+                }
                 webView.removeAllViews();
                 webView.destroy();
             } catch (Throwable ignored) {
-                // Cleanup must never crash the launcher.
             }
             webView = null;
         }

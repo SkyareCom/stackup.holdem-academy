@@ -95,8 +95,8 @@ jobs:
           mkdir -p android/app/build/outputs/bundle/release
           {
             echo "package=com.skyare.stackupacademy"
-            echo "versionName=1.0.11"
-            echo "versionCode=107"
+            echo "versionName=2.1.0"
+            echo "versionCode=210"
             echo "targetSdk=36"
             echo "shell=webview"
             echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy/"
@@ -125,7 +125,7 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-debug-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test104'" /tmp/stackup-debug-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test210'" /tmp/stackup-debug-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-debug-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-debug-manifest.txt
           ! grep -q "com.google.androidbrowserhelper.trusted" /tmp/stackup-debug-manifest.txt
@@ -134,7 +134,7 @@ jobs:
       - name: Verify hosted Academy is reachable
         run: |
           curl --fail --location --silent --show-error --retry 3 --retry-delay 2 https://skyarecom.github.io/stackup.holdem-academy/ > /tmp/stackup-hosted.html
-          grep -q "APRENDA POKER EM 3 ETAPAS" /tmp/stackup-hosted.html
+          grep -q '<meta name="stackup-release" content="2.1.0">' /tmp/stackup-hosted.html
 
       - name: Enable KVM
         run: |
@@ -145,7 +145,7 @@ jobs:
       - name: Smoke test APK on Android emulator
         uses: reactivecircus/android-emulator-runner@a421e43855164a8197daf9d8d40fe71c6996bb0d # v2
         with:
-          api-level: 35
+          api-level: 36
           target: google_apis
           arch: x86_64
           profile: pixel_6
