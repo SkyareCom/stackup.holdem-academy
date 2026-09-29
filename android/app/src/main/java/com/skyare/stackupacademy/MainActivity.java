@@ -23,6 +23,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -45,6 +46,7 @@ public class MainActivity extends Activity {
     private OnBackInvokedCallback backCallback;
     private boolean webRecoveryPending;
     private boolean nativeRetryAttempted;
+    private boolean rendererRecoveryAttempted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +131,13 @@ public class MainActivity extends Activity {
 
     @SuppressLint("SetJavaScriptEnabled")
     private void createAndLoadWebView(Bundle savedInstanceState) {
-        webView = new WebView(this);
+        try {
+            webView = new WebView(this);
+        } catch (Throwable error) {
+            Log.e(TAG, "WEBVIEW_CREATE_FAILED", error);
+            showPermanentError();
+            return;
+        }
         webView.setBackgroundColor(Color.rgb(7, 20, 13));
 
         boolean isDebuggable =
@@ -184,6 +192,33 @@ public class MainActivity extends Activity {
             @SuppressWarnings("deprecation")
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 return handleNavigation(Uri.parse(url));
+            }
+
+            @Override
+            public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
+                Log.e(TAG, "WEB_RENDERER_GONE crashed=" + (detail != null && detail.didCrash()));
+                if (view != null) {
+                    try {
+                        ViewGroup parent = (ViewGroup) view.getParent();
+                        if (parent != null) parent.removeView(view);
+                        view.destroy();
+                    } catch (Throwable ignored) {}
+                }
+                webView = null;
+                if (!rendererRecoveryAttempted) {
+                    rendererRecoveryAttempted = true;
+                    root.postDelayed(() -> {
+                        try {
+                            createAndLoadWebView(null);
+                        } catch (Throwable error) {
+                            Log.e(TAG, "WEB_RENDERER_RECOVERY_FAILED", error);
+                            showPermanentError();
+                        }
+                    }, 250);
+                } else {
+                    showPermanentError();
+                }
+                return true;
             }
 
             @Override
