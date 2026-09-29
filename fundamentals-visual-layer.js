@@ -70,20 +70,72 @@
   const tourFormats=[['MTT REGULAR','40 BB','NÍVEL 8'],['PKO','28 BB','ITM'],['TURBO','18 BB','BOLHA'],['SATELLITE','22 BB','5 VAGAS'],['MULTI-DAY','65 BB','DIA 1B']];
   const profileStats=[['TAG','22%','18%','7%'],['LAG','34%','28%','12%'],['NIT','13%','9%','3%'],['CALLING STATION','42%','8%','2%'],['MANIAC','58%','47%','24%']];
 
+  function streetScene(spot){
+    const prompt=String(spot?.prompt||'');
+    const p=prompt.toUpperCase();
+    const answer=Array.isArray(spot?.answer)?spot.answer.join(' → '):String(spot?.answer??'');
+    const a=answer.toUpperCase();
+    const exactCards=prompt.match(/(?:10|[2-9AKQJ])[♠♥♦♣]/g)||[];
+    const boardByCount=cards=>({kind:'board',cards,label:cards.length===3?'FLOP':cards.length===4?'TURN':'RIVER'});
+    const preflop={kind:'board',cards:boardSets[0],label:'PRÉ-FLOP'};
+    const flop={kind:'board',cards:boardSets[1],label:'FLOP'};
+    const turn={kind:'board',cards:boardSets[2],label:'TURN'};
+    const river={kind:'board',cards:boardSets[3],label:'RIVER'};
+
+    if(/\bBOARD\b/i.test(prompt)&&[3,4,5].includes(exactCards.length))return boardByCount(exactCards);
+    if(spot?.type==='sequence'||(a.includes('PRÉ-FLOP')&&a.includes('FLOP')&&a.includes('TURN')&&a.includes('RIVER')&&a.includes('→')))return {kind:'streetflow',steps:['PRÉ-FLOP','FLOP','TURN','RIVER']};
+    if(p.includes('MONOTONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','s')],label:'FLOP · MONOTONE'};
+    if(p.includes('TWO-TONE'))return {kind:'board',cards:[card('A','s'),card('7','s'),card('2','d')],label:'FLOP · TWO-TONE'};
+    if(p.includes('PAIRED')||p.includes('PAREADO'))return {kind:'board',cards:[card('K','c'),card('8','d'),card('8','s')],label:'FLOP · PAIRED'};
+
+    if(a==='PRÉ-FLOP'||a==='PRE-FLOP')return preflop;
+    if(a==='FLOP')return flop;
+    if(a==='TURN')return turn;
+    if(a==='RIVER')return river;
+    if(a==='SHOWDOWN')return {kind:'board',cards:boardSets[3],label:'SHOWDOWN · BOARD COMPLETO'};
+
+    if(p.includes('PRÉ-FLOP')||p.includes('PRE-FLOP')||p.includes('SEM CARTAS COMUNITÁRIAS'))return preflop;
+    if(p.includes('SHOWDOWN'))return {kind:'board',cards:boardSets[3],label:'SHOWDOWN · BOARD COMPLETO'};
+    if(p.includes('RIVER'))return river;
+    if(p.includes('TURN'))return turn;
+    if(p.includes('FLOP'))return flop;
+    if(p.includes('CINCO CARTAS')||p.includes('5 CARTAS')||p.includes('BOARD MÁXIMO')||p.includes('BOARD COMPLETO'))return river;
+    if(p.includes('SEQUÊNCIA')||p.includes('ORDEM'))return {kind:'streetflow',steps:['PRÉ-FLOP','FLOP','TURN','RIVER']};
+    return {kind:'board',cards:boardSets[1],label:'FLOP · EXEMPLO'};
+  }
+
   function sceneFor(chapter,i,spot){
     switch(chapter){
-      case 'POSIÇÕES NA MESA': return {kind:'table',highlight:seats[i%seats.length],label:'IDENTIFIQUE A POSIÇÃO DESTACADA'};
-      case 'SMALL BLIND, BIG BLIND E ANTE': return {kind:'blinds',button:seats[(i+7)%seats.length],sb:'SB',bb:'BB',ante:i%3===0?'BBA':i%3===1?'ANTE':'SEM ANTE'};
-      case 'STREETS': return {kind:'board',cards:boardSets[i%boardSets.length],label:['PRÉ-FLOP','FLOP','TURN','RIVER'][i%4]};
-      case 'SEQUÊNCIA DE APOSTAS': return {kind:'timeline',actions:[['UTG','RAISE','2.5 BB'],['CO',i%2?'CALL':'3-BET',i%2?'2.5 BB':'8 BB'],['BTN',i%3?'FOLD':'CALL',i%3?'—':'8 BB']]};
-      case 'EMBARALHANDO AS CARTAS': return {kind:'steps',steps:['RECOLHER','EMBARALHAR','QUADRAR','CORTAR','DISTRIBUIR'],active:i%5};
-      case 'MISDEAL': return {kind:'scene',icon:'⚠',title:i%2?'CARTA EXPOSTA':'DISTRIBUIÇÃO IRREGULAR',lines:[i%2?'UMA CARTA FOI EXPOSTA PELO DEALER':'UM JOGADOR RECEBEU NÚMERO ERRADO DE CARTAS','DECIDA SE CORRIGE, CONTINUA OU É MISDEAL']};
-      case 'FUNÇÕES DO STAFF': return {kind:'scene',icon:'♣',title:staff[i%staff.length],lines:['SITUAÇÃO DE MESA','QUEM DEVE AGIR OU SER CHAMADO?']};
-      case 'TERMINOLOGIAS BÁSICAS': return {kind:'scene',icon:'◆',title:['KICKER','SNAP CALL','DRAWING DEAD','HERO CALL','BLUFF CATCHER','COOLER'][i%6],lines:['RECONHEÇA O TERMO PELA SITUAÇÃO','USE O CONTEXTO, NÃO APENAS A DEFINIÇÃO']};
+      case 'POSIÇÕES NA MESA': return null;
+      case 'SMALL BLIND, BIG BLIND E ANTE': return null;
+      case 'STREETS': return streetScene(spot);
+      case 'SEQUÊNCIA DE APOSTAS': return null;
+      case 'EMBARALHANDO AS CARTAS': return null;
+      case 'MISDEAL': return null;
+      case 'FUNÇÕES DO STAFF': return null;
+      case 'TERMINOLOGIAS BÁSICAS': return null;
       case 'PERFIS DE JOGADORES': {const p=profileStats[i%profileStats.length]; return {kind:'stats',name:p[0],vpip:p[1],pfr:p[2],three:p[3]};}
       case 'CASH GAME E TIPOS': {const x=cashFormats[i%cashFormats.length]; return {kind:'cash',title:x[0],seats:x[1],stack:x[2],buyin:i%2?'BUY-IN 50–200 BB':'BUY-IN 40–100 BB'};}
       case 'TORNEIO E TIPOS': {const x=tourFormats[i%tourFormats.length]; return {kind:'tournament',title:x[0],stack:x[1],phase:x[2],blinds:`BLINDS ${500*(i%4+1)}/${1000*(i%4+1)}`};}
-      case 'BONS MODOS': return {kind:'scene',icon:['▣','☏','♠','●','!'][i%5],title:['FICHAS VISÍVEIS','CELULAR NA MÃO','MOSTRAR CARTAS','SPLASH POT','AÇÃO FORA DE VEZ'][i%5],lines:['OBSERVE A CENA','AVALIE SE O COMPORTAMENTO É CORRETO']};
+      case 'BONS MODOS': {
+        const text=(String(spot?.prompt||'')+' '+String(spot?.answer||'')).toUpperCase();
+        const scenes=[
+          [/FICHA|STACK|EMPILH|DENOMINA/,['▣','FICHAS / STACK']],
+          [/CELULAR|TELEFONE|DISPOSITIVO|SOLVER|ASSISTÊNCIA/,['☏','DISPOSITIVOS NA MESA']],
+          [/MOSTRAR|EXPOR|CARTA.*AÇÃO|MÃO.*ATIVA/,['♠','CARTAS EXPOSTAS']],
+          [/SPLASH|POTE/,['●','FICHAS NO POTE']],
+          [/FORA DE VEZ|AÇÃO PENDENTE|ANTES DA VEZ/,['!','ORDEM DA AÇÃO']],
+          [/STALL|ATRASAR|DEMORAR|TEMPO/,['◷','RITMO DE JOGO']],
+          [/ÁLCOOL|AGRESSIV|AMEAÇA|INSULTO|RESPEIT/,['!','CONDUTA À MESA']],
+          [/DEALER|FLOOR|STAFF|RULING|PENAL/,['♣','DEALER / FLOOR']],
+          [/FOLD|MUCK|DESCART/,['♠','DESCARTE DE CARTAS']],
+          [/ANGLE|COLLUSION|SOFT PLAY|CHIP DUMP/,['!','INTEGRIDADE DO JOGO']],
+          [/CONSELHO|COMENTAR|INFORMAÇÃO|OUTS/,['◆','INFORMAÇÃO DA MÃO']],
+          [/LEVANTAR|AUSENTE|MESA/,['◇','PRESENÇA À MESA']]
+        ];
+        const hit=scenes.find(([re])=>re.test(text));
+        return hit?{kind:'scene',icon:hit[1][0],title:hit[1][1],lines:['CENÁRIO RELACIONADO À PERGUNTA','AVALIE A CONDUTA DESCRITA']}:null;
+      }
       case 'OUTRAS REGRAS BÁSICAS': return {kind:'scene',icon:'§',title:['TABLE STAKES','MISSED BLIND','RUN IT TWICE','DEAD BUTTON','SHOW ONE, SHOW ALL','STRADDLE'][i%6],lines:['SITUAÇÃO PRÁTICA DE MESA','ESCOLHA O PROCEDIMENTO CORRETO']};
       default:return null;
     }
@@ -110,15 +162,23 @@
       .fv-card{width:45px;height:62px;border-radius:8px;background:#fffdf7;border:1px solid #d7c8a5;box-shadow:0 3px 8px #0005;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:Arial,sans-serif;font-weight:800;color:#17120f;line-height:1}
       .fv-card.red{color:#a32929}.fv-rank{font-size:17px}.fv-suit{font-size:19px;margin-top:2px}
       .fv-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px}.fv-handbox{padding:9px 5px;border:1px solid #d4aa5840;border-radius:12px;background:#2a160d}.fv-handtitle{text-align:center;color:#d8c6ad;font-size:10px;margin-bottom:7px}
-      .fv-table{position:relative;height:220px;margin:auto;max-width:330px;border:12px solid #2a160d;border-radius:48%;background:#0e4b3b;box-shadow:inset 0 0 0 3px #d4aa5870}
-      .fv-seat{position:absolute;transform:translate(-50%,-50%);padding:5px 7px;border-radius:8px;background:#211008;border:1px solid #d4aa5855;color:#d8c6ad;font-size:10px;white-space:nowrap}.fv-seat.on{background:#d4aa58;color:#211008;border-color:#f8f0df;font-weight:700;box-shadow:0 0 0 2px #f8f0df55}
+      .fv-position-board{position:relative;width:100%;max-width:330px;aspect-ratio:9/12.2;min-height:360px;margin:0 auto;border-radius:22px;overflow:hidden;background:radial-gradient(circle at 50% 38%,#083f2f 0,#03251c 48%,#01130f 100%);border:1px solid #b9873d;box-shadow:inset 0 0 45px #000b,0 12px 28px #0004}
+      .fv-position-board:before{content:'♠';position:absolute;left:50%;top:3.5%;transform:translateX(-50%);color:#d4aa58;font:22px Arial,sans-serif;text-shadow:0 0 12px #d4aa5888}
+      .fv-position-felt{position:absolute;left:15%;right:15%;top:11%;bottom:8%;border-radius:46%/19%;background:linear-gradient(90deg,#50230f 0,#9a4d1f 12%,#6d2f12 24%,#ad5e2b 50%,#6f3013 76%,#9b4c1d 88%,#4a200e 100%);box-shadow:0 0 0 5px #111d18,0 0 0 8px #50665b,0 0 22px #0f7b4c66,inset 0 0 20px #e48b3b66}
+      .fv-position-felt:before{content:'';position:absolute;inset:7%;border-radius:46%/19%;background:radial-gradient(ellipse at center,#07603e 0,#034c34 58%,#033326 100%);border:2px solid #108052;box-shadow:inset 0 0 30px #001b14,inset 0 0 0 16px #04432f}
+      .fv-position-felt:after{content:'♠';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:66px;height:66px;border:2px solid #1a7b53;border-radius:50%;display:grid;place-items:center;color:#58a87599;font:34px Arial,sans-serif}
+      .fv-position-seat{position:absolute;z-index:3;transform:translate(-50%,-50%)}
+      .fv-position-seat-label{display:block;min-width:54px;padding:6px 7px;border-radius:10px;background:linear-gradient(180deg,#0c3c2d,#031b15);border:1.5px solid #d4aa58;color:#f8f0df;text-align:center;font-size:11px;line-height:1;box-shadow:0 4px 10px #0008,0 0 8px #0c8e5855;text-transform:uppercase;white-space:nowrap}
+      .fv-position-seat.on .fv-position-seat-label{background:linear-gradient(180deg,#ffe8a8,#d4aa58);color:#211008;border-color:#fff0c8;font-weight:800;box-shadow:0 0 0 2px #fff0c855,0 5px 12px #0007}
+      .fv-position-dealer{position:absolute;z-index:4;left:29.5%;top:68.5%;width:25px;height:25px;transform:translate(-50%,-50%);border-radius:50%;display:grid;place-items:center;background:linear-gradient(180deg,#fff4c9,#d4aa58);border:2px solid #fff0c8;color:#2b170a;box-shadow:0 4px 10px #0009,0 0 10px #d4aa5870;font:700 11px Arial,sans-serif}
       .fv-board{display:flex;justify-content:center;gap:6px;min-height:64px;align-items:center}.fv-empty{color:#a9947f;font-size:13px;text-align:center;padding:18px 0}
+      .fv-streetflow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.fv-streetstage{position:relative;min-width:0;padding:9px 4px;border:1px solid #d4aa5840;border-radius:10px;background:#2a160d;color:#f8f0df;text-align:center;font-size:10px;line-height:1.15}.fv-streetstage:not(:last-child):after{content:'›';position:absolute;right:-7px;top:50%;transform:translateY(-50%);z-index:2;color:#d4aa58;font-size:16px}.fv-streetstage b{display:block;color:#d4aa58;font-size:11px}
       .fv-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border-top:1px solid #d4aa582d}.fv-row:first-child{border-top:0}.fv-pill{padding:5px 7px;border-radius:8px;background:#0e4b3b;color:#f8f0df;font-size:11px}.fv-value{color:#d4aa58;font-size:12px}
       .fv-steps{display:flex;gap:5px;overflow-x:auto;padding-bottom:3px}.fv-step{min-width:78px;padding:9px 6px;border:1px solid #d4aa5840;border-radius:10px;text-align:center;font-size:10px;color:#d8c6ad}.fv-step.on{background:#0e4b3b;color:#f8f0df;border-color:#d4aa58}
       .fv-scene{text-align:center;padding:5px 4px}.fv-icon{font-family:Arial,sans-serif;font-size:38px;color:#d4aa58}.fv-scene h4{margin:5px 0 7px;color:#f8f0df;font-size:18px}.fv-scene p{margin:3px 0;color:#cfbda7;font-size:12px;line-height:1.35}
       .fv-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}.fv-metric{padding:9px 4px;border:1px solid #d4aa5840;border-radius:10px;text-align:center;background:#2a160d}.fv-metric b{display:block;color:#d4aa58;font-size:17px}.fv-metric span{font-size:9px;color:#cfbda7}.fv-name{text-align:center;color:#f8f0df;font-size:18px;margin-bottom:8px}
       .fv-format{display:grid;gap:6px}.fv-format h4{margin:0;color:#d4aa58;font-size:19px}.fv-formatline{display:flex;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px solid #d4aa582d;font-size:12px;color:#d8c6ad}
-      @media(max-width:380px){.fv-card{width:39px;height:56px}.fv-rank{font-size:15px}.fv-suit{font-size:17px}.fv-table{height:205px}.fv-seat{font-size:9px;padding:4px 5px}}
+      @media(max-width:380px){.fv-card{width:39px;height:56px}.fv-rank{font-size:15px}.fv-suit{font-size:17px}.fv-position-board{min-height:330px}.fv-position-seat-label{min-width:48px;padding:5px 5px;font-size:10px}.fv-position-dealer{width:23px;height:23px;font-size:10px}}
     `;document.head.appendChild(st);
   }
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
@@ -127,7 +187,8 @@
     if(v.kind==='cards')return `<div class="fv-wrap">${label}<div class="fv-cards">${v.cards.map(renderCard).join('')}</div></div>`;
     if(v.kind==='compare')return `<div class="fv-wrap">${label}<div class="fv-compare"><div class="fv-handbox"><div class="fv-handtitle">MÃO A</div><div class="fv-cards">${v.left.map(renderCard).join('')}</div></div><div class="fv-handbox"><div class="fv-handtitle">MÃO B</div><div class="fv-cards">${v.right.map(renderCard).join('')}</div></div></div></div>`;
     if(v.kind==='board')return `<div class="fv-wrap">${label}<div class="fv-board">${v.cards.length?v.cards.map(renderCard).join(''):'<div class="fv-empty">SEM CARTAS COMUNITÁRIAS</div>'}</div></div>`;
-    if(v.kind==='table'){const pos=[[50,8],[70,16],[84,32],[86,58],[72,80],[56,91],[38,91],[21,78],[13,54],[25,24]];return `<div class="fv-wrap">${label}<div class="fv-table">${seats.map((s,i)=>`<span class="fv-seat${s===v.highlight?' on':''}" style="left:${pos[i][0]}%;top:${pos[i][1]}%">${s}</span>`).join('')}</div></div>`;}
+    if(v.kind==='streetflow')return `<div class="fv-wrap"><div class="fv-label">ORDEM DAS STREETS</div><div class="fv-streetflow">${v.steps.map((x,i)=>`<div class="fv-streetstage"><b>${i+1}</b>${esc(x)}</div>`).join('')}</div></div>`;
+    if(v.kind==='table'){const pos={UTG1:[50,10],UTG2:[70.5,17.6],MP1:[83.3,37.6],MP2:[83.3,62.4],LJ:[70.5,82.4],HJ:[50,90],CO:[29.5,82.4],BTN:[16.7,62.4],SB:[16.7,37.6],BB:[29.5,17.6]};return `<div class="fv-wrap">${label}<div class="fv-position-board" data-table-visual="canonical" role="img" aria-label="Mesa de poker oval com 10 posições distribuídas uniformemente">${'<div class="fv-position-felt"></div>'}${seats.map(s=>{const p=pos[s];return `<span class="fv-position-seat${s===v.highlight?' on':''}" data-seat="${s}" style="left:${p[0]}%;top:${p[1]}%"><span class="fv-position-seat-label">${s}</span></span>`;}).join('')}<span class="fv-position-dealer" aria-label="Dealer">D</span></div></div>`;}
     if(v.kind==='blinds')return `<div class="fv-wrap"><div class="fv-label">FORMAÇÃO INICIAL</div><div class="fv-row"><span>BUTTON</span><span class="fv-pill">${esc(v.button)}</span></div><div class="fv-row"><span>SMALL BLIND</span><span class="fv-value">${esc(v.sb)}</span></div><div class="fv-row"><span>BIG BLIND</span><span class="fv-value">${esc(v.bb)}</span></div><div class="fv-row"><span>ANTE</span><span class="fv-value">${esc(v.ante)}</span></div></div>`;
     if(v.kind==='timeline')return `<div class="fv-wrap"><div class="fv-label">LINHA DE AÇÃO</div>${v.actions.map(a=>`<div class="fv-row"><span class="fv-pill">${esc(a[0])}</span><span>${esc(a[1])}</span><span class="fv-value">${esc(a[2])}</span></div>`).join('')}</div>`;
     if(v.kind==='steps')return `<div class="fv-wrap"><div class="fv-label">PROCEDIMENTO DO DEALER</div><div class="fv-steps">${v.steps.map((x,i)=>`<div class="fv-step${i===v.active?' on':''}">${i+1}<br>${esc(x)}</div>`).join('')}</div></div>`;
