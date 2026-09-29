@@ -12,8 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:hardwareAccelerated="true"
-        android:enableOnBackInvokedCallback="true"
-        android:appCategory="education">
+        android:enableOnBackInvokedCallback="true">
 
         <activity
             android:name="com.skyare.stackupacademy.MainActivity"
