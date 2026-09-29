@@ -196,7 +196,8 @@ public class MainActivity extends Activity {
 
             @Override
             public boolean onRenderProcessGone(WebView view, RenderProcessGoneDetail detail) {
-                Log.e(TAG, "WEB_RENDERER_GONE crashed=" + (detail != null && detail.didCrash()));
+                boolean rendererCrashed = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && detail != null && detail.didCrash();
+                Log.e(TAG, "WEB_RENDERER_GONE crashed=" + rendererCrashed);
                 if (view != null) {
                     try {
                         ViewGroup parent = (ViewGroup) view.getParent();
