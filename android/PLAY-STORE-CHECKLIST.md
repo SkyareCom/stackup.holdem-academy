@@ -4,40 +4,53 @@
 
 - Android project under `/android`.
 - Application ID: `com.skyare.stackupacademy`.
+- Version: `2.1.0` / `versionCode 210`.
 - `compileSdk` / `targetSdk`: 36.
-- Version: 1.0.0 / versionCode 1.
-- TWA start URL configured.
-- Android Browser Helper updated to 2.7.3.
-- Main manifest hardened for production: no cleartext traffic and no Android backup.
+- Native Android launcher with a restricted WebView; no TWA/Custom Tab dependency.
+- Official content URL restricted to `https://skyarecom.github.io/stackup.holdem-academy/`.
+- Main manifest hardened for production: INTERNET only, no cleartext traffic and no Android backup.
+- WebView file/content access disabled and mixed content blocked.
+- Safe Browsing enabled when supported.
+- External links leave the app and open in the browser.
+- Android system Back navigates WebView history before closing the app.
+- Renderer recovery and first-run cache/service-worker migration included.
 - Privacy policy available in the web app.
 - CI runs Android release lint.
-- CI builds release AAB and installable debug APK.
+- CI builds release AAB and release/debug APKs.
 - CI supports release signing without storing keys in Git.
 - CI validates AAB integrity and generates SHA-256 checksum.
-- CI smoke-tests the debug APK on an Android emulator.
-- Initial Play Store title and short description stored under `android/store-listing/pt-BR/`.
-- Academy UI uses the Love Ya Like A Sister Google font globally, with card/suit glyph exceptions only where required.
-- Academy palette is locked to dark green, emerald, gold, parchment/beige and dark brown.
-- Main and content cards share centralized border, radius, shadow, padding and spacing tokens.
-- Mobile layout has global horizontal-overflow protection and responsive typography.
-- Topic titles and descriptions are allowed to wrap instead of being cut with ellipsis.
-- Card navigation, Back and Main Menu force the next page to start with the full Academy header visible.
-- Pages deployment now runs a dedicated Play release UI consistency guard before publishing.
+- CI verifies package and launcher metadata.
+- CI smoke-tests the release APK on an Android emulator.
+- Play Store copy provided in Portuguese (Brazil) and English (United States).
+- Academy UI, content, palette, fonts and navigation remain unchanged by the Android packaging layer.
 
-## Required outside the repository before production upload
+## Required in Play Console before production
 
-1. Create the Play Console app record using package `com.skyare.stackupacademy`.
+1. Confirm the Play Console app record uses package `com.skyare.stackupacademy`.
 2. Enable Play App Signing.
 3. Create and securely back up the Android upload key.
-4. Configure the signing credentials in the CI secrets and confirm `signed=true` in the generated `RELEASE-INFO.txt`.
-5. Upload the signed AAB to Internal Testing first.
-6. Obtain the final Play App Signing certificate SHA-256 fingerprint.
-7. Replace the placeholder in `android/digital-asset-links/assetlinks.json.template`.
-8. Publish the final asset links file at `https://skyarecom.github.io/.well-known/assetlinks.json` or migrate the Academy to a custom domain and publish it at that domain root.
-9. Verify the release-installed app opens as a validated TWA, not a Custom Tab.
-10. Complete Data Safety, privacy policy URL, target audience, content rating and app access declarations in Play Console.
-11. Prepare final Store Listing media: 512x512 store icon, 1024x500 feature graphic and phone screenshots.
-12. Complete the testing track required by the developer account before requesting production access.
+4. Configure the four signing secrets used by GitHub Actions and confirm `signed=true` in `RELEASE-INFO.txt`.
+5. Upload the signed AAB to Internal Testing first and complete the required test track for the developer account.
+6. Complete App content declarations: privacy policy, target audience, content rating, app access and ads declaration.
+7. Complete Data Safety according to the production build actually shipped.
+8. Use Education as the primary category unless the Play Console classification flow requires another category.
+9. Make clear in the listing and policy declarations that the app is poker education/training only and does not provide real-money gambling, deposits, withdrawals, cash prizes or wagering transactions.
+10. Upload final Store Listing media: 512x512 store icon, 1024x500 feature graphic and required phone screenshots.
+11. Review the pre-launch report after the Internal Testing upload and resolve any device-specific crashes or layout issues before production.
+
+## Release artifact
+
+Expected production bundle:
+
+`android/app/build/outputs/bundle/release/app-release.aab`
+
+Expected identity:
+
+- package: `com.skyare.stackupacademy`
+- versionName: `2.1.0`
+- versionCode: `210`
+- targetSdk: `36`
+- shell: native WebView
 
 ## Product positioning
 
