@@ -1,1 +1,6 @@
-Primeira versao do StackUp Hold'em Academy para Android. Inclui trilhas de aprendizado, simulador, quiz, matematica do poker e treino por modalidades.
+Versão Android preparada para publicação na Google Play.
+• Casca Android nativa com navegação integrada
+• Melhor estabilidade de carregamento e recuperação
+• Compatibilidade com o botão Voltar do Android
+• Segurança de navegação reforçada
+• Conteúdo educacional completo do StackUp Hold'em Academy
