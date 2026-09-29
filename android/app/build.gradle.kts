@@ -21,8 +21,8 @@ android {
         applicationId = "com.skyare.stackupacademy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 107
-        versionName = "1.0.11"
+        versionCode = 210
+        versionName = "2.1.0"
     }
 
     signingConfigs {
@@ -38,7 +38,7 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".test104"
+            applicationIdSuffix = ".test210"
             versionNameSuffix = "-test"
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
