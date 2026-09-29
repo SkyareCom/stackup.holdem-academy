@@ -100,6 +100,6 @@
       addStyles();blocks.innerHTML=staff;blocks.dataset.staffExpanded='1';
     }
   }
-  new MutationObserver(render).observe(document.documentElement,{childList:true,subtree:true});
+  new MutationObserver(render).observe(document.getElementById('root'),{childList:true});
   render();
 })();

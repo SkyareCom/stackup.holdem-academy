@@ -172,6 +172,6 @@
   }
 
   const root=document.getElementById('root');
-  if(root)new MutationObserver(()=>requestAnimationFrame(apply)).observe(root,{childList:true});
+  if(root)new MutationObserver(apply).observe(root,{childList:true});
   apply();
 })();

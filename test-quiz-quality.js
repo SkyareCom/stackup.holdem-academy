@@ -3,6 +3,14 @@ const vm=require('vm');
 
 const failures=[];
 let checked=0;
+const globalQA=new Map();
+function auditUniqueQA(source,id,question,answer){
+  const q=norm(question),a=norm(Array.isArray(answer)?answer.join(' > '):answer);
+  if(!q||!a)return;
+  const sig=q+' || '+a;
+  if(globalQA.has(sig))failures.push(`${source} ${id}: pergunta+resposta repetida; ja existe em ${globalQA.get(sig)}`);
+  else globalQA.set(sig,`${source} ${id}`);
+}
 
 function norm(value){
   return String(value??'')
@@ -92,25 +100,29 @@ for(const [chapter,spots] of Object.entries(fundamentals)){
 // Banco avancado da pratica.
 const advanced=executeBank('practice-advanced-bank.js','StackupPracticeAdvancedBank');
 for(const key of ['sim','quiz','math']){
-  for(const item of advanced[key]||[])auditOptions(`PRATICA-AVANCADA/${key}`,item.id||item.question,item.options,item.answer);
+  for(const item of advanced[key]||[]){
+    const src=`PRATICA-AVANCADA/${key}`,id=item.id||item.question;
+    auditOptions(src,id,item.options,item.answer);
+    auditUniqueQA(src,id,[item.context,item.question].filter(Boolean).join(' '),item.answer);
+  }
 }
 
 // Banco basico da pratica.
 for(const name of ['SIM','QUIZ']){
   const rows=extractConst('practice-module.js',name);
-  rows.forEach((row,index)=>auditOptions(`PRATICA/${name}`,`${name}-${index+1}`,row[2]||row[1],row[3]||row[2]));
+  rows.forEach((row,index)=>{const id=`${name}-${index+1}`;auditOptions(`PRATICA/${name}`,id,row[2]||row[1],row[3]||row[2]);auditUniqueQA(`PRATICA/${name}`,id,row[1],row[3]||row[2]);});
 }
 
 // Modalidades: perguntas factuais e sequencias de cada modalidade.
 const lessons=extractConst('modalities-module.js','LESSONS');
 for(const [lesson,data] of Object.entries(lessons)){
-  (data.facts||[]).forEach((fact,index)=>auditOptions(`MODALIDADES/${lesson}`,`FACT-${index+1}`,[fact[1],...(fact[2]||[])],fact[1]));
+  (data.facts||[]).forEach((fact,index)=>{const id=`FACT-${index+1}`;auditOptions(`MODALIDADES/${lesson}`,id,[fact[1],...(fact[2]||[])],fact[1]);auditUniqueQA(`MODALIDADES/${lesson}`,id,fact[0],fact[1]);});
   (data.seqs||[]).forEach((seq,index)=>auditSequence(`MODALIDADES/${lesson}`,`SEQ-${index+1}`,seq[1],seq[1]));
 }
 
 // Mixed Games.
 const core=extractConst('mixed-games-module.js','CORE');
-core.forEach((row,index)=>auditOptions('MIXED-GAMES',`CORE-${index+1}`,[row[2],...(row[3]||[])],row[2]));
+core.forEach((row,index)=>{const id=`CORE-${index+1}`;auditOptions('MIXED-GAMES',id,[row[2],...(row[3]||[])],row[2]);auditUniqueQA('MIXED-GAMES',id,row[1],row[2]);});
 const mixedSeq=extractConst('mixed-games-module.js','SEQ_BASE');
 mixedSeq.forEach((row,index)=>auditSequence('MIXED-GAMES',`SEQ-${index+1}`,row[1],row[1]));
 

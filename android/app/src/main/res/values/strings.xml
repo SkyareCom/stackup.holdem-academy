@@ -2,5 +2,4 @@
 <resources>
     <string name="app_name">StackUp Hold\'em Academy</string>
     <string name="launch_url">https://skyarecom.github.io/stackup.holdem-academy/</string>
-    <string name="asset_statements">[{&quot;relation&quot;:[&quot;delegate_permission/common.handle_all_urls&quot;],&quot;target&quot;:{&quot;namespace&quot;:&quot;web&quot;,&quot;site&quot;:&quot;https://skyarecom.github.io&quot;}}]</string>
 </resources>

@@ -89,5 +89,5 @@
     box.innerHTML=`<h3 class="p3m-title">PROBABILIDADES PRONTAS — REFERÊNCIA DE MESA</h3>${DATA.map(g=>`<div class="p3m-group"><div class="p3m-group-head"><strong>${g.title}</strong><span>${g.note}</span></div>${g.rows.map(r=>`<div class="p3m-row"><h4>${r[0]}</h4><div class="p3m-values"><b>${r[1]}</b><b>${r[2]}</b></div><p>${r[3]}</p></div>`).join('')}</div>`).join('')}<div class="p3m-warning"><strong>IMPORTANTE:</strong> equity de mão contra mão depende das cartas exatas, especialmente dos naipes. Os confrontos acima são referências aproximadas para estudo. Em decisões reais, posição, ranges, stacks, rake, número de jogadores e possibilidade de novos investimentos também importam.</div>`;
     const panel=shell.querySelector('.p3x-panel');if(panel)shell.insertBefore(box,panel);else shell.appendChild(box);
   }
-  const root=document.getElementById('root');if(root)new MutationObserver(()=>requestAnimationFrame(render)).observe(root,{childList:true,subtree:true});render();
+  const root=document.getElementById('root');if(root)new MutationObserver(render).observe(root,{childList:true,subtree:true});render();
 })();
