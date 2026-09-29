@@ -155,15 +155,14 @@ jobs:
             test -s android/app/build/outputs/apk/release/app-release.apk
             adb install -r android/app/build/outputs/apk/release/app-release.apk
             adb shell pm list packages | grep -q "^package:com.skyare.stackupacademy$"
-            for i in $(seq 1 12); do adb shell ping -c 1 -W 2 skyarecom.github.io >/dev/null 2>&1 && break; sleep 5; done
-            adb shell ping -c 1 -W 2 skyarecom.github.io >/dev/null 2>&1
+
             adb logcat -c
             adb shell am force-stop com.skyare.stackupacademy
             adb shell am start -W -n com.skyare.stackupacademy/com.skyare.stackupacademy.MainActivity > /tmp/stackup-start.txt
             cat /tmp/stackup-start.txt
             grep -q "Status: ok" /tmp/stackup-start.txt
             grep -q "MainActivity" /tmp/stackup-start.txt
-            sleep 22
+            sleep 30
             mkdir -p android-diagnostics
             adb logcat -d -v time > android-diagnostics/logcat.txt
             cp /tmp/stackup-start.txt android-diagnostics/start.txt
