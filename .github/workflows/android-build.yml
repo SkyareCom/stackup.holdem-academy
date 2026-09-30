@@ -139,13 +139,13 @@ jobs:
           for i in $(seq 1 18); do
             if curl --fail --location --silent --show-error https://skyarecom.github.io/stackup.holdem-academy/ > /tmp/stackup-hosted.html 2>/dev/null && \
                grep -q '<meta name="stackup-release" content="2.1.3">' /tmp/stackup-hosted.html; then
-              echo "Hosted Academy 2.1.2 is ready."
+              echo "Hosted Academy 2.1.3 is ready."
               exit 0
             fi
-            echo "Waiting for GitHub Pages 2.1.2 ($i/18)..."
+            echo "Waiting for GitHub Pages 2.1.3 ($i/18)..."
             sleep 10
           done
-          echo "Hosted Academy 2.1.2 was not published in time."
+          echo "Hosted Academy 2.1.3 was not published in time."
           exit 1
 
       - name: Enable KVM
