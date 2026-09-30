@@ -36,6 +36,9 @@ jobs:
       - name: Security repository guard
         run: node scripts/security-guard.js
 
+      - name: Validate mobile layout contract
+        run: node test-layout-contract.js
+
       - name: Validate definitive Academy web release
         run: |
           node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest OK')"

@@ -878,6 +878,222 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 .lsfb{display:flex;flex-direction:column;gap:var(--gy)}
 .lsfb:empty{display:none}
 </style>
+
+<style id="stackup-academy-layout-audit-20260930">
+/* Final visual contract. Keep this AFTER every legacy style block. */
+:root{
+  --academy-ui-x:16px;
+  --academy-ui-y:12px;
+  --academy-ui-i:8px;
+  --academy-ui-pad:14px;
+}
+
+/* Horizontal safety: no content may make the mobile viewport wider. */
+#app,
+#app .view,
+#app .fz,
+#app .pbody,
+#app .lesson,
+#app .qcard,
+#app .qsum,
+#app .evsec,
+#app .pcardp,
+#app .pfopts,
+#app .pfrows,
+#app .coachcard,
+#app .freenote,
+#app .plock,
+#app .certcard,
+#app .item,
+#app .lang,
+#app .pcard{
+  min-width:0!important;
+  max-width:100%!important;
+  box-sizing:border-box!important;
+}
+#app .view{overflow-x:hidden!important}
+
+/* One spacing rhythm across screens. */
+#app .fz,
+#app .pbody,
+#app .lesson,
+#app .lesson .lg,
+#app .lesson .ranking,
+#app .pfopts,
+#app .pfrows,
+#app .evsecs,
+#app .evsug,
+#app .hlist,
+#app .hsec,
+#app .tsave,
+#app .smrt,
+#app .revhead{
+  gap:var(--academy-ui-y)!important;
+}
+#app .seg,
+#app .qstats,
+#app .qnav,
+#app .qopts,
+#app .lesson .cg,
+#app .lesson .sl,
+#app .lesson .steps,
+#app .hbtn,
+#app .pper{
+  gap:var(--academy-ui-i)!important;
+}
+
+/* Cards: consistent breathing room and no touching edges. */
+#app .qcard,
+#app .qsum,
+#app .lesson .lc,
+#app .lesson .rrow,
+#app .lesson .compare,
+#app .evsec,
+#app .pcardp,
+#app .coachcard,
+#app .freenote,
+#app .plock,
+#app .certcard{
+  width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+  padding:var(--academy-ui-pad)!important;
+}
+#app .item,
+#app .lang,
+#app .pcard{
+  width:100%!important;
+  margin-left:0!important;
+  margin-right:0!important;
+}
+#app .qtype{
+  margin:0 0 var(--academy-ui-i)!important;
+}
+#app .qcard>p,
+#app .qcard>.evneed,
+#app .testaccess>p{
+  margin-top:0!important;
+  margin-bottom:0!important;
+}
+#app .qcard>p+ul,
+#app .qcard>p+ol,
+#app .qcard>.evneed+ul,
+#app .qcard>.evneed+ol{
+  margin-top:var(--academy-ui-i)!important;
+}
+#app .view ul,
+#app .view ol{
+  max-width:100%!important;
+  padding-left:22px!important;
+}
+#app .view li+li{margin-top:6px!important}
+
+/* Editorial copy is always left aligned and allowed to wrap. */
+#app .view p,
+#app .view li,
+#app .view h1,
+#app .view h2,
+#app .view h3,
+#app .view h4,
+#app .view h5,
+#app .view h6,
+#app .view .qtype,
+#app .view .qprompt,
+#app .view .qfb,
+#app .view .qhint,
+#app .view .qsum,
+#app .view .evneed,
+#app .view .evempty,
+#app .view .flead,
+#app .view .hmeta,
+#app .view .txt,
+#app .view .txt b,
+#app .view .txt small,
+#app .view .htx,
+#app .view .htx b,
+#app .view .htx small,
+#app .view .pfben,
+#app .view .pot,
+#app .view .coachlead,
+#app .view .coachbenefit,
+#app .view .hswarn,
+#app .view .certrow,
+#app .view .reprow,
+#app .view .evsgt{
+  text-align:left!important;
+  max-width:100%!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  word-break:normal!important;
+}
+
+/* Remove legacy ellipsis/clamps from content labels. */
+#app .view .txt small,
+#app .view .d2>span,
+#app .view .tcard .htx b,
+#app .view .tcard .htx small,
+#app .view .hmeta{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  height:auto!important;
+  max-height:none!important;
+}
+
+/* Plan cards: left copy, badge remains functional on the right. */
+#app .pcardp{align-items:stretch!important;text-align:left!important}
+#app .pcardp .hrt{width:100%!important;min-width:0!important}
+#app .pcardp .hrt>b{min-width:0!important;overflow-wrap:anywhere!important}
+#app .pcardp .ppr,
+#app .pcardp .hmeta,
+#app .pcardp .pfben{align-self:stretch!important;text-align:left!important}
+#app .pfben{margin:0!important;padding-left:22px!important}
+
+/* Home/content cards: text can wrap; icons may stay centered as controls. */
+#app .tile.tcard{min-width:0!important;max-width:100%!important}
+#app .tcard .htx{min-width:0!important;max-width:100%!important}
+#app .tcard .htx b,
+#app .tcard .htx small,
+#app .d2>span{
+  white-space:normal!important;
+  text-overflow:clip!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+/* Footer is a functional control: always exactly one row, never spills. */
+#app .tabbar{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:4px!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+}
+#app .tab{min-width:0!important;max-width:100%!important}
+#app .tab span{
+  display:block!important;
+  width:100%!important;
+  max-width:100%!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+  text-align:center!important;
+  font-size:clamp(7.5px,2.25vw,9px)!important;
+  letter-spacing:0!important;
+}
+
+/* Narrow phones: keep breathing room without squeezing copy into overflow. */
+@media (max-width:370px){
+  :root{
+    --academy-ui-x:14px;
+    --academy-ui-y:10px;
+    --academy-ui-i:7px;
+    --academy-ui-pad:12px;
+  }
+  #app .tabbar{padding-left:5px!important;padding-right:5px!important;gap:2px!important}
+  #app .view ul,#app .view ol{padding-left:20px!important}
+}
+</style>
 </head>
 <body>
 <div id="app">
