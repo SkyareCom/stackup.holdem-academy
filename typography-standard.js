@@ -4,12 +4,11 @@
   const style=document.createElement('style');
   style.id=STYLE_ID;
   style.textContent=`
-    @import url('https://fonts.googleapis.com/css2?family=Overlock:ital,wght@0,400;1,400;1,700&display=swap');
-    html,body,.app,body *{font-family:'Overlock',sans-serif!important;font-size:12px!important}
+    html,body,.app,body *{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:12px!important}
     .navicon,.rank,.suit,.fv-rank,.fv-suit{font-family:Arial,sans-serif!important}
-    .brand .name,.brand .road-rage-brand{font-family:'Overlock',sans-serif!important;font-size:16px!important}
-    .brand .sub{font-family:'Overlock',sans-serif!important;font-size:20px!important}
-    .brand .course-interactive{font-family:'Overlock',sans-serif!important;font-size:14px!important}
+    .brand .name,.brand .road-rage-brand{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:16px!important}
+    .brand .sub{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:20px!important}
+    .brand .course-interactive{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:14px!important}
   `;
   document.head.appendChild(style);
   const ensureCourse=()=>{

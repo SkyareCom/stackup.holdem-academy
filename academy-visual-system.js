@@ -802,7 +802,7 @@
 
     @media(max-width:420px){
       :root{
-        --academy-card-padding:16px;
+        --academy-card-padding:14px;
         --academy-card-gap:12px;
         --academy-index-size:46px;
       }
@@ -822,8 +822,8 @@
       }
 
       #root .screen{
-        padding-left:14px!important;
-        padding-right:14px!important;
+        padding-left:16px!important;
+        padding-right:16px!important;
       }
 
       #root .card.topic{min-height:92px!important}
@@ -874,12 +874,12 @@
       :root{
         --academy-card-padding:14px;
         --academy-index-size:42px;
-        --academy-card-gap:10px;
+        --academy-card-gap:12px;
       }
 
       .brand{
-        padding-left:12px!important;
-        padding-right:12px!important;
+        padding-left:16px!important;
+        padding-right:16px!important;
       }
 
       .brandin{gap:10px!important}
@@ -892,8 +892,8 @@
       }
 
       #root .screen{
-        padding-left:12px!important;
-        padding-right:12px!important;
+        padding-left:16px!important;
+        padding-right:16px!important;
       }
 
       #root .card.topic{min-height:88px!important}
