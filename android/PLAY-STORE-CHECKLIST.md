@@ -8,7 +8,8 @@
 - `compileSdk` / `targetSdk`: 36.
 - Native Android launcher with a restricted WebView; no TWA/Custom Tab dependency.
 - Official content URL restricted to `https://skyarecom.github.io/stackup.holdem-academy/`.
-- Main manifest hardened for production: INTERNET only, no cleartext traffic and no Android backup.
+- Main manifest hardened for production: INTERNET only, no cleartext traffic, Education app category and no Android backup.
+- Android 12+ data extraction rules explicitly exclude application data from cloud backup and device transfer.
 - WebView file/content access disabled and mixed content blocked.
 - Safe Browsing enabled when supported.
 - External links leave the app and open in the browser.
@@ -22,6 +23,7 @@
 - CI verifies package and launcher metadata.
 - CI smoke-tests the release APK on an Android emulator.
 - Play Store copy provided in Portuguese (Brazil) and English (United States).
+- Data Safety release checklist added at `android/PLAY-DATA-SAFETY.md`.
 - Academy UI, content, palette, fonts and navigation remain unchanged by the Android packaging layer.
 
 ## Required in Play Console before production
@@ -32,11 +34,12 @@
 4. Configure the four signing secrets used by GitHub Actions and confirm `signed=true` in `RELEASE-INFO.txt`.
 5. Upload the signed AAB to Internal Testing first and complete the required test track for the developer account.
 6. Complete App content declarations: privacy policy, target audience, content rating, app access and ads declaration.
-7. Complete Data Safety according to the production build actually shipped.
+7. Complete Data Safety according to the production build actually shipped, using `android/PLAY-DATA-SAFETY.md` as the release audit checklist.
 8. Use Education as the primary category unless the Play Console classification flow requires another category.
 9. Make clear in the listing and policy declarations that the app is poker education/training only and does not provide real-money gambling, deposits, withdrawals, cash prizes or wagering transactions.
 10. Upload final Store Listing media: 512x512 store icon, 1024x500 feature graphic and required phone screenshots.
-11. Review the pre-launch report after the Internal Testing upload and resolve any device-specific crashes or layout issues before production.
+11. If account creation is enabled (Google, WhatsApp/phone or another provider), provide both in-app account deletion and the external deletion URL required by Play Console.
+12. Review the pre-launch report after the Internal Testing upload and resolve any device-specific crashes or layout issues before production.
 
 ## Release artifact
 
