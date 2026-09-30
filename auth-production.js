@@ -90,6 +90,44 @@
     }
   }
 
+  api.saveWhatsAppTrainingPreference = async (preference) => {
+    const session = await activeSession();
+    if (!session || !session.access_token || !session.user || !session.user.id) {
+      return { synced: false, reason: "no_session" };
+    }
+    const { url, anonKey } = config();
+    const now = new Date().toISOString();
+    const optIn = preference && preference.optIn === true;
+    const number = String((preference && preference.number) || "").trim();
+    if (number && !/^\+[1-9][0-9]{7,14}$/.test(number)) {
+      throw new Error("Número de WhatsApp inválido.");
+    }
+    const payload = {
+      user_id: session.user.id,
+      whatsapp_number: number || null,
+      whatsapp_training_opt_in: optIn,
+      whatsapp_training_opt_in_at: optIn ? ((preference && preference.optInAt) || now) : null,
+      whatsapp_training_updated_at: now,
+      updated_at: now
+    };
+    const response = await fetch(url + "/rest/v1/profiles?on_conflict=user_id", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": anonKey,
+        "Authorization": "Bearer " + session.access_token,
+        "Prefer": "resolution=merge-duplicates,return=minimal"
+      },
+      body: JSON.stringify(payload)
+    });
+    if (!response.ok) {
+      let data = {};
+      try { data = await response.json(); } catch (_) {}
+      throw new Error(data.message || data.error || "Não foi possível salvar a preferência do WhatsApp.");
+    }
+    return { synced: true };
+  };
+
   function displayName(user, fallback) {
     const meta = (user && user.user_metadata) || {};
     return meta.full_name || meta.name || fallback || (user && user.email ? user.email.split("@")[0] : "") || "Jogador";
@@ -138,7 +176,7 @@
     }
     try {
       const session = await activeSession();
-      if (!session) throw new Error("Entre primeiro com Google ou WhatsApp para ativar o acesso biométrico.");
+      if (!session) throw new Error("Entre primeiro com Google ou StackUp ID para ativar o acesso biométrico.");
       if (bio) {
         bio.classList.remove("on");
         bio.classList.add("ok");
@@ -165,7 +203,7 @@
   }
 
   document.addEventListener("click", (event) => {
-    const google = event.target.closest('[data-go="sid"]');
+    const google = event.target.closest('[data-go="google"]');
     if (!google) return;
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -178,7 +216,7 @@
       if (bioBtn.classList.contains("on")) return;
       const session = await activeSession();
       if (!session) {
-        say("Entre primeiro com Google ou WhatsApp. Depois a biometria poderá desbloquear sua sessão.");
+        say("Entre primeiro com Google ou StackUp ID. Depois a biometria poderá desbloquear sua sessão.");
         return;
       }
       if (!native || !native.requestBiometricUnlock) {
