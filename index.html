@@ -1452,7 +1452,7 @@ const lx=k=>(LX[lang]||LX.pt)[k];
 function planName(id){return id==="mensal"?lx("pMensal"):id==="semestral"?lx("pSemestral"):id==="anual"?lx("pAnual"):lx("pFree")}
 function planFeat(id){if(id==="free")return lx("fFree");const a=[...lx("fPaid")];if(["semestral","anual"].includes(id))a.push(lx("coachIncluded"));return a}
 // preços dos planos do Academy (todos os pagos liberam o app inteiro)
-const PRICE={mensal:{p:"R$ 29,90",per:"perM"},semestral:{p:"R$ 99,90",per:"perS",eq:"R$ 16,65",off:44},anual:{p:"R$ 149,90",per:"perY",eq:"R$ 12,49",off:58}};
+const PRICE={mensal:{p:"R$ 39,90",per:"perM"},semestral:{p:"R$ 189,90",per:"perS",eq:"R$ 31,65",off:21},anual:{p:"R$ 249,90",per:"perY",eq:"R$ 20,83",off:48}};
 function qLocked(m){return pathLocked(m.tp.path)||(m.sec==="sim"&&secLocked("prat"))}
 
 // ---- analytics local (fila pronta para enviar ao backend; nada sai do aparelho por enquanto)
