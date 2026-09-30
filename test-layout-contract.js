@@ -9,6 +9,7 @@ assert(index.includes(marker),'final layout audit style is missing');
 assert(index.lastIndexOf(marker)>index.lastIndexOf('PADRAO DE ESPACAMENTO'),'audit layer must come after legacy spacing rules');
 assert(index.includes('--academy-ui-x:16px')&&index.includes('--academy-ui-y:12px')&&index.includes('--academy-ui-i:8px')&&index.includes('--academy-ui-pad:14px'),'spacing tokens must be 16/12/8/14');
 assert(index.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important'),'footer must remain one row with five columns');
+assert(index.includes('font-size:9px!important'),'footer label font must be 9px');
 assert(index.includes('const TABS=["home","fund","mod","prat","ajustes"];'),'footer fifth route must be language/settings');
 assert(index.includes('ajustes:"lang"'),'footer fifth label must be Idioma/Language');
 assert(index.includes('#app .view .evneed')&&index.includes('text-align:left!important'),'plan description must follow left-aligned editorial contract');
@@ -16,6 +17,6 @@ assert(index.includes('overflow-wrap:anywhere!important'),'long copy must have a
 assert(index.includes('const APP_VERSION="2.1.1";'),'web app version must match release 2.1.1');
 assert(index.includes('#app .tab span')&&index.includes('overflow:hidden!important'),'footer labels must not spill outside their cells');
 assert(index.includes('#app .pfopts')&&index.includes('gap:var(--academy-ui-y)!important'),'plan cards must keep vertical separation');
-assert(sw.includes('academy-v2.1.1-layout-audit-r2-20260930'),'service-worker cache must be bumped for layout audit R2');
+assert(sw.includes('academy-v2.1.1-footer-9px-20260930'),'service-worker cache must be bumped for footer 9px release');
 assert(visual.includes('--academy-card-gap:12px')&&visual.includes('--academy-card-padding:14px')&&visual.includes('--academy-inner-gap:8px'),'legacy root visual system must share spacing rhythm');
 console.log('Layout audit contract OK');
