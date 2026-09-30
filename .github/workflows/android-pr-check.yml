@@ -27,6 +27,9 @@ jobs:
       - name: Security repository guard
         run: node scripts/security-guard.js
 
+      - name: Validate Android shell contract
+        run: node android/test-shell-contract.js
+
       - name: Set up Java 17
         uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
