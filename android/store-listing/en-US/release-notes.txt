@@ -1,0 +1,6 @@
+Android release prepared for Google Play.
+• Native Android shell with integrated navigation
+• Improved loading stability and recovery
+• Android Back button support
+• Hardened navigation security
+• Complete StackUp Hold'em Academy educational experience
