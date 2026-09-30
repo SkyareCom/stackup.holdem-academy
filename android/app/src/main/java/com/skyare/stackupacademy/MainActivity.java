@@ -391,7 +391,7 @@ public class MainActivity extends FragmentActivity {
 
             BiometricPrompt prompt = new BiometricPrompt(
                     MainActivity.this,
-                    getMainExecutor(),
+                    command -> runOnUiThread(command),
                     new BiometricPrompt.AuthenticationCallback() {
                         @Override
                         public void onAuthenticationSucceeded(
