@@ -909,9 +909,9 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 #app .view ul,
 #app .view ol{
   max-width:100%!important;
-  padding-left:22px!important;
+  padding-left:20px!important;
 }
-#app .view li+li{margin-top:6px!important}
+#app .view li+li{margin-top:var(--academy-ui-i)!important}
 
 /* Editorial copy is always left aligned and allowed to wrap. */
 #app .view p,
@@ -972,7 +972,7 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 #app .pcardp .ppr,
 #app .pcardp .hmeta,
 #app .pcardp .pfben{align-self:stretch!important;text-align:left!important}
-#app .pfben{margin:0!important;padding-left:22px!important}
+#app .pfben{margin:0!important;padding-left:20px!important}
 
 /* Home/content cards: text can wrap; icons may stay centered as controls. */
 #app .tile.tcard{min-width:0!important;max-width:100%!important}
@@ -1009,147 +1009,40 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 
 /* Narrow phones: keep breathing room without squeezing copy into overflow. */
 @media (max-width:370px){
-  :root{
-    --academy-ui-x:14px;
-    --academy-ui-y:10px;
-    --academy-ui-i:7px;
-    --academy-ui-pad:12px;
-  }
   #app .tabbar{padding-left:5px!important;padding-right:5px!important;gap:2px!important}
-  #app .view ul,#app .view ol{padding-left:20px!important}
-}
-</style>
-
-<style id="academy-ui-quality-normalization">
-/* ===== UI QUALITY NORMALIZATION 20260930 =====
-   Escala: tela 16px | estruturas 12px | internos 8px | card 14px */
-:root{
-  --gx:16px;
-  --gy:12px;
-  --gi:8px;
-  --pad:14px;
-  --academy-copy-line:1.45;
 }
 
-/* Limites estruturais: nada pode crescer além da largura útil. */
-#app .view,
-#app .view > *,
-#app .fz,
-#app .pbody,
-#app .lesson,
-#app .pfopts,
-#app .evsecs,
-#app .evsug,
-#app .hlist,
-#app .tsave,
-#app .smrt,
-#app .revhead{
+/* Audit R2: complete editorial and overflow normalization. */
+#app .view > *{
   min-width:0!important;
   max-width:100%!important;
 }
-
-/* Espaçamento vertical uniforme entre estruturas e cards irmãos. */
-#app .fz,
-#app .pbody,
-#app .lesson,
-#app .lesson .lg,
-#app .lesson .ranking,
-#app .pfopts,
-#app .evsecs,
-#app .evsug,
-#app .hlist,
-#app .tsave,
-#app .smrt,
-#app .revhead{
-  gap:var(--gy)!important;
-}
-
-/* Espaçamento interno uniforme dos cards editoriais. */
-#app .qcard,
-#app .lesson .lc,
-#app .lesson .rrow,
-#app .lesson .compare,
-#app .evsec,
-#app .pcardp,
 #app .habit,
 #app .lsamp,
 #app .upsell,
-#app .certcard,
-#app .testaccess,
-#app .coachcard{
-  box-sizing:border-box!important;
+#app .testaccess{
   width:100%!important;
   min-width:0!important;
   max-width:100%!important;
-  padding:var(--pad)!important;
+  box-sizing:border-box!important;
+  padding:var(--academy-ui-pad)!important;
 }
+#app .hsbtns{gap:var(--academy-ui-i)!important}
 
-/* Elementos internos: 8px é o ritmo curto. */
-#app .qopts,
-#app .qnav,
-#app .qstats,
-#app .lesson .cg,
-#app .lesson .sl,
-#app .lesson .steps,
-#app .hbtn,
-#app .hsbtns,
-#app .pfrows{
-  gap:var(--gi)!important;
-}
-
-/* Textos editoriais sempre começam à esquerda e podem quebrar naturalmente. */
-#app .view p,
-#app .view li,
-#app .view h1,
-#app .view h2,
-#app .view h3,
-#app .view h4,
-#app .view h5,
-#app .view h6,
-#app .view .qtype,
-#app .view .qprompt,
-#app .view .qfb,
-#app .view .qhint,
-#app .view .evneed,
-#app .view .flead,
-#app .view .hmeta,
-#app .view .txt,
-#app .view .txt b,
-#app .view .txt small,
-#app .view .htx,
-#app .view .htx b,
-#app .view .htx small,
-#app .view .pfben,
-#app .view .coachlead,
-#app .view .coachbenefit,
-#app .view .testaccess p,
-#app .view .pfrow b{
+#app .view .pfrow b,
+#app .view .testaccess p{
   text-align:left!important;
-  max-width:100%!important;
   white-space:normal!important;
   overflow-wrap:anywhere!important;
   word-break:normal!important;
 }
-
-/* Não cortar títulos/descrições de cards com reticências. */
-#app .txt small,
-#app .tcard .htx b,
-#app .tcard .htx small,
-#app .tcard .d2,
-#app .tcard .d2 > span,
-#app .hmeta,
-#app .sinfo small,
-#app .shands small,
-#app .sfilt .segb{
-  white-space:normal!important;
-  overflow:visible!important;
-  text-overflow:clip!important;
-  max-height:none!important;
-  height:auto!important;
-  overflow-wrap:anywhere!important;
+#app .pfrow,
+#app .pfrow > *{
+  min-width:0!important;
 }
+#app .pfrow{gap:var(--academy-ui-i)!important}
+#app .pfrow b{max-width:60%!important}
 
-/* Os blocos de texto dos cards da Home ocupam toda a largura útil. */
 #app .tcard .htx,
 #app .tcard .d2{
   width:100%!important;
@@ -1157,49 +1050,45 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   align-items:stretch!important;
   text-align:left!important;
 }
-
-/* Ritmo tipográfico dentro de cards. */
-#app .qcard > .qtype,
-#app .lesson h3,
-#app .lesson h4{
-  margin:0 0 var(--gi)!important;
-}
-#app .qcard p,
-#app .lesson p,
-#app .lesson li,
-#app .evneed,
-#app .coachlead,
-#app .coachbenefit,
-#app .testaccess p{
-  line-height:var(--academy-copy-line)!important;
-}
-#app .qcard ul,
-#app .qcard ol,
-#app .lesson ul,
-#app .lesson ol,
-#app .pfben{
-  margin:0!important;
-  padding-inline-start:20px!important;
-}
-#app .qcard li + li,
-#app .lesson li + li,
-#app .pfben li + li{
-  margin-top:var(--gi)!important;
+#app .tcard .htx b,
+#app .tcard .htx small,
+#app .tcard .d2,
+#app .tcard .d2>span,
+#app .sinfo small,
+#app .shands small,
+#app .sfilt .segb{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow-wrap:anywhere!important;
+  text-align:left!important;
 }
 
-/* Cabeçalhos de card: título quebra; badge/preço permanece íntegro. */
+#app .qsum>p,
+#app .qsum>b,
+#app .qsum>span,
+#app .plock>p,
+#app .plock>b,
+#app .soon>p{
+  width:100%!important;
+  text-align:left!important;
+  overflow-wrap:anywhere!important;
+}
+
 #app .hrt{
   width:100%!important;
   min-width:0!important;
-  gap:var(--gi)!important;
+  gap:var(--academy-ui-i)!important;
   align-items:flex-start!important;
 }
-#app .hrt > b:first-child{
+#app .hrt>b:first-child{
   min-width:0!important;
   flex:1 1 auto!important;
-  text-align:left!important;
   white-space:normal!important;
   overflow-wrap:anywhere!important;
+  text-align:left!important;
 }
 #app .hrt .hst,
 #app .pfprice,
@@ -1207,24 +1096,11 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   flex:none!important;
 }
 
-/* Linhas perfil/planos: conteúdo pode quebrar sem empurrar o card. */
-#app .pfrow{
-  min-width:0!important;
-  gap:var(--gi)!important;
-}
-#app .pfrow > *{
-  min-width:0!important;
-}
-#app .pfrow b{
-  max-width:60%!important;
-}
-
-/* Mídia e tabelas nunca ultrapassam o card/tela. */
 #app .view img,
 #app .view svg,
 #app .view canvas,
 #app .view video{
-  max-width:100%;
+  max-width:100%!important;
 }
 #app .view table{
   width:100%!important;
@@ -1236,21 +1112,9 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   min-width:0!important;
   overflow-wrap:anywhere!important;
 }
-
-/* Rodapé: cinco itens, sempre em uma única linha. */
-#app .tabbar{
-  grid-template-columns:repeat(5,minmax(0,1fr))!important;
-}
-#app .tab{
-  min-width:0!important;
-}
-#app .tab span{
-  max-width:100%!important;
-}
-
-/* Exceções funcionais: números, cartas, botões, badges e assentos mantêm
-   o alinhamento visual próprio; apenas o texto editorial é padronizado. */
 </style>
+
+
 </head>
 <body>
 <div id="app">
@@ -1400,7 +1264,7 @@ function login(name,method,extra){clearMsg();store.set("wraps.session",{name,met
 // ===== APP SHELL: home grid, pages, tabbar =====
 const IC={
  home:'<path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
- ajustes:'<path d="M4 6h9M17 6h3M4 12h3M11 12h9M4 18h11M19 18h1"/><circle cx="15" cy="6" r="2"/><circle cx="9" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>',
+ ajustes:'<circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4.2" ry="10"/><path d="M2 12h20M4 7h16M4 17h16"/>',
  spots:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/>',
  advance:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
  stats:'<path d="M3 21h18"/><rect x="5" y="11" width="3" height="7" rx="1"/><rect x="10.5" y="5" width="3" height="13" rx="1"/><rect x="16" y="14" width="3" height="4" rx="1"/>',
@@ -1419,7 +1283,7 @@ const IC={
 const svg=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${IC[k]}</svg>`;
 // ===== PLANOS: Free + Mensal / Semestral / Anual (pagos liberam o app completo) =====
 // Seções liberadas no Free (fund, mod, prat, stats, hist)
-const APP_VERSION="2.1.0";
+const APP_VERSION="2.1.1";
 const TEST_ACCESS=true; // testes fechados: acesso total temporário até a configuração final dos planos
 function freeSecs(){return ["fund","hist"]}
 // Temas liberados no Free dentro das seções acima
@@ -1433,8 +1297,8 @@ function simFilterLocked(f){return false}
 function secLocked(k){if(TEST_ACCESS)return false;return isFree()&&["fund","mod","prat","stats","hist"].includes(k)&&!freeSecs().includes(k)}
 (()=>{let q=new URLSearchParams(location.search).get("plano");if(q==="full"||q==="edge")q="anual";if(["free","mensal","semestral","anual"].includes(q))store.set("academy.plan.v1",{id:q,since:Date.now()})})();
 const HOME=[["fund","d_fund"],["mod","d_mod"],["prat","d_prat"],["stats","d_stats"],["hist","d_hist"],["perfil","d_perfil"]];
-const TABS=["home","fund","mod","prat","perfil"];
-const TKEY={home:"t_home",ajustes:"t_ajustes",spots:"t_spots",advance:"t_advance",stats:"t_stats",personal:"t_personal",api:"t_api",hist:"t_hist",rel:"t_rel",ia:"t_ia",perfil:"t_perfil",planos:"t_planos",loja:"t_loja",fund:"t_fund",mod:"t_mod",prat:"t_prat"};
+const TABS=["home","fund","mod","prat","ajustes"];
+const TKEY={home:"t_home",ajustes:"lang",spots:"t_spots",advance:"t_advance",stats:"t_stats",personal:"t_personal",api:"t_api",hist:"t_hist",rel:"t_rel",ia:"t_ia",perfil:"t_perfil",planos:"t_planos",loja:"t_loja",fund:"t_fund",mod:"t_mod",prat:"t_prat"};
 let curView="home";
 $("#homeCards").innerHTML=document.querySelector("#welcome .cards").innerHTML;
 
