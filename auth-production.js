@@ -90,7 +90,7 @@
     }
   }
 
-  api.saveWhatsAppTrainingPreference = async (preference) => {
+  api.saveAcademyCoachPreference = async (preference) => {
     const session = await activeSession();
     if (!session || !session.access_token || !session.user || !session.user.id) {
       return { synced: false, reason: "no_session" };
@@ -99,15 +99,17 @@
     const now = new Date().toISOString();
     const optIn = preference && preference.optIn === true;
     const number = String((preference && preference.number) || "").trim();
-    if (number && !/^\+[1-9][0-9]{7,14}$/.test(number)) {
+    if (!/^\+[1-9][0-9]{7,14}$/.test(number)) {
       throw new Error("Número de WhatsApp inválido.");
     }
     const payload = {
       user_id: session.user.id,
-      whatsapp_number: number || null,
-      whatsapp_training_opt_in: optIn,
-      whatsapp_training_opt_in_at: optIn ? ((preference && preference.optInAt) || now) : null,
-      whatsapp_training_updated_at: now,
+      whatsapp_number: number,
+      academy_coach_opt_in: optIn,
+      academy_coach_opt_in_at: optIn ? ((preference && preference.optInAt) || now) : null,
+      academy_coach_updated_at: now,
+      academy_coach_daily_limit: 1,
+      academy_coach_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
       updated_at: now
     };
     const response = await fetch(url + "/rest/v1/profiles?on_conflict=user_id", {
@@ -123,7 +125,7 @@
     if (!response.ok) {
       let data = {};
       try { data = await response.json(); } catch (_) {}
-      throw new Error(data.message || data.error || "Não foi possível salvar a preferência do WhatsApp.");
+      throw new Error(data.message || data.error || "Não foi possível salvar a configuração do Academy Coach.");
     }
     return { synced: true };
   };
@@ -230,121 +232,13 @@
     };
   }
 
-  let currentPhone = "";
-  let resendTimer = null;
-
-  function normalizedPhone() {
-    const ddi = q("#ddi");
-    const phoneInput = q("#phone");
-    const digits = phoneInput ? phoneInput.value.replace(/\D/g, "") : "";
-    return "+" + (ddi ? ddi.value : "55") + digits;
-  }
-
-  function beginResendTimer() {
-    let seconds = 60;
-    clearInterval(resendTimer);
-    const host = q("#resend");
-    const tick = () => {
-      if (!host) return;
-      if (seconds <= 0) {
-        clearInterval(resendTimer);
-        host.innerHTML = '<button id="rs">' + (typeof t === "function" ? t("resend") : "Reenviar código") + "</button>";
-        const resend = q("#rs");
-        if (resend) resend.onclick = async () => {
-          resend.disabled = true;
-          try {
-            await sendWhatsAppOtp();
-          } catch (error) {
-            say(error.message);
-            resend.disabled = false;
-          }
-        };
-        return;
-      }
-      host.textContent = (typeof t === "function" ? t("resendIn") : "Reenviar código em") + " 0:" + String(seconds).padStart(2, "0");
-      seconds -= 1;
-    };
-    tick();
-    resendTimer = setInterval(tick, 1000);
-  }
-
-  async function sendWhatsAppOtp() {
-    currentPhone = normalizedPhone();
-    await request("/otp", {
-      phone: currentPhone,
-      channel: "whatsapp",
-      create_user: true
-    });
-    beginResendTimer();
-  }
-
-  const wBtn = q("#wBtn");
-  if (wBtn) {
-    wBtn.onclick = async () => {
-      const phoneInput = q("#phone");
-      const ddi = q("#ddi");
-      const digits = phoneInput ? phoneInput.value.replace(/\D/g, "") : "";
-      const min = ddi && ddi.value === "55" ? 10 : 7;
-      if (digits.length < min) {
-        const err = q("#wErr");
-        if (err && typeof t === "function") err.textContent = t("phoneErr");
-        return;
-      }
-      try {
-        if (typeof busy === "function") busy(wBtn, true);
-        await sendWhatsAppOtp();
-        const label = q("#otpPhone");
-        if (label) label.textContent = currentPhone;
-        if (typeof buildOtp === "function") buildOtp();
-        if (typeof go === "function") go("otp");
-        setTimeout(() => {
-          const first = q("#otpBox input");
-          if (first) first.focus();
-        }, 400);
-      } catch (error) {
-        const err = q("#wErr");
-        if (err) err.textContent = error.message || "Não foi possível enviar o código.";
-      } finally {
-        if (typeof busy === "function") busy(wBtn, false);
-      }
-    };
-  }
-
-  const oBtn = q("#oBtn");
-  if (oBtn) {
-    oBtn.onclick = async () => {
-      const inputs = Array.from(document.querySelectorAll("#otpBox input"));
-      const token = inputs.map((input) => input.value).join("");
-      if (token.length !== 6) return;
-      try {
-        if (typeof busy === "function") busy(oBtn, true);
-        const data = await request("/verify", {
-          phone: currentPhone || normalizedPhone(),
-          token,
-          type: "sms"
-        });
-        clearInterval(resendTimer);
-        const session = saveSession(data);
-        finishLogin(session, "whatsapp", (currentPhone || normalizedPhone()).replace(/.(?=.{4})/g, "•"));
-      } catch (error) {
-        const err = q("#oErr");
-        if (err) err.textContent = error.message || (typeof t === "function" ? t("codeErr") : "Código inválido.");
-        inputs.forEach((input) => input.value = "");
-        if (inputs[0]) inputs[0].focus();
-        oBtn.disabled = true;
-      } finally {
-        if (typeof busy === "function") busy(oBtn, false);
-      }
-    };
-  }
-
   (async () => {
     try {
       const session = await activeSession();
       const legacy = localStorage.getItem("wraps.session");
       if (session && legacy) {
         const current = JSON.parse(legacy);
-        if (current && ["google", "whatsapp", "biometric"].includes(current.method)) {
+        if (current && ["google", "biometric"].includes(current.method)) {
           // Existing authenticated UI session remains valid; token refresh is handled above.
         }
       }
