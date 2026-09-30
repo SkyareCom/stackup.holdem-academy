@@ -1,140 +1,114 @@
 # StackUp Academy — Production Authentication Setup
 
-This release uses Supabase Auth as the account backend.
+## Current implementation status — 30 Sep 2026
 
-## Architecture
+The Android/web hybrid currently uses Supabase Auth as the account backend for the implemented Google flow.
 
-- Google: Android Credential Manager -> Google ID token -> Supabase Auth.
-- WhatsApp: Supabase Phone Auth -> Twilio/Twilio Verify WhatsApp OTP -> Supabase session.
-- Biometrics: Android BiometricPrompt unlocks an already authenticated Supabase session. No biometric template or raw biometric data is stored by StackUp or Supabase.
-- The existing Academy visual login screen is preserved.
+### Implemented now
 
-## 1. Supabase project
+- **Google:** Android Credential Manager obtains a Google ID token and `auth-production.js` exchanges it with Supabase Auth.
+- **Biometrics:** Android BiometricPrompt unlocks an already authenticated Supabase session. The app never receives or stores fingerprint/face templates.
+- **Academy Coach profile sync:** authenticated users can sync WhatsApp number, consent, frequency, limits and time zone to `public.profiles`.
+- **Closed-test bypass:** `TEST_ACCESS=true` currently lets Play closed-test users enter the Academy without account creation.
 
-Create or select the production Supabase project.
+### Not yet implemented end-to-end
 
-Collect:
+- **WhatsApp OTP login:** still pending. Do not present it as a working production auth method until Supabase Phone Auth + Twilio/Twilio Verify are configured and the flow is wired into `auth-production.js`.
+- **Google Play Billing:** plan UI exists, but closed-test billing is currently disabled.
 
-- Project URL, for example: `https://YOUR_PROJECT.supabase.co`
-- Publishable/anon key intended for client applications
+## Supabase project
 
-Do not use the Supabase service-role key in the Android app.
-
-The Android build reads:
+Android reads:
 
 - `STACKUP_SUPABASE_URL`
 - `STACKUP_SUPABASE_ANON_KEY`
 
-For GitHub Actions, configure these as repository/environment secrets or variables used by the release workflow.
+The current Gradle build also contains a publishable fallback configuration for the Academy project.
 
-## 2. Google provider in Supabase
+Never place a Supabase service-role/secret key in the Android app or web assets.
+
+## Google provider
 
 In Supabase Dashboard:
 
 Authentication -> Providers -> Google
 
-Enable Google and configure the Google OAuth client used by this app.
-
-Android currently uses this Web OAuth Client ID for ID-token audience validation:
+The Android Web OAuth Client ID used for ID-token audience validation is:
 
 `900430977321-mf76iecc9im76c53mh863shj9b29jk9p.apps.googleusercontent.com`
 
-The Android package remains:
+Android package:
 
 `com.skyare.stackupacademy`
 
-Make sure the Google Cloud project includes the production Android OAuth client with the correct package name and the SHA-1/SHA-256 fingerprints for the signing configuration required by Google.
+Before production, verify the Google Cloud Android OAuth client uses the correct production signing SHA-1/SHA-256 fingerprints.
 
-The native Android client sends the Google ID token to Supabase using the ID-token sign-in flow. OAuth is not performed inside the WebView.
-
-## 3. WhatsApp OTP
-
-Supabase phone sign-in supports WhatsApp through Twilio/Twilio Verify.
-
-In Supabase Dashboard:
-
-Authentication -> Providers -> Phone
-
-Enable Phone authentication.
-
-Configure Twilio or Twilio Verify credentials and a WhatsApp-capable sender according to the Supabase/Twilio setup.
-
-The app requests OTP with:
-
-- `channel: "whatsapp"`
-- E.164 phone number, e.g. `+5511999999999`
-
-The verification request uses the Supabase phone OTP verification flow.
-
-Before production:
-
-- configure rate limits;
-- configure CAPTCHA/abuse controls where appropriate;
-- verify the WhatsApp sender/business account;
-- test Brazilian numbers and every market you plan to support;
-- confirm message templates and provider compliance.
-
-## 4. Biometrics
-
-Biometrics are intentionally not a standalone remote identity provider.
+## Biometrics
 
 Flow:
 
-1. User first authenticates with Google or WhatsApp.
-2. Supabase creates the authenticated session.
-3. On a later entry, the user may select biometrics.
-4. Android BiometricPrompt validates the local user.
-5. The app resumes/refreses the existing Supabase session.
+1. user authenticates with Google (or, once implemented, WhatsApp);
+2. Supabase creates a session;
+3. the session is stored locally;
+4. on a later entry, BiometricPrompt validates the local device user;
+5. the app refreshes/resumes the Supabase session.
 
-The app never receives or stores fingerprint/face templates.
+Biometrics are not a standalone remote identity provider.
 
-## 5. Required build environment
+## Academy Coach
 
-A production/release build must receive:
+`auth-production.js` can upsert the authenticated user's Coach preference into `public.profiles`.
 
-```
-STACKUP_SUPABASE_URL=https://YOUR_PROJECT.supabase.co
-STACKUP_SUPABASE_ANON_KEY=YOUR_CLIENT_ANON_OR_PUBLISHABLE_KEY
-```
+Current fields include:
 
-Release signing still uses the existing upload-key variables.
+- WhatsApp number;
+- opt-in and opt-in timestamp;
+- frequency (`included_2_week` or `daily`);
+- daily/weekly limits;
+- time zone;
+- update timestamps.
 
-## 6. Release verification
+The table currently has RLS enabled with own-row SELECT/INSERT/UPDATE/DELETE policies based on `auth.uid() = user_id`.
 
-Before Play upload verify all three paths on a physical Android device:
+Message delivery is a separate integration and must not be considered active until a provider is configured.
+
+## WhatsApp OTP — remaining work
+
+When enabling WhatsApp login:
+
+1. enable Phone Auth in Supabase;
+2. configure Twilio/Twilio Verify with a WhatsApp-capable sender;
+3. add the OTP request/verification calls to the production auth script;
+4. enforce rate limits and abuse protection;
+5. test E.164 numbers and wrong/correct OTP paths;
+6. update privacy policy and Play Data Safety if the final data flow differs.
+
+## Release verification
 
 ### Google
 
-- account picker opens natively;
-- Google token is accepted by Supabase;
-- new/existing user appears under Supabase Auth users;
-- returning login restores a valid session.
-
-### WhatsApp
-
-- valid international number receives the WhatsApp OTP;
-- wrong OTP is rejected;
-- correct OTP creates/restores the Supabase user;
-- rate limiting prevents repeated abuse.
+- native account picker opens;
+- ID token is accepted by Supabase;
+- new/existing user appears in Supabase Auth;
+- refresh token restores the session.
 
 ### Biometrics
 
-- unavailable biometrics show a controlled message;
-- failed/cancelled biometrics do not open the app;
-- biometrics cannot be used before a valid Google/WhatsApp Supabase session exists;
-- successful biometrics resumes a valid Supabase session.
+- unavailable/failed/cancelled biometric checks do not open the app;
+- biometrics cannot be used before a valid Supabase session;
+- successful biometric check resumes a valid session.
 
-## 7. Play Data Safety
+### Coach
 
-When this auth configuration is enabled in the release candidate, update the Play Console Data Safety answers to match actual production behavior.
+- only the authenticated user's profile row can be written/read;
+- invalid WhatsApp numbers are rejected;
+- opt-in and frequency persist correctly;
+- message delivery remains off until its provider is configured.
 
-At minimum review:
+### Before production rollout
 
-- email address/profile data from Google;
-- phone number from WhatsApp login;
-- account identifiers;
-- authentication data;
-- deletion and retention behavior;
-- Twilio and Supabase as processors/subprocessors where applicable.
-
-If users can create accounts, the production app must also provide the required account-deletion path and external deletion URL before production rollout.
+- decide whether to keep or disable `TEST_ACCESS`;
+- complete WhatsApp OTP if it will be offered at launch;
+- implement/validate Google Play Billing;
+- test the in-app account-deletion request and external deletion page;
+- complete Play Data Safety from the exact final build.
