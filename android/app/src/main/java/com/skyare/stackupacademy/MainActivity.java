@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CancellationSignal;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.window.OnBackInvokedCallback;
 import android.window.OnBackInvokedDispatcher;
 import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
@@ -27,7 +29,22 @@ import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-public class MainActivity extends Activity {
+import androidx.biometric.BiometricManager;
+import androidx.biometric.BiometricPrompt;
+import androidx.credentials.CredentialManager;
+import androidx.credentials.CredentialManagerCallback;
+import androidx.credentials.CustomCredential;
+import androidx.credentials.GetCredentialRequest;
+import androidx.credentials.GetCredentialResponse;
+import androidx.credentials.exceptions.GetCredentialException;
+import androidx.fragment.app.FragmentActivity;
+
+import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
+import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
+
+import org.json.JSONObject;
+
+public class MainActivity extends FragmentActivity {
     private static final String APP_URL = "https://skyarecom.github.io/stackup.holdem-academy/";
     private static final String APP_HOST = "skyarecom.github.io";
     private static final String APP_PATH = "/stackup.holdem-academy/";
@@ -109,6 +126,8 @@ public class MainActivity extends Activity {
         if (webRecoveryPending) {
             webView.clearCache(true);
         }
+
+        webView.addJavascriptInterface(new NativeAuthBridge(), "StackUpNative");
 
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -245,6 +264,17 @@ public class MainActivity extends Activity {
                 }
 
                 view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+
+                if (url != null && url.startsWith(APP_URL)) {
+                    String authLoader =
+                            "(function(){if(document.getElementById('stackup-auth-production'))return;" +
+                            "var s=document.createElement('script');" +
+                            "s.id='stackup-auth-production';" +
+                            "s.src='" + APP_URL + "auth-production.js?v=210';" +
+                            "document.head.appendChild(s);})();";
+                    view.evaluateJavascript(authLoader, null);
+                }
+
                 view.postDelayed(
                         () -> view.evaluateJavascript(
                                 "(function(){return !!(document.querySelector('#app')&&document.querySelector('.screen'));})();",
@@ -263,6 +293,158 @@ public class MainActivity extends Activity {
         String initialUrl = webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_URL;
         Log.i(TAG, "LOAD_URL=" + initialUrl);
         webView.loadUrl(initialUrl);
+    }
+
+    private void callJavascript(String javascript) {
+        runOnUiThread(() -> {
+            if (webView != null) {
+                webView.evaluateJavascript(javascript, null);
+            }
+        });
+    }
+
+    private void notifyGoogleSuccess(String idToken, String email, String displayName) {
+        String js = "window.StackUpProductionAuth&&window.StackUpProductionAuth.onGoogleToken(" +
+                JSONObject.quote(idToken == null ? "" : idToken) + "," +
+                JSONObject.quote(email == null ? "" : email) + "," +
+                JSONObject.quote(displayName == null ? "" : displayName) + ");";
+        callJavascript(js);
+    }
+
+    private void notifyAuthError(String method, String message) {
+        String js = "window.StackUpProductionAuth&&window.StackUpProductionAuth.onNativeError(" +
+                JSONObject.quote(method) + "," +
+                JSONObject.quote(message == null ? "Authentication error" : message) + ");";
+        callJavascript(js);
+    }
+
+    private void startGoogleSignIn() {
+        runOnUiThread(() -> {
+            try {
+                CredentialManager credentialManager = CredentialManager.create(MainActivity.this);
+                GetGoogleIdOption googleIdOption = new GetGoogleIdOption.Builder()
+                        .setFilterByAuthorizedAccounts(false)
+                        .setServerClientId(getString(R.string.google_web_client_id))
+                        .setAutoSelectEnabled(false)
+                        .build();
+
+                GetCredentialRequest request = new GetCredentialRequest.Builder()
+                        .addCredentialOption(googleIdOption)
+                        .build();
+
+                credentialManager.getCredentialAsync(
+                        MainActivity.this,
+                        request,
+                        new CancellationSignal(),
+                        getMainExecutor(),
+                        new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
+                            @Override
+                            public void onResult(GetCredentialResponse result) {
+                                try {
+                                    if (!(result.getCredential() instanceof CustomCredential)) {
+                                        notifyAuthError("google", "Unsupported Google credential");
+                                        return;
+                                    }
+
+                                    CustomCredential credential =
+                                            (CustomCredential) result.getCredential();
+                                    if (!GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL
+                                            .equals(credential.getType())) {
+                                        notifyAuthError("google", "Unexpected Google credential type");
+                                        return;
+                                    }
+
+                                    GoogleIdTokenCredential google =
+                                            GoogleIdTokenCredential.createFrom(credential.getData());
+                                    notifyGoogleSuccess(
+                                            google.getIdToken(),
+                                            google.getId(),
+                                            google.getDisplayName());
+                                } catch (Throwable error) {
+                                    Log.e(TAG, "GOOGLE_SIGN_IN_PARSE_FAILED", error);
+                                    notifyAuthError("google", "Unable to read Google credential");
+                                }
+                            }
+
+                            @Override
+                            public void onError(GetCredentialException error) {
+                                Log.w(TAG, "GOOGLE_SIGN_IN_FAILED", error);
+                                notifyAuthError("google", "Google sign-in was cancelled or failed");
+                            }
+                        });
+            } catch (Throwable error) {
+                Log.e(TAG, "GOOGLE_SIGN_IN_START_FAILED", error);
+                notifyAuthError("google", "Unable to start Google sign-in");
+            }
+        });
+    }
+
+    private void startBiometricUnlock() {
+        runOnUiThread(() -> {
+            int allowed = BiometricManager.Authenticators.BIOMETRIC_STRONG
+                    | BiometricManager.Authenticators.BIOMETRIC_WEAK;
+            int status = BiometricManager.from(MainActivity.this).canAuthenticate(allowed);
+            if (status != BiometricManager.BIOMETRIC_SUCCESS) {
+                notifyAuthError("biometric", "Biometric authentication is not available on this device");
+                return;
+            }
+
+            BiometricPrompt prompt = new BiometricPrompt(
+                    MainActivity.this,
+                    getMainExecutor(),
+                    new BiometricPrompt.AuthenticationCallback() {
+                        @Override
+                        public void onAuthenticationSucceeded(
+                                BiometricPrompt.AuthenticationResult result) {
+                            super.onAuthenticationSucceeded(result);
+                            callJavascript(
+                                    "window.StackUpProductionAuth&&window.StackUpProductionAuth.onBiometricResult(true);");
+                        }
+
+                        @Override
+                        public void onAuthenticationError(int errorCode, CharSequence errString) {
+                            super.onAuthenticationError(errorCode, errString);
+                            notifyAuthError("biometric", String.valueOf(errString));
+                        }
+
+                        @Override
+                        public void onAuthenticationFailed() {
+                            super.onAuthenticationFailed();
+                            callJavascript(
+                                    "window.StackUpProductionAuth&&window.StackUpProductionAuth.onBiometricResult(false);");
+                        }
+                    });
+
+            BiometricPrompt.PromptInfo info = new BiometricPrompt.PromptInfo.Builder()
+                    .setTitle("StackUp Hold'em Academy")
+                    .setSubtitle("Confirme sua biometria para entrar")
+                    .setAllowedAuthenticators(allowed)
+                    .setNegativeButtonText("Cancelar")
+                    .build();
+            prompt.authenticate(info);
+        });
+    }
+
+    private final class NativeAuthBridge {
+        @JavascriptInterface
+        public String getSupabaseUrl() {
+            return BuildConfig.SUPABASE_URL;
+        }
+
+        @JavascriptInterface
+        public String getSupabaseAnonKey() {
+            return BuildConfig.SUPABASE_ANON_KEY;
+        }
+
+        @JavascriptInterface
+        public void requestGoogleSignIn() {
+            startGoogleSignIn();
+        }
+
+        @JavascriptInterface
+        public void requestBiometricUnlock() {
+            startBiometricUnlock();
+        }
     }
 
     private boolean handleNavigation(Uri uri) {
