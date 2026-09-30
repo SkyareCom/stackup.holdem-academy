@@ -26,9 +26,9 @@
       --academy-inner-radius:16px;
       --academy-control-radius:12px;
       --academy-card-shadow:0 10px 26px #0000002b;
-      --academy-card-gap:14px;
-      --academy-card-padding:18px;
-      --academy-inner-gap:10px;
+      --academy-card-gap:12px;
+      --academy-card-padding:14px;
+      --academy-inner-gap:8px;
       --academy-index-size:48px;
       --academy-arrow-size:24px;
       --academy-control-height:44px;
@@ -163,8 +163,8 @@
 
     #root .screen{
       width:100%!important;
-      padding-left:18px!important;
-      padding-right:18px!important;
+      padding-left:16px!important;
+      padding-right:16px!important;
     }
 
     #root .list,
@@ -317,6 +317,32 @@
     #root .m2-card h3,
     #root .mg-card h3{margin-top:0!important}
 
+
+    /* Editorial alignment contract: copy is left aligned; diagram labels/stats keep their own geometry. */
+    #root .card.stage .stitle,
+    #root .card.stage .desc,
+    #root .head h2,
+    #root .head p,
+    #root .card.topic .ttitle,
+    #root .card.topic .tnote,
+    #root .card.lesson h2,
+    #root .card.lesson h3,
+    #root .card.lesson h4,
+    #root .card.lesson p,
+    #root .card.lesson li,
+    #root .block h3,
+    #root .block p,
+    #root .detail-card h3,
+    #root .detail-card p,
+    #root .m2-card h3,
+    #root .m2-card p,
+    #root .mg-card h3,
+    #root .mg-card p{
+      text-align:left!important;
+      overflow-wrap:anywhere!important;
+      word-break:normal!important;
+    }
+
     /* One spacing and sizing contract for interactive training shells. */
     #root .fi-shell,
     #root .m2-training,
@@ -324,7 +350,7 @@
     #root .p3-shell,
     #root .p3x-panel{
       width:100%!important;
-      margin-top:18px!important;
+      margin-top:12px!important;
       border-radius:20px!important;
       box-sizing:border-box!important;
     }
