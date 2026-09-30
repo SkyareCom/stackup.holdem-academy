@@ -108,7 +108,9 @@
       academy_coach_opt_in: optIn,
       academy_coach_opt_in_at: optIn ? ((preference && preference.optInAt) || now) : null,
       academy_coach_updated_at: now,
+      academy_coach_frequency: preference && preference.frequency === "daily" ? "daily" : "included_2_week",
       academy_coach_daily_limit: 1,
+      academy_coach_weekly_limit: preference && preference.frequency === "daily" ? 7 : 2,
       academy_coach_timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || null,
       updated_at: now
     };
