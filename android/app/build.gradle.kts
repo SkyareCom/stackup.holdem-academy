@@ -27,8 +27,8 @@ android {
         applicationId = "com.skyare.stackupacademy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 211
-        versionName = "2.1.1"
+        versionCode = 212
+        versionName = "2.1.2"
         buildConfigField("String", "SUPABASE_URL", "\"${supabaseUrl.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${supabaseAnonKey.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
     }
@@ -46,7 +46,7 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".test211"
+            applicationIdSuffix = ".test212"
             versionNameSuffix = "-test"
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
