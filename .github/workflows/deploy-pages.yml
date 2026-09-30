@@ -41,6 +41,7 @@ jobs:
 
       - name: Validate definitive Academy web release
         run: |
+          node test-layout-quality.js
           node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest OK')"
           grep -q "StackUp Hold'em Academy" index.html
           grep -q 'serviceWorker.register("sw.js")' index.html
