@@ -6,8 +6,8 @@ val releaseKeystore = System.getenv("STACKUP_UPLOAD_KEYSTORE")
 val releaseStorePassword = System.getenv("STACKUP_UPLOAD_STORE_PASSWORD")
 val releaseKeyAlias = System.getenv("STACKUP_UPLOAD_KEY_ALIAS")
 val releaseKeyPassword = System.getenv("STACKUP_UPLOAD_KEY_PASSWORD")
-val supabaseUrl = System.getenv("STACKUP_SUPABASE_URL") ?: ""
-val supabaseAnonKey = System.getenv("STACKUP_SUPABASE_ANON_KEY") ?: ""
+val supabaseUrl = System.getenv("STACKUP_SUPABASE_URL") ?: "https://mzlznwnxahixoqyspsdy.supabase.co"
+val supabaseAnonKey = System.getenv("STACKUP_SUPABASE_ANON_KEY") ?: "sb_publishable_E9cnM9HPU19f9hdFxzjXrg_FkD6clWQ"
 val hasReleaseSigning = listOf(
     releaseKeystore,
     releaseStorePassword,
