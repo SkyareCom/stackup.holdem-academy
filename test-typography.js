@@ -1,11 +1,12 @@
 const fs=require('fs');
+const assert=require('node:assert/strict');
 const typography=fs.readFileSync('typography-standard.js','utf8');
-if(!typography.includes("font-family:'Love Ya Like A Sister',cursive!important")){
-  console.error('FAIL: Academy font lock is missing');
-  process.exit(1);
-}
-if(!typography.includes('.navicon')||!typography.includes('Arial,sans-serif!important')){
-  console.error('FAIL: Poker/icon font exceptions are missing');
-  process.exit(1);
-}
-console.log('Typography identity OK: Love Ya Like A Sister');
+const index=fs.readFileSync('index.html','utf8');
+
+assert(typography.includes("font-family:'Overlock Academy','Overlock',sans-serif!important"),
+  'Academy typography helper must use the Overlock family');
+assert(index.includes("font-family:'Overlock Academy',sans-serif!important"),
+  'Production index must lock the UI to embedded Overlock');
+assert(index.includes("font-family:Arial,sans-serif!important"),
+  'Poker-card/icon font exceptions must remain neutral');
+console.log('Typography identity OK: Overlock');
