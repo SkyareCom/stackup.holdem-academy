@@ -234,9 +234,11 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.8px;text-tran
 .grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;grid-auto-rows:1fr!important}
 .tile{min-width:0;width:100%;height:100%}
 .tile span{display:block;max-width:100%;overflow-wrap:anywhere;letter-spacing:0!important}
-.tabbar{grid-template-columns:repeat(5,minmax(0,1fr))!important}
-.tab{min-width:0;width:100%}
-.tab span{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tabbar{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:2px!important;padding-left:4px!important;padding-right:4px!important;overflow:hidden!important}
+.tab{min-width:0!important;width:100%!important;max-width:none!important;padding-left:1px!important;padding-right:1px!important}
+.tab svg{width:20px!important;height:20px!important;flex:none}
+.tab span{display:block!important;width:100%!important;max-width:100%!important;overflow:hidden!important;text-overflow:clip!important;white-space:nowrap!important;text-align:center!important;font-size:8.5px!important;letter-spacing:0!important}
+@media (max-width:380px){.tab span{font-size:7.5px!important}.tab svg{width:18px!important;height:18px!important}}
 .menu .item,.lang,.btn{width:100%}
 
 /* ===== FINAL RULE: every text in the app is 12px ===== */
