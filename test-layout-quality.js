@@ -15,12 +15,13 @@ assert(css.includes('--academy-ui-x:16px')&&css.includes('--academy-ui-y:12px')&
 assert(css.includes('gap:var(--academy-ui-y)!important'),'structural/card vertical gap is normalized');
 assert(css.includes('padding:var(--academy-ui-pad)!important'),'editorial card padding is normalized');
 assert(css.includes('text-align:left!important'),'editorial text alignment is left');
+assert(css.includes('#app .tile.tcard .htx')&&css.includes('text-align:center!important'),'menu-card text remains centered at all menu depths');
 assert(css.includes('overflow-wrap:anywhere!important'),'long copy is allowed to wrap');
 assert(css.includes('white-space:normal!important'),'legacy nowrap is reset for editorial copy');
 assert(css.includes('text-overflow:clip!important'),'legacy ellipsis is reset for card copy');
 assert(css.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important'),
   'footer remains five columns in one row');
-assert(index.includes('const TABS=["home","fund","mod","prat","ajustes"];'),'footer fifth route is language/settings');
+assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');
 assert(!index.includes('alinhamento editorial: textos sempre pela esquerda'),
