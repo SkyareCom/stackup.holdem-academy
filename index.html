@@ -1112,6 +1112,21 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   min-width:0!important;
   overflow-wrap:anywhere!important;
 }
+
+/* Menu hierarchy contract:
+   HOME and every submenu card (e.g. Modalidades > Texas Hold'em) stay centered.
+   Only internal/editorial screens use left-aligned copy. */
+#app .tile.tcard .htx,
+#app .tile.tcard .htx b,
+#app .tile.tcard .htx small,
+#app .tile.tcard .d2,
+#app .tile.tcard .d2>span{
+  text-align:center!important;
+}
+#app .tile.tcard .htx,
+#app .tile.tcard .d2{
+  align-items:center!important;
+}
 </style>
 
 
@@ -1297,8 +1312,8 @@ function simFilterLocked(f){return false}
 function secLocked(k){if(TEST_ACCESS)return false;return isFree()&&["fund","mod","prat","stats","hist"].includes(k)&&!freeSecs().includes(k)}
 (()=>{let q=new URLSearchParams(location.search).get("plano");if(q==="full"||q==="edge")q="anual";if(["free","mensal","semestral","anual"].includes(q))store.set("academy.plan.v1",{id:q,since:Date.now()})})();
 const HOME=[["fund","d_fund"],["mod","d_mod"],["prat","d_prat"],["stats","d_stats"],["hist","d_hist"],["perfil","d_perfil"]];
-const TABS=["home","fund","mod","prat","ajustes"];
-const TKEY={home:"t_home",ajustes:"lang",spots:"t_spots",advance:"t_advance",stats:"t_stats",personal:"t_personal",api:"t_api",hist:"t_hist",rel:"t_rel",ia:"t_ia",perfil:"t_perfil",planos:"t_planos",loja:"t_loja",fund:"t_fund",mod:"t_mod",prat:"t_prat"};
+const TABS=["home","fund","mod","prat","perfil"];
+const TKEY={home:"t_home",ajustes:"t_ajustes",spots:"t_spots",advance:"t_advance",stats:"t_stats",personal:"t_personal",api:"t_api",hist:"t_hist",rel:"t_rel",ia:"t_ia",perfil:"t_perfil",planos:"t_planos",loja:"t_loja",fund:"t_fund",mod:"t_mod",prat:"t_prat"};
 let curView="home";
 $("#homeCards").innerHTML=document.querySelector("#welcome .cards").innerHTML;
 
