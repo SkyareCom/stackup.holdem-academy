@@ -11,6 +11,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -336,7 +338,7 @@ public class MainActivity extends FragmentActivity {
                         MainActivity.this,
                         request,
                         new CancellationSignal(),
-                        command -> runOnUiThread(command),
+                        command -> new Handler(Looper.getMainLooper()).post(command),
                         new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                             @Override
                             public void onResult(GetCredentialResponse result) {
@@ -391,7 +393,7 @@ public class MainActivity extends FragmentActivity {
 
             BiometricPrompt prompt = new BiometricPrompt(
                     MainActivity.this,
-                    command -> runOnUiThread(command),
+                    command -> new Handler(Looper.getMainLooper()).post(command),
                     new BiometricPrompt.AuthenticationCallback() {
                         @Override
                         public void onAuthenticationSucceeded(
