@@ -53,9 +53,9 @@ public class MainActivity extends FragmentActivity {
     private static final String TAG = "StackUpAcademy";
     private static final String PREFS = "stackup_android_shell";
     private static final String CACHE_SCHEMA_KEY = "cache_schema";
-    private static final int CACHE_SCHEMA = 210;
+    private static final int CACHE_SCHEMA = 212;
     private static final String RECOVERY_URL =
-            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=210&cache_reset=1";
+            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=212&cache_reset=1";
 
     private WebView webView;
     private FrameLayout root;
@@ -85,7 +85,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         try {
-            Log.i(TAG, "SHELL_CREATE version=210");
+            Log.i(TAG, "SHELL_CREATE version=212");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
             Log.e(TAG, "SHELL_CREATE_FAILED", error);
@@ -256,7 +256,7 @@ public class MainActivity extends FragmentActivity {
                             "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();" +
                             "await Promise.all(rs.map(r=>r.unregister()));}" +
                             "}catch(e){}finally{" +
-                            "window.location.replace('" + APP_URL + "?android_build=210&migrated=1');" +
+                            "window.location.replace('" + APP_URL + "?android_build=212&migrated=1');" +
                             "}})();";
 
                     view.evaluateJavascript(
@@ -272,7 +272,7 @@ public class MainActivity extends FragmentActivity {
                             "(function(){if(document.getElementById('stackup-auth-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-auth-production';" +
-                            "s.src='" + APP_URL + "auth-production.js?v=210';" +
+                            "s.src='" + APP_URL + "auth-production.js?v=212';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(authLoader, null);
                 }
