@@ -336,7 +336,7 @@ public class MainActivity extends FragmentActivity {
                         MainActivity.this,
                         request,
                         new CancellationSignal(),
-                        getMainExecutor(),
+                        command -> runOnUiThread(command),
                         new CredentialManagerCallback<GetCredentialResponse, GetCredentialException>() {
                             @Override
                             public void onResult(GetCredentialResponse result) {
