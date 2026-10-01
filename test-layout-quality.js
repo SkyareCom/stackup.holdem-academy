@@ -2,13 +2,24 @@ const fs=require('fs');
 const assert=require('assert');
 
 const index=fs.readFileSync('index.html','utf8');
-const marker='<style id="stackup-academy-layout-audit-20260930">';
-const start=index.indexOf(marker);
-assert(start>=0,'final UI quality normalization style is present');
-assert.equal(start,index.lastIndexOf('<style'),'canonical UI audit is the last static style block');
-const end=index.indexOf('</style>',start);
-assert(end>start,'UI quality normalization style closes correctly');
-const css=index.slice(start,end);
+
+const auditMarker='<style id="stackup-academy-layout-audit-20260930">';
+const hotfixMarker='<style id="stackup-academy-card-alignment-20261001">';
+
+const auditStart=index.indexOf(auditMarker);
+const hotfixStart=index.indexOf(hotfixMarker);
+
+assert(auditStart>=0,'canonical UI audit style is present');
+assert(hotfixStart>auditStart,'2.1.6 card alignment hotfix must come after the canonical audit');
+assert.equal(hotfixStart,index.lastIndexOf('<style'),'2.1.6 alignment hotfix must be the last static style block');
+
+const auditEnd=index.indexOf('</style>',auditStart);
+const hotfixEnd=index.indexOf('</style>',hotfixStart);
+assert(auditEnd>auditStart,'canonical UI audit style closes correctly');
+assert(hotfixEnd>hotfixStart,'2.1.6 alignment hotfix closes correctly');
+
+const css=index.slice(auditStart,auditEnd);
+const hotfix=index.slice(hotfixStart,hotfixEnd);
 
 assert(css.includes('--academy-ui-x:16px')&&css.includes('--academy-ui-y:12px')&&css.includes('--academy-ui-i:8px')&&css.includes('--academy-ui-pad:14px'),
   'spacing scale is 16/12/8/14');
@@ -21,6 +32,10 @@ assert(css.includes('white-space:normal!important'),'legacy nowrap is reset for 
 assert(css.includes('text-overflow:clip!important'),'legacy ellipsis is reset for card copy');
 assert(css.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important'),
   'footer remains five columns in one row');
+
+assert(hotfix.includes('font-size:8px!important'),'footer labels must be 8px in 2.1.6');
+assert(hotfix.includes('grid-template-rows:30px 54px!important'),'card title and description tracks must remain aligned');
+assert(hotfix.includes('-webkit-line-clamp:3!important'),'card descriptions must allow up to three lines');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');
@@ -29,4 +44,4 @@ assert(!index.includes('alinhamento editorial: textos sempre pela esquerda'),
 assert(!index.includes('REGRA GLOBAL: textos editoriais do app alinhados pela esquerda'),
   'duplicate global alignment patch was removed');
 
-console.log('PASS UI layout quality audit: cascade, spacing, wrapping, cards and footer normalized.');
+console.log('PASS UI layout quality audit: cascade, spacing, aligned cards, wrapping and 8px footer normalized.');
