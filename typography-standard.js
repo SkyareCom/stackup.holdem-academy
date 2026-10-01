@@ -6,8 +6,8 @@
   style.textContent=`
     /* Saira Semi Condensed applies only to the authenticated/internal Academy app.
        Entry and login screens intentionally keep their existing typography. */
-    #app #home,#app #home *{font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important}
-    #app #home .pc,#app #home .pc *,#app #home .navicon,#app #home .rank,#app #home .suit,#app #home .fv-rank,#app #home .fv-suit{font-family:Arial,sans-serif!important}
+    #app #home *:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______){font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important}
+    #app #home .pc:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),#app #home .pc *:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),#app #home .navicon:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),#app #home .rank:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),#app #home .suit:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),#app #home .fv-rank:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),#app #home .fv-suit:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______){font-family:Arial,sans-serif!important}
   `;
   document.head.appendChild(style);
   const ensureCourse=()=>{
