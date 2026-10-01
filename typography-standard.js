@@ -4,11 +4,10 @@
   const style=document.createElement('style');
   style.id=STYLE_ID;
   style.textContent=`
-    html,body,.app,body *{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:12px!important}
-    .navicon,.rank,.suit,.fv-rank,.fv-suit{font-family:Arial,sans-serif!important}
-    .brand .name,.brand .road-rage-brand{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:16px!important}
-    .brand .sub{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:20px!important}
-    .brand .course-interactive{font-family:'Overlock Academy','Overlock',sans-serif!important;font-size:14px!important}
+    /* Saira Semi Condensed applies only to the authenticated/internal Academy app.
+       Entry and login screens intentionally keep their existing typography. */
+    #app #home,#app #home *{font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important}
+    #app #home .pc,#app #home .pc *,#app #home .navicon,#app #home .rank,#app #home .suit,#app #home .fv-rank,#app #home .fv-suit{font-family:Arial,sans-serif!important}
   `;
   document.head.appendChild(style);
   const ensureCourse=()=>{
