@@ -10,7 +10,7 @@ const workflow=fs.readFileSync('.github/workflows/android-build.yml','utf8');
 
 assert(gradle.includes('versionCode = 214'),'release versionCode must be 214');
 assert(gradle.includes('versionName = "2.1.4"'),'release versionName must be 2.1.4');
-assert(gradle.includes('applicationIdSuffix = ".test214"'),'debug package must be test214');
+assert(gradle.includes('applicationIdSuffix = ".test213"'),'debug package must be test213');
 
 assert(manifest.includes('android:name="com.skyare.stackupacademy.MainActivity"'),'production launcher must be native MainActivity');
 assert(!manifest.includes('com.google.androidbrowserhelper.trusted'),'production manifest must not use old TWA launcher');
