@@ -11,8 +11,8 @@ assert(index.includes('--academy-ui-x:16px')&&index.includes('--academy-ui-y:12p
 assert(index.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important'),'footer must remain one row with five columns');
 assert(index.includes('#app #home .tabbar .tab span')&&index.includes('font-size:9px!important'),'footer label font must be 9px');
 assert(index.includes('#app #home .tabbar .tab')&&index.includes('align-items:center!important')&&index.includes('text-align:center!important'),'footer icons and labels must be centered');
-assert(index.includes('#app #home .tower .tile.tcard .hic')&&index.includes('flex:0 0 48px!important'),'main card icons must use a fixed anchor');
-assert(index.includes('#app #home .tower .tile.tcard .htx')&&index.includes('grid-template-rows:2.4em 2.6em!important'),'main card title/description geometry must be fixed');
+assert(index.includes('#app #home .tile.tcard .hic')&&index.includes('flex:0 0 48px!important'),'main card icons must use a fixed anchor');
+assert(index.includes('#app #home .tile.tcard .htx')&&index.includes('grid-template-rows:2.4em 2.6em!important'),'main card title/description geometry must be fixed');
 assert(index.includes('-webkit-line-clamp:2!important'),'main card descriptions must be limited to two lines');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route must be Profile');
 assert(index.includes('perfil:"t_perfil"'),'footer fifth label must be Perfil/Profile');

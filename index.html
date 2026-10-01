@@ -1173,27 +1173,26 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
    - Saira Semi Condensed apenas no app interno (#home).
    - Entrada/login preservam integralmente suas fontes atuais.
    - Logotipo não é alterado.
-   - Cards principais: ícones e títulos ancorados na mesma posição.
+   - Cards principais e submenus: ícones e títulos ancorados na mesma posição.
    - Descrição dos cards: máximo de 2 linhas.
    - Rodapé: rótulos centralizados sob os ícones, 9px. */
 
 /* Tipografia do app interno. */
-#app #home,
-#app #home *{
+#app #home *:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______){
   font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important;
 }
-#app #home .pc,
-#app #home .pc *,
-#app #home .navicon,
-#app #home .rank,
-#app #home .suit,
-#app #home .fv-rank,
-#app #home .fv-suit{
+#app #home .pc:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),
+#app #home .pc *:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),
+#app #home .navicon:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),
+#app #home .rank:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),
+#app #home .suit:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),
+#app #home .fv-rank:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______),
+#app #home .fv-suit:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______){
   font-family:Arial,sans-serif!important;
 }
 
 /* Cards principais/menu: geometria fixa para manter alinhamento entre cards. */
-#app #home .tower .tile.tcard{
+#app #home .tile.tcard{
   display:flex!important;
   flex-direction:column!important;
   justify-content:center!important;
@@ -1201,7 +1200,7 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   gap:8px!important;
   text-align:center!important;
 }
-#app #home .tower .tile.tcard .hic{
+#app #home .tile.tcard .hic{
   flex:0 0 48px!important;
   width:48px!important;
   height:48px!important;
@@ -1211,12 +1210,12 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   display:grid!important;
   place-items:center!important;
 }
-#app #home .tower .tile.tcard .hic svg{
+#app #home .tile.tcard .hic svg{
   width:26px!important;
   height:26px!important;
   margin:auto!important;
 }
-#app #home .tower .tile.tcard .htx{
+#app #home .tile.tcard .htx{
   flex:0 0 auto!important;
   display:grid!important;
   grid-template-rows:2.4em 2.6em!important;
@@ -1229,7 +1228,7 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   justify-items:stretch!important;
   text-align:center!important;
 }
-#app #home .tower .tile.tcard .htx b{
+#app #home .tile.tcard .htx b:not(#_):not(#__):not(#___):not(#____):not(#_____){
   display:flex!important;
   align-items:center!important;
   justify-content:center!important;
@@ -1244,7 +1243,7 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   text-overflow:clip!important;
   text-align:center!important;
 }
-#app #home .tower .tile.tcard .htx small{
+#app #home .tile.tcard .htx small:not(#_):not(#__):not(#___):not(#____):not(#_____){
   display:-webkit-box!important;
   width:100%!important;
   height:2.6em!important;
@@ -1273,7 +1272,7 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   display:block!important;
   margin:0 auto 3px!important;
 }
-#app #home .tabbar .tab span{
+#app #home .tabbar .tab span:not(#_):not(#__):not(#___):not(#____):not(#_____){
   display:block!important;
   width:100%!important;
   margin:0!important;
@@ -1288,8 +1287,8 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 }
 
 @media (max-height:700px){
-  #app #home .tower .tile.tcard{gap:6px!important}
-  #app #home .tower .tile.tcard .hic{
+  #app #home .tile.tcard{gap:6px!important}
+  #app #home .tile.tcard .hic{
     flex-basis:38px!important;
     width:38px!important;
     height:38px!important;
