@@ -53,9 +53,9 @@ public class MainActivity extends FragmentActivity {
     private static final String TAG = "StackUpAcademy";
     private static final String PREFS = "stackup_android_shell";
     private static final String CACHE_SCHEMA_KEY = "cache_schema";
-    private static final int CACHE_SCHEMA = 213;
+    private static final int CACHE_SCHEMA = 214;
     private static final String RECOVERY_URL =
-            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=213&cache_reset=1";
+            "https://skyarecom.github.io/stackup.holdem-academy/?android_build=214&cache_reset=1";
 
     private WebView webView;
     private FrameLayout root;
@@ -64,6 +64,7 @@ public class MainActivity extends FragmentActivity {
     private boolean cleanupStarted;
     private boolean nativeRetryAttempted;
     private boolean rendererRecoveryAttempted;
+    private BillingManager billingManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +77,7 @@ public class MainActivity extends FragmentActivity {
         root.setBackgroundColor(Color.rgb(3, 23, 11));
         setContentView(root);
         showLoadingMessage();
+        billingManager = new BillingManager(this, this::callJavascript);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             backCallback = this::handleBackNavigation;
@@ -85,7 +87,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         try {
-            Log.i(TAG, "SHELL_CREATE version=213");
+            Log.i(TAG, "SHELL_CREATE version=214");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
             Log.e(TAG, "SHELL_CREATE_FAILED", error);
@@ -256,7 +258,7 @@ public class MainActivity extends FragmentActivity {
                             "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();" +
                             "await Promise.all(rs.map(r=>r.unregister()));}" +
                             "}catch(e){}finally{" +
-                            "window.location.replace('" + APP_URL + "?android_build=213&migrated=1');" +
+                            "window.location.replace('" + APP_URL + "?android_build=214&migrated=1');" +
                             "}})();";
 
                     view.evaluateJavascript(
@@ -272,9 +274,16 @@ public class MainActivity extends FragmentActivity {
                             "(function(){if(document.getElementById('stackup-auth-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-auth-production';" +
-                            "s.src='" + APP_URL + "auth-production.js?v=213';" +
+                            "s.src='" + APP_URL + "auth-production.js?v=214';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(authLoader, null);
+                    String billingLoader =
+                            "(function(){if(document.getElementById('stackup-billing-production'))return;" +
+                            "var s=document.createElement('script');" +
+                            "s.id='stackup-billing-production';" +
+                            "s.src='" + APP_URL + "billing-production.js?v=214';" +
+                            "document.head.appendChild(s);})();";
+                    view.evaluateJavascript(billingLoader, null);
                 }
 
                 view.postDelayed(
@@ -447,6 +456,16 @@ public class MainActivity extends FragmentActivity {
         public void requestBiometricUnlock() {
             startBiometricUnlock();
         }
+
+        @JavascriptInterface
+        public void requestSubscription(String planId) {
+            if (billingManager != null) billingManager.requestSubscription(planId);
+        }
+
+        @JavascriptInterface
+        public void restoreSubscriptions() {
+            if (billingManager != null) billingManager.restoreSubscriptions();
+        }
     }
 
     private boolean handleNavigation(Uri uri) {
@@ -496,6 +515,7 @@ public class MainActivity extends FragmentActivity {
     protected void onResume() {
         super.onResume();
         if (webView != null) webView.onResume();
+        if (billingManager != null) billingManager.onResume();
     }
 
     @Override
@@ -533,6 +553,10 @@ public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onDestroy() {
+        if (billingManager != null) {
+            billingManager.destroy();
+            billingManager = null;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && backCallback != null) {
             getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
             backCallback = null;
