@@ -209,7 +209,7 @@ final class BillingManager implements PurchasesUpdatedListener {
                                     BillingFlowParams.SubscriptionUpdateParams.newBuilder()
                                             .setOldPurchaseToken(purchase.getPurchaseToken())
                                             .setSubscriptionReplacementMode(
-                                                    BillingFlowParams.ReplacementMode.CHARGE_FULL_PRICE)
+                                                    BillingFlowParams.SubscriptionUpdateParams.ReplacementMode.CHARGE_FULL_PRICE)
                                             .build());
                             break;
                         }
