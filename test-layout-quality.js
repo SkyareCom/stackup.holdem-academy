@@ -46,4 +46,5 @@ assert(!index.includes('alinhamento editorial: textos sempre pela esquerda'),
 assert(!index.includes('REGRA GLOBAL: textos editoriais do app alinhados pela esquerda'),
   'duplicate global alignment patch was removed');
 
+assert(index.includes('PRATICA: 3 cards horizontais iguais, um por linha.'),'Practice three-horizontal-card style must be present');
 console.log('PASS UI layout quality audit: cascade, spacing, aligned cards, wrapping and 8px footer normalized.');
