@@ -11,6 +11,9 @@ assert(index.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important')
 assert(index.includes('id="stackup-academy-card-alignment-20261001"'),'2.1.6 alignment hotfix must be present');
 assert(index.lastIndexOf('id="stackup-academy-card-alignment-20261001"')>index.lastIndexOf('id="stackup-academy-layout-audit-20260930"'),'alignment hotfix must override the prior layout audit');
 assert(index.includes('font-size:8px!important'),'footer label font must be 8px');
+assert(!index.includes('<span class="ck">'),'language and interaction selectors must not render check circles');
+assert(index.includes('data-l="${c}" aria-pressed="${c===lang?"true":"false"}"'),'language selection must use the full button');
+assert(index.includes('data-pref="${k}" aria-pressed="${pr.mode===k?"true":"false"}"'),'interaction selection must use the full button');
 assert(index.includes('#app #home .tabbar .tab')&&index.includes('align-items:center!important')&&index.includes('text-align:center!important'),'footer icons and labels must be centered');
 assert(index.includes('#app #home .tile.tcard .hic')&&index.includes('flex:0 0 48px!important'),'menu card icons must use a fixed anchor');
 assert(index.includes('grid-template-rows:30px 54px!important'),'menu card title/description geometry must use fixed aligned tracks');
@@ -22,7 +25,7 @@ assert(index.includes('overflow-wrap:anywhere!important'),'long copy must have a
 assert(index.includes('const APP_VERSION="2.1.6";'),'web app version must match release 2.1.6');
 assert(index.includes('#app .tab span')&&index.includes('overflow:hidden!important'),'footer labels must not spill outside their cells');
 assert(index.includes('#app .pfopts')&&index.includes('gap:var(--academy-ui-y)!important'),'plan cards must keep vertical separation');
-assert(sw.includes('academy-v2.1.6-card-align-footer8-20261001'),'service-worker cache must match the cleaned frontend release');
+assert(sw.includes('academy-v2.1.6-profile-buttons-no-check-20261001'),'service-worker cache must match the cleaned frontend release');
 assert(sw.includes('"auth-production.js"')&&sw.includes('"billing-production.js"'),'runtime auth/billing scripts must be cached');
 
 const removedLegacy=[
