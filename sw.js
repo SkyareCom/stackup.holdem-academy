@@ -1,5 +1,5 @@
 // StackUp Hold'em Academy — service worker
-const CACHE = "academy-v2.1.4-clean-front-20260930";
+const CACHE = "academy-v2.1.5-play-update-20261001";
 const CORE = ["./", "index.html", "manifest.webmanifest", "privacy.html", "auth-production.js", "billing-production.js"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
