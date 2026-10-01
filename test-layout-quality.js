@@ -34,6 +34,8 @@ assert(css.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important'),
   'footer remains five columns in one row');
 
 assert(hotfix.includes('font-size:8px!important'),'footer labels must be 8px in 2.1.6');
+assert(hotfix.includes('Idioma + Interacoes: selecao pelo botao inteiro, sem circulo/check.'),'full-button selection visual contract must be present');
+assert(!index.includes('<span class="ck">'),'check-circle markup must be removed from language and interaction selectors');
 assert(hotfix.includes('grid-template-rows:30px 54px!important'),'card title and description tracks must remain aligned');
 assert(hotfix.includes('-webkit-line-clamp:3!important'),'card descriptions must allow up to three lines');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
