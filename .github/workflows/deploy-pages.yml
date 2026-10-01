@@ -45,7 +45,7 @@ jobs:
           node -e "JSON.parse(require('fs').readFileSync('manifest.webmanifest','utf8')); console.log('manifest.webmanifest OK')"
           grep -q "StackUp Hold'em Academy" index.html
           grep -q 'serviceWorker.register("sw.js")' index.html
-          grep -q 'academy-v2.1.6-ui-balance-20261001' sw.js
+          grep -q 'academy-v2.1.6-ui-balance-r2-20261001' sw.js
           test -s privacy.html
           test -s auth-production.js
           test -s billing-production.js

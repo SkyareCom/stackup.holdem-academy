@@ -49,4 +49,6 @@ assert(!index.includes('REGRA GLOBAL: textos editoriais do app alinhados pela es
 assert(index.includes('PRATICA: 3 cards horizontais iguais, um por linha.'),'Practice three-horizontal-card style must be present');
 assert(index.includes('AJUSTES 2026-10-01: Minha Evolucao, Base e Simulador.'),'evolution/base/simulator balance hotfix must be present');
 assert(index.includes('function bindCardOrphans(txt)'),'card descriptions must protect short connector words from orphan lines');
+assert(index.includes('bindCardOrphans(txt).split(/ +/)'),'card balancing must retain non-breaking connector spaces');
+assert(index.includes('tw.classList.add("practice-three")'),'Practice must render the three horizontal cards as one full-width column');
 console.log('PASS UI layout quality audit: cascade, spacing, aligned cards, wrapping and 8px footer normalized.');

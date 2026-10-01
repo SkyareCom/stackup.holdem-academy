@@ -1570,6 +1570,14 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   overflow:hidden!important;
   text-overflow:clip!important;
 }
+
+/* BASE: preservar conectivos com a palavra seguinte e impedir palavras orfas. */
+#app #home .tower.scroll .tcard .htx small,
+#app #home .tower.scroll .tcard .d2,
+#app #home .tower.scroll .tcard .d2>span{
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
 </style>
 
 </head>
@@ -1699,7 +1707,7 @@ function bindCardOrphans(txt){
    :/\b(and|of|to|in|on|the|a|an)\s+/gi;
  return src.replace(rx,(m,w)=>w+"\u00A0");
 }
-function desc2(txt){const w=bindCardOrphans(txt).split(/\s+/).filter(Boolean).slice(0,10);if(w.length<2)return `<span class="d2"><span>${w.join(" ")}</span><span>&nbsp;</span></span>`;
+function desc2(txt){const w=bindCardOrphans(txt).split(/ +/).filter(Boolean).slice(0,10);if(w.length<2)return `<span class="d2"><span>${w.join(" ")}</span><span>&nbsp;</span></span>`;
  let best=1,diff=1e9;for(let i=1;i<w.length;i++){const a=w.slice(0,i).join(" "),b=w.slice(i).join(" ");const d=Math.abs(a.length-b.length);if(d<diff){diff=d;best=i}}
  return `<span class="d2"><span>${w.slice(0,best).join(" ")}</span><span>${w.slice(best).join(" ")}</span></span>`}
 function applyLang(){document.documentElement.lang=lang==="pt"?"pt-BR":lang;
@@ -1956,7 +1964,7 @@ viewTitle=function(k){if(k.includes("/")){const n=secNode(k);if(n)return L3(n.t)
 qKey=function(){const k=curView.replace(/\/prac$/,"");return k.startsWith("fund/")?k.slice(5):k};
 function seqItems(q){if(q.items.join("|")!==q.answer.join("|"))return q.items;const o=q.items.slice();let h=hashN(q.id+"|"+qSeed)||7;for(let i=o.length-1;i>0;i--){h=(h*1103515245+12345)&0x7fffffff;const j=h%(i+1);[o[i],o[j]]=[o[j],o[i]]}if(o.join("|")===q.answer.join("|"))o.push(o.shift());return o}
 function renderSec(v){const root=curView.split("/")[0];const list=SEC[root]();
- if(curView===root){v.innerHTML=fundListH(list,root);return sizeTower(v)}
+ if(curView===root){v.innerHTML=fundListH(list,root);if(root==="prat"){const tw=v.querySelector(".tower.scroll");if(tw)tw.classList.add("practice-three")}return sizeTower(v)}
  const prac=curView.endsWith("/prac");const n=secNode(curView);if(!n){curView=root;return renderSec(v)}
  if(n.sub&&n.sub.length){v.innerHTML=`<div class="fz">${navBar()}${fundListH(n.sub,curView)}</div>`;return sizeTower(v)}
  if(n.sim)return renderSim(v);
