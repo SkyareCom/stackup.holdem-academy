@@ -17,10 +17,10 @@ assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'foot
 assert(index.includes('perfil:"t_perfil"'),'footer fifth label must be Perfil/Profile');
 assert(index.includes('#app .view .evneed')&&index.includes('text-align:left!important'),'plan description must follow left-aligned editorial contract');
 assert(index.includes('overflow-wrap:anywhere!important'),'long copy must have an overflow escape hatch');
-assert(index.includes('const APP_VERSION="2.1.4";'),'web app version must match release 2.1.4');
+assert(index.includes('const APP_VERSION="2.1.5";'),'web app version must match release 2.1.5');
 assert(index.includes('#app .tab span')&&index.includes('overflow:hidden!important'),'footer labels must not spill outside their cells');
 assert(index.includes('#app .pfopts')&&index.includes('gap:var(--academy-ui-y)!important'),'plan cards must keep vertical separation');
-assert(sw.includes('academy-v2.1.4-clean-front-20260930'),'service-worker cache must match the cleaned frontend release');
+assert(sw.includes('academy-v2.1.5-play-update-20261001'),'service-worker cache must match the cleaned frontend release');
 assert(sw.includes('"auth-production.js"')&&sw.includes('"billing-production.js"'),'runtime auth/billing scripts must be cached');
 
 const removedLegacy=[
