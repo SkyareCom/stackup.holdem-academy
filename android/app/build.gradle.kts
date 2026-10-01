@@ -27,8 +27,8 @@ android {
         applicationId = "com.skyare.stackupacademy"
         minSdk = 24
         targetSdk = 36
-        versionCode = 213
-        versionName = "2.1.3"
+        versionCode = 214
+        versionName = "2.1.4"
         buildConfigField("String", "SUPABASE_URL", "\"${supabaseUrl.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
         buildConfigField("String", "SUPABASE_ANON_KEY", "\"${supabaseAnonKey.replace("\\", "\\\\").replace("\"", "\\\"")}\"")
     }
@@ -46,7 +46,7 @@ android {
 
     buildTypes {
         debug {
-            applicationIdSuffix = ".test213"
+            applicationIdSuffix = ".test214"
             versionNameSuffix = "-test"
             if (hasReleaseSigning) {
                 signingConfig = signingConfigs.getByName("release")
@@ -72,6 +72,7 @@ android {
 
 
 dependencies {
+    implementation("com.android.billingclient:billing:9.1.0")
     implementation("androidx.credentials:credentials:1.6.0")
     implementation("androidx.credentials:credentials-play-services-auth:1.6.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.2.1")
