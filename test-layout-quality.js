@@ -47,4 +47,6 @@ assert(!index.includes('REGRA GLOBAL: textos editoriais do app alinhados pela es
   'duplicate global alignment patch was removed');
 
 assert(index.includes('PRATICA: 3 cards horizontais iguais, um por linha.'),'Practice three-horizontal-card style must be present');
+assert(index.includes('AJUSTES 2026-10-01: Minha Evolucao, Base e Simulador.'),'evolution/base/simulator balance hotfix must be present');
+assert(index.includes('function bindCardOrphans(txt)'),'card descriptions must protect short connector words from orphan lines');
 console.log('PASS UI layout quality audit: cascade, spacing, aligned cards, wrapping and 8px footer normalized.');

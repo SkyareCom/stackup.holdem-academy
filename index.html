@@ -1510,6 +1510,66 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
     gap:4px!important;
   }
 }
+
+/* AJUSTES 2026-10-01: Minha Evolucao, Base e Simulador. */
+#app .habit .qstats{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  width:100%!important;
+  gap:12px!important;
+}
+#app .habit .qstats .qs{
+  width:100%!important;
+  min-width:0!important;
+  box-sizing:border-box!important;
+  padding-left:10px!important;
+  padding-right:10px!important;
+}
+#app .habit .goalrow{
+  display:grid!important;
+  grid-template-columns:minmax(86px,.9fr) repeat(3,minmax(0,1fr))!important;
+  width:100%!important;
+  gap:8px!important;
+  align-items:stretch!important;
+}
+#app .habit .goalrow>span{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  min-width:0!important;
+  line-height:1.2!important;
+  text-align:left!important;
+}
+#app .habit .goalrow .qb{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:9px 3px!important;
+  text-align:center!important;
+  line-height:1.15!important;
+}
+#app .sfilt{
+  width:100%!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  justify-content:center!important;
+  align-items:stretch!important;
+  gap:8px!important;
+}
+#app .sfilt .segb{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-width:0!important;
+  padding:10px 3px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:clip!important;
+}
 </style>
 
 </head>
@@ -1630,8 +1690,17 @@ const t=k=>I18N[lang][k]||k;
 const tpl=$("#logoTpl").innerHTML;document.querySelectorAll("[data-logo]").forEach(e=>e.outerHTML=tpl);
 
 // PADRAO: descricao com no maximo 10 palavras, sempre em 2 linhas
-function desc2(txt){const w=String(txt||"").trim().split(/\s+/).filter(Boolean).slice(0,10);if(w.length<2)return `<span class="d2"><span>${w.join(" ")}</span><span>&nbsp;</span></span>`;
- let best=1,diff=1e9;for(let i=1;i<w.length;i++){const d=Math.abs(w.slice(0,i).join(" ").length-w.slice(i).join(" ").length);if(d<diff){diff=d;best=i}}
+function bindCardOrphans(txt){
+ const src=String(txt||"").trim();
+ const rx=lang==="pt"
+  ?/\b(e|de|da|do|das|dos|em|na|no|nas|nos|ao|aos|à|a|o|as|os)\s+/gi
+  :lang==="es"
+   ?/\b(y|de|del|la|el|en|al|a|los|las)\s+/gi
+   :/\b(and|of|to|in|on|the|a|an)\s+/gi;
+ return src.replace(rx,(m,w)=>w+"\u00A0");
+}
+function desc2(txt){const w=bindCardOrphans(txt).split(/\s+/).filter(Boolean).slice(0,10);if(w.length<2)return `<span class="d2"><span>${w.join(" ")}</span><span>&nbsp;</span></span>`;
+ let best=1,diff=1e9;for(let i=1;i<w.length;i++){const a=w.slice(0,i).join(" "),b=w.slice(i).join(" ");const d=Math.abs(a.length-b.length);if(d<diff){diff=d;best=i}}
  return `<span class="d2"><span>${w.slice(0,best).join(" ")}</span><span>${w.slice(best).join(" ")}</span></span>`}
 function applyLang(){document.documentElement.lang=lang==="pt"?"pt-BR":lang;
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
