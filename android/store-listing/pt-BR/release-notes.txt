@@ -1,6 +1,6 @@
-Versão Android preparada para publicação na Google Play.
-• Casca Android nativa com navegação integrada
-• Melhor estabilidade de carregamento e recuperação
-• Compatibilidade com o botão Voltar do Android
-• Segurança de navegação reforçada
-• Conteúdo educacional completo do StackUp Hold'em Academy
+Versão 2.1.5
+• Nova tipografia interna Saira Semi Condensed
+• Cards e títulos com alinhamento visual padronizado
+• Descrições dos cards limitadas a duas linhas
+• Rodapé com textos centralizados e melhor legibilidade
+• Melhorias de estabilidade, cache e limpeza de componentes legados
