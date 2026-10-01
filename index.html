@@ -75,8 +75,8 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.8px;text-tran
 .resend{font-size:13px;color:var(--mut);text-align:center;margin:10px 0}
 .resend button{background:none;border:0;color:var(--red2);font:700 13px Montserrat;cursor:pointer}
 .lang{display:flex;align-items:center;gap:14px;padding:16px;border-radius:14px;border:1px solid var(--line);background:rgba(20,6,7,.85);margin-bottom:10px;cursor:pointer;width:100%;color:#fff;font:600 16px Montserrat;text-align:left}
-.lang .flag{font-size:24px}.lang .ck{margin-left:auto;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center}
-.lang.sel{border-color:var(--red2);box-shadow:0 0 18px rgba(232,38,45,.25)}.lang.sel .ck{background:var(--red);border-color:var(--red)}
+.lang .flag{font-size:24px}
+.lang.sel{border-color:var(--red2);box-shadow:0 0 18px rgba(232,38,45,.25)}
 /* home */
 .welcome{text-align:center;margin-top:30px}
 .welcome .logo{width:130px;margin-bottom:18px}
@@ -298,7 +298,6 @@ label{display:block;font-size:12px;font-weight:700;letter-spacing:.8px;text-tran
 .btn.ghost{background:rgba(4,40,18,.3)!important;border:1px solid rgba(80,200,110,.42)!important}
 .field,.otp input,.lang,.back{border-color:rgba(80,200,110,.35)!important;background:rgba(2,24,10,.8)!important}
 .field:focus-within,.otp input:focus,.lang.sel{border-color:#6BE38A!important;box-shadow:0 0 16px rgba(80,200,110,.3)!important}
-.lang.sel .ck{background:#2FB24A!important;border-color:#2FB24A!important}
 .link,.resend button{color:#6BE38A!important}
 .bio{color:#6BE38A!important;border-color:rgba(80,200,110,.42)!important;background:radial-gradient(circle,rgba(80,200,110,.18),rgba(2,24,10,.9) 70%)!important;box-shadow:0 0 40px rgba(80,200,110,.25)!important}
 .bio .scan{background:#6BE38A!important;box-shadow:0 0 14px #6BE38A!important}
@@ -1405,6 +1404,18 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
     font-size:10px!important;
   }
 }
+
+/* Idioma + Interacoes: selecao pelo botao inteiro, sem circulo/check. */
+#app .lang.sel,
+#app .lang.popt.sel{
+  border-color:#6BE38A!important;
+  background:linear-gradient(180deg,rgba(20,108,48,.48),rgba(4,40,18,.72))!important;
+  box-shadow:0 0 16px rgba(80,200,110,.22),inset 0 0 0 1px rgba(107,227,138,.16)!important;
+}
+#app .lang[data-l],
+#app .lang[data-pref]{
+  cursor:pointer!important;
+}
 </style>
 
 </head>
@@ -1530,7 +1541,7 @@ function desc2(txt){const w=String(txt||"").trim().split(/\s+/).filter(Boolean).
  return `<span class="d2"><span>${w.slice(0,best).join(" ")}</span><span>${w.slice(best).join(" ")}</span></span>`}
 function applyLang(){document.documentElement.lang=lang==="pt"?"pt-BR":lang;
  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
- $("#langList").innerHTML=LANGS.map(([c,f,n])=>`<button class="lang ${c===lang?"sel":""}" data-l="${c}"><span class="flag">${f}</span>${n}<span class="ck">${c===lang?"✓":""}</span></button>`).join("");
+ $("#langList").innerHTML=LANGS.map(([c,f,n])=>`<button class="lang ${c===lang?"sel":""}" data-l="${c}" aria-pressed="${c===lang?"true":"false"}"><span class="flag">${f}</span>${n}</button>`).join("");
  renderHome();}
 
 // navigation
@@ -1607,7 +1618,7 @@ function renderView(){
   if(curView==="hist"){renderHist(v);$("#hdrTitle").textContent=viewTitle(curView);renderTabs();return}
   if(curView==="stats"){renderEvo(v);$("#hdrTitle").textContent=viewTitle(curView);renderTabs();return}
   if(["fund","mod","prat"].includes(curView.split("/")[0])){renderSec(v);$("#hdrTitle").textContent=viewTitle(curView);renderTabs();return}
-  if(curView==="ajustes"){body=`<div class="pbody"><div class="sec">${t("lang")}</div>${LANGS.map(([c,f,n])=>`<button class="lang ${c===lang?"sel":""}" data-l="${c}"><span class="flag">${f}</span>${n}<span class="ck">${c===lang?"✓":""}</span></button>`).join("")}</div>`}
+  if(curView==="ajustes"){body=`<div class="pbody"><div class="sec">${t("lang")}</div>${LANGS.map(([c,f,n])=>`<button class="lang ${c===lang?"sel":""}" data-l="${c}" aria-pressed="${c===lang?"true":"false"}"><span class="flag">${f}</span>${n}</button>`).join("")}</div>`}
   else if(curView==="perfil"){body=perfilH()}
   else body=`<div class="soon"><div class="big">${svg(curView)}</div><span class="badge">${t("soon")}</span><p>${t("soonTxt")}</p></div>`;
   v.innerHTML=`<div class="pbody">${navBar()}${body}</div>`}
@@ -2174,8 +2185,8 @@ function perfilH(){const se=store.get("wraps.session")||{};const pr=prefGet(),pl
  const rows=[[pf("name"),se.name||"—"],[pf("method"),meth||"—"]];
  if(se.email)rows.push([pf("email"),se.email]);if(se.phone)rows.push([pf("phone"),se.phone]);if(se.method==="quick"||se.method==="biometric")rows.push([pf("device"),pf("bio")]);if(se.at)rows.push([pf("since"),d(se.at)]);
  const data=`<div class="qcard"><div class="qtype">${pf("data")}</div><div class="pfrows">${rows.map(([k,v])=>`<div class="pfrow"><span>${escH(k)}</span><b>${escH(v)}</b></div>`).join("")}</div><p class="evneed">${pf("dataNote")}</p></div>`;
- const langs=`<div class="qcard"><div class="qtype">${t("lang")}</div><div class="pfopts">${LANGS.map(([c,f,n])=>`<button class="lang ${c===lang?"sel":""}" data-l="${c}"><span class="flag">${f}</span>${n}<span class="ck">${c===lang?"✓":""}</span></button>`).join("")}</div></div>`;
- const opt=(k,tt,dd)=>`<button class="lang popt ${pr.mode===k?"sel":""}" data-pref="${k}"><span class="pot"><b>${tt}</b><small>${dd}</small></span><span class="ck">${pr.mode===k?"✓":""}</span></button>`;
+ const langs=`<div class="qcard"><div class="qtype">${t("lang")}</div><div class="pfopts">${LANGS.map(([c,f,n])=>`<button class="lang ${c===lang?"sel":""}" data-l="${c}" aria-pressed="${c===lang?"true":"false"}"><span class="flag">${f}</span>${n}</button>`).join("")}</div></div>`;
+ const opt=(k,tt,dd)=>`<button class="lang popt ${pr.mode===k?"sel":""}" data-pref="${k}" aria-pressed="${pr.mode===k?"true":"false"}"><span class="pot"><b>${tt}</b><small>${dd}</small></span></button>`;
  const opts=`<div class="qcard"><div class="qtype">${pf("opts")}</div><div class="pfopts">${opt("auto",pf("auto"),pf("autoD"))}${opt("reset",pf("reset"),pf("resetD"))}</div></div>`;
  const secN=k=>k==="stats"?t("t_stats"):k==="hist"?t("t_hist"):t(TKEY[k]);
  const li=a=>`<ul class="pfben">${a.map(x=>`<li>${escH(x)}</li>`).join("")}</ul>`;
