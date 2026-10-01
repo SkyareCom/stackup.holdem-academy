@@ -16,9 +16,9 @@ assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'foot
 assert(index.includes('perfil:"t_perfil"'),'footer fifth label must be Perfil/Profile');
 assert(index.includes('#app .view .evneed')&&index.includes('text-align:left!important'),'plan description must follow left-aligned editorial contract');
 assert(index.includes('overflow-wrap:anywhere!important'),'long copy must have an overflow escape hatch');
-assert(index.includes('const APP_VERSION="2.1.3";'),'web app version must match release 2.1.3');
+assert(index.includes('const APP_VERSION="2.1.4";'),'web app version must match release 2.1.4');
 assert(index.includes('#app .tab span')&&index.includes('overflow:hidden!important'),'footer labels must not spill outside their cells');
 assert(index.includes('#app .pfopts')&&index.includes('gap:var(--academy-ui-y)!important'),'plan cards must keep vertical separation');
-assert(sw.includes('academy-v2.1.3-menu-center-footer-profile-20260930'),'service-worker cache must be bumped for menu/footer release');
+assert(sw.includes('academy-v2.1.4-menu-center-footer-profile-20260930'),'service-worker cache must be bumped for menu/footer release');
 assert(visual.includes('--academy-card-gap:12px')&&visual.includes('--academy-card-padding:14px')&&visual.includes('--academy-inner-gap:8px'),'legacy root visual system must share spacing rhythm');
 console.log('Layout audit contract OK');
