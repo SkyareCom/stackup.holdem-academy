@@ -9,8 +9,8 @@ assert(index.includes("#app #home")&&index.includes("font-family:'Saira Semi Con
   'Internal Academy app must use Saira Semi Condensed');
 assert(!typography.includes("html,body,.app,body *"),
   'Typography helper must not override entry/login screens');
-assert(typography.includes("#app #home,#app #home *"),
-  'Typography helper must scope Saira Semi Condensed to the internal app');
+assert(typography.includes("#app #home *:not(#_)"),
+  'Typography helper must strongly scope Saira Semi Condensed to the internal app');
 assert(index.includes("font-family:Arial,sans-serif!important"),
   'Poker-card/icon font exceptions must remain neutral');
 console.log('Typography identity OK: Saira Semi Condensed internally; entry/login preserved');
