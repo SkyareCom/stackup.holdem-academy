@@ -99,10 +99,10 @@ jobs:
           {
             echo "package=com.skyare.stackupacademy"
             echo "versionName=2.1.6"
-            echo "versionCode=217"
+            echo "versionCode=218"
             echo "targetSdk=36"
             echo "shell=webview"
-            echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy.pub/"
+            echo "contentUrl=bundled:https://skyarecom.github.io/stackup.holdem-academy.pub/index.html"
             echo "signed=${STACKUP_SIGNING_READY}"
           } > android/app/build/outputs/bundle/release/RELEASE-INFO.txt
 
@@ -128,25 +128,20 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-debug-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test217'" /tmp/stackup-debug-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test218'" /tmp/stackup-debug-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-debug-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-debug-manifest.txt
           ! grep -q "com.google.androidbrowserhelper.trusted" /tmp/stackup-debug-manifest.txt
           "$ANDROID_HOME/build-tools/36.0.0/apksigner" verify --verbose --print-certs "$APK"
 
-      - name: Wait for hosted Academy 2.1.6
+      - name: Verify bundled Academy web assets
         run: |
-          for i in $(seq 1 18); do
-            if curl --fail --location --silent --show-error https://skyarecom.github.io/stackup.holdem-academy.pub/ > /tmp/stackup-hosted.html 2>/dev/null && \
-               grep -q '<meta name="stackup-release" content="2.1.6">' /tmp/stackup-hosted.html; then
-              echo "Hosted Academy 2.1.6 is ready."
-              exit 0
-            fi
-            echo "Waiting for GitHub Pages 2.1.6 ($i/18)..."
-            sleep 10
-          done
-          echo "Hosted Academy 2.1.6 was not published in time."
-          exit 1
+          AAB="android/app/build/outputs/bundle/release/app-release.aab"
+          APK="android/app/build/outputs/apk/release/app-release.apk"
+          unzip -l "$AAB" | grep -q "base/assets/index.html"
+          unzip -l "$AAB" | grep -q "base/assets/auth-production.js"
+          unzip -l "$AAB" | grep -q "base/assets/billing-production.js"
+          unzip -l "$APK" | grep -q "assets/index.html"
 
       - name: Enable KVM
         run: |
@@ -182,6 +177,7 @@ jobs:
             adb shell uiautomator dump /sdcard/stackup-window.xml || true
             adb pull /sdcard/stackup-window.xml android-diagnostics-api36/window.xml || true
             grep -E "StackUpAcademy|chromium|WebView|ERR_|FATAL" android-diagnostics-api36/logcat.txt | tail -n 240 || true
+            grep -q "LOCAL_ASSET_MAIN_FRAME=true" android-diagnostics-api36/logcat.txt
             grep -q "WEB_CONTENT_READY=true" android-diagnostics-api36/logcat.txt
             ! grep -q "ERR_CACHE_MISS" android-diagnostics-api36/logcat.txt
             ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" android-diagnostics-api36/logcat.txt
@@ -215,6 +211,7 @@ jobs:
             adb shell uiautomator dump /sdcard/stackup-window-api34.xml || true
             adb pull /sdcard/stackup-window-api34.xml android-diagnostics-api34/window.xml || true
             grep -E "StackUpAcademy|chromium|WebView|ERR_|FATAL" android-diagnostics-api34/logcat.txt | tail -n 240 || true
+            grep -q "LOCAL_ASSET_MAIN_FRAME=true" android-diagnostics-api34/logcat.txt
             grep -q "WEB_CONTENT_READY=true" android-diagnostics-api34/logcat.txt
             ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" android-diagnostics-api34/logcat.txt
 
