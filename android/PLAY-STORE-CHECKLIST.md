@@ -7,7 +7,7 @@
 - Version: `2.1.0` / `versionCode 210`.
 - `compileSdk` / `targetSdk`: 36.
 - Native Android launcher with a restricted WebView; no TWA/Custom Tab dependency.
-- Official content URL restricted to `https://skyarecom.github.io/stackup.holdem-academy/`.
+- Official content URL restricted to `https://skyarecom.github.io/stackup.holdem-academy.pub/`.
 - Main manifest hardened for production: INTERNET only, no cleartext traffic, Education app category and no Android backup.
 - Android 12+ data extraction rules explicitly exclude application data from cloud backup and device transfer.
 - WebView file/content access disabled and mixed content blocked.
