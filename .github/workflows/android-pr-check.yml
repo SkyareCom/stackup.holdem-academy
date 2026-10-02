@@ -61,5 +61,5 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           test -s "$APK"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-pr-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test218'" /tmp/stackup-pr-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test219'" /tmp/stackup-pr-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-pr-badging.txt
