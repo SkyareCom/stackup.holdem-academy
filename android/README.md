@@ -3,12 +3,12 @@
 Android production packaging for the StackUp Hold'em Academy web application.
 
 - Application ID: `com.skyare.stackupacademy`
-- Version: `2.1.6` (`versionCode 217`)
+- Version: `2.1.6` (`versionCode 218`)
 - `compileSdk`: 36
 - `targetSdk`: 36
 - Minimum Android: API 24
-- Architecture: native Android shell + restricted WebView
-- Content URL: `https://skyarecom.github.io/stackup.holdem-academy.pub/`
+- Architecture: native Android shell + restricted WebView with bundled web assets
+- Content origin preserved as `https://skyarecom.github.io/stackup.holdem-academy.pub/`, but the Android launcher serves the release from the AAB through `WebViewAssetLoader` instead of depending on GitHub Pages at startup
 - Java: 17
 - Android Gradle Plugin: 9.4.0
 
@@ -28,11 +28,11 @@ The WebView is restricted to the official Academy path. External links are opene
 - Web contents debugging is enabled only for debuggable builds.
 - Android Back uses WebView history before closing the Activity.
 - WebView renderer failure has one controlled recovery attempt.
-- Legacy cache/service-worker state is migrated for release 2.1.6.
+- Legacy cache/service-worker state is migrated for Android build 218, and HTTP 4xx/5xx main-frame failures are handled inside the native shell.
 
 ## Build
 
-CI runs release lint, builds the release Android App Bundle and release/debug APKs, verifies package/launcher metadata, and smoke-tests the app on an Android emulator.
+CI runs release lint, builds the release Android App Bundle and release/debug APKs, verifies that the Academy web release is bundled inside the package, verifies package/launcher metadata, and smoke-tests local asset delivery on Android emulators.
 
 Local release build:
 
@@ -60,7 +60,7 @@ The product is positioned as poker education and training. It does not provide r
 
 ## Current Play build
 
-Build source: Academy UI R3 + Google Play subscriptions, prepared for Play AAB `2.1.6` / `versionCode 217`.
+Build source: Academy UI R3 + Google Play subscriptions, prepared for Play AAB `2.1.6` / `versionCode 218`.
 
 ## Google Play subscriptions
 

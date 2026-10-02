@@ -25,6 +25,7 @@ import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -40,6 +41,7 @@ import androidx.credentials.GetCredentialRequest;
 import androidx.credentials.GetCredentialResponse;
 import androidx.credentials.exceptions.GetCredentialException;
 import androidx.fragment.app.FragmentActivity;
+import androidx.webkit.WebViewAssetLoader;
 
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption;
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential;
@@ -53,9 +55,11 @@ public class MainActivity extends FragmentActivity {
     private static final String TAG = "StackUpAcademy";
     private static final String PREFS = "stackup_android_shell";
     private static final String CACHE_SCHEMA_KEY = "cache_schema";
-    private static final int CACHE_SCHEMA = 217;
+    private static final int CACHE_SCHEMA = 218;
+    private static final String APP_ENTRY_URL =
+            APP_URL + "index.html?android_build=218";
     private static final String RECOVERY_URL =
-            "https://skyarecom.github.io/stackup.holdem-academy.pub/?android_build=217&cache_reset=1";
+            APP_URL + "index.html?android_build=218&cache_reset=1";
 
     private WebView webView;
     private FrameLayout root;
@@ -87,7 +91,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         try {
-            Log.i(TAG, "SHELL_CREATE version=217");
+            Log.i(TAG, "SHELL_CREATE version=218");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
             Log.e(TAG, "SHELL_CREATE_FAILED", error);
@@ -167,7 +171,28 @@ public class MainActivity extends FragmentActivity {
             }
         });
 
+        final WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
+                .setDomain(APP_HOST)
+                .addPathHandler(APP_PATH, new WebViewAssetLoader.AssetsPathHandler(this))
+                .build();
+
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(
+                    WebView view,
+                    WebResourceRequest request) {
+                WebResourceResponse response = assetLoader.shouldInterceptRequest(request.getUrl());
+                if (request.isForMainFrame() && response != null) {
+                    Log.i(TAG, "LOCAL_ASSET_MAIN_FRAME=true url=" + request.getUrl());
+                }
+                return response;
+            }
+
+            @Override
+            @SuppressWarnings("deprecation")
+            public WebResourceResponse shouldInterceptRequest(WebView view, String url) {
+                return assetLoader.shouldInterceptRequest(Uri.parse(url));
+            }
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 return handleNavigation(request.getUrl());
@@ -208,6 +233,31 @@ public class MainActivity extends FragmentActivity {
                     showPermanentError();
                 }
                 return true;
+            }
+
+            @Override
+            public void onReceivedHttpError(
+                    WebView view,
+                    WebResourceRequest request,
+                    WebResourceResponse errorResponse) {
+                if (request == null || !request.isForMainFrame()) {
+                    return;
+                }
+
+                int statusCode = errorResponse == null ? 0 : errorResponse.getStatusCode();
+                Log.e(TAG, "MAIN_FRAME_HTTP_ERROR status=" + statusCode
+                        + " url=" + request.getUrl());
+
+                if (!nativeRetryAttempted) {
+                    nativeRetryAttempted = true;
+                    view.stopLoading();
+                    view.clearCache(true);
+                    view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+                    view.loadUrl(RECOVERY_URL + "&http_retry=1");
+                    return;
+                }
+
+                showPermanentError();
             }
 
             @Override
@@ -258,7 +308,7 @@ public class MainActivity extends FragmentActivity {
                             "if('serviceWorker' in navigator){const rs=await navigator.serviceWorker.getRegistrations();" +
                             "await Promise.all(rs.map(r=>r.unregister()));}" +
                             "}catch(e){}finally{" +
-                            "window.location.replace('" + APP_URL + "?android_build=217&migrated=1');" +
+                            "window.location.replace('" + APP_ENTRY_URL + "&migrated=1');" +
                             "}})();";
 
                     view.evaluateJavascript(
@@ -274,14 +324,14 @@ public class MainActivity extends FragmentActivity {
                             "(function(){if(document.getElementById('stackup-auth-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-auth-production';" +
-                            "s.src='" + APP_URL + "auth-production.js?v=217';" +
+                            "s.src='" + APP_URL + "auth-production.js?v=218';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(authLoader, null);
                     String billingLoader =
                             "(function(){if(document.getElementById('stackup-billing-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-billing-production';" +
-                            "s.src='" + APP_URL + "billing-production.js?v=217';" +
+                            "s.src='" + APP_URL + "billing-production.js?v=218';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(billingLoader, null);
                 }
@@ -301,7 +351,7 @@ public class MainActivity extends FragmentActivity {
             return;
         }
 
-        String initialUrl = webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_URL;
+        String initialUrl = webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_ENTRY_URL;
         Log.i(TAG, "LOAD_URL=" + initialUrl);
         webView.loadUrl(initialUrl);
     }
