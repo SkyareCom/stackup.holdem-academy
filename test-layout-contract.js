@@ -10,14 +10,18 @@ assert(index.includes('--academy-ui-x:16px')&&index.includes('--academy-ui-y:12p
 assert(index.includes('grid-template-columns:repeat(5,minmax(0,1fr))!important'),'footer must remain one row with five columns');
 assert(index.includes('id="stackup-academy-card-alignment-20261001"'),'2.1.6 alignment hotfix must be present');
 assert(index.lastIndexOf('id="stackup-academy-card-alignment-20261001"')>index.lastIndexOf('id="stackup-academy-layout-audit-20260930"'),'alignment hotfix must override the prior layout audit');
-assert(index.includes('font-size:8px!important'),'footer label font must be 8px');
+assert(index.includes('id="stackup-academy-typography-lock-20261002"'),'final typography lock must be present');
+assert(index.includes("font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important"),'Saira Semi Condensed must be the final Academy UI font');
+assert(index.includes('font-size:12px!important'),'Academy UI text must be locked to 12px');
+assert(index.includes('font-size:9px!important'),'footer label font must be 9px');
+assert(!index.includes('Overlock Academy'),'Overlock must stay removed');
 assert(!index.includes('<span class="ck">'),'language and interaction selectors must not render check circles');
 assert(index.includes('data-l="${c}" aria-pressed="${c===lang?"true":"false"}"'),'language selection must use the full button');
 assert(index.includes('data-pref="${k}" aria-pressed="${pr.mode===k?"true":"false"}"'),'interaction selection must use the full button');
 assert(index.includes('#app #home .tabbar .tab')&&index.includes('align-items:center!important')&&index.includes('text-align:center!important'),'footer icons and labels must be centered');
 assert(index.includes('#app #home .tile.tcard .hic')&&index.includes('flex:0 0 48px!important'),'menu card icons must use a fixed anchor');
 assert(index.includes('grid-template-rows:30px 54px!important'),'menu card title/description geometry must use fixed aligned tracks');
-assert(index.includes('-webkit-line-clamp:3!important'),'menu card descriptions must allow three aligned lines without clipping');
+assert(index.includes('-webkit-line-clamp:4!important'),'menu card descriptions must allow four aligned lines where needed without clipping');
 assert(index.includes('function bindCardOrphans(txt)'),'menu card descriptions must bind short connector words to the next word');
 assert(index.includes('bindCardOrphans(txt).split(/ +/)'),'orphan protection must preserve non-breaking spaces during card line balancing');
 assert(index.includes('function practiceListH()')&&index.includes('class="tower scroll practice-four"'),'Practice root must render the four-card 2x2 layout');
@@ -28,10 +32,10 @@ assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'foot
 assert(index.includes('perfil:"t_perfil"'),'footer fifth label must be Perfil/Profile');
 assert(index.includes('#app .view .evneed')&&index.includes('text-align:left!important'),'plan description must follow left-aligned editorial contract');
 assert(index.includes('overflow-wrap:anywhere!important'),'long copy must have an overflow escape hatch');
-assert(index.includes('const APP_VERSION="2.1.6";'),'web app version must match release 2.1.6');
+assert(index.includes('const APP_VERSION="2.1.7";'),'web app version must match release 2.1.7');
 assert(index.includes('#app .tab span')&&index.includes('overflow:hidden!important'),'footer labels must not spill outside their cells');
 assert(index.includes('#app .pfopts')&&index.includes('gap:var(--academy-ui-y)!important'),'plan cards must keep vertical separation');
-assert(sw.includes('academy-v2.1.6-ui-balance-r2-20261001'),'service-worker cache must match the cleaned frontend release');
+assert(sw.includes('academy-v2.1.7-ui-balance-r2-20261001'),'service-worker cache must match the cleaned frontend release');
 assert(sw.includes('"auth-production.js"')&&sw.includes('"billing-production.js"'),'runtime auth/billing scripts must be cached');
 
 const removedLegacy=[
