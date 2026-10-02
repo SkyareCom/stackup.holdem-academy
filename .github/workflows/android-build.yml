@@ -99,7 +99,7 @@ jobs:
           {
             echo "package=com.skyare.stackupacademy"
             echo "versionName=2.1.6"
-            echo "versionCode=218"
+            echo "versionCode=219"
             echo "targetSdk=36"
             echo "shell=webview"
             echo "contentUrl=bundled:https://skyarecom.github.io/stackup.holdem-academy.pub/index.html"
@@ -128,7 +128,7 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-debug-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test218'" /tmp/stackup-debug-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test219'" /tmp/stackup-debug-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-debug-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-debug-manifest.txt
           ! grep -q "com.google.androidbrowserhelper.trusted" /tmp/stackup-debug-manifest.txt
