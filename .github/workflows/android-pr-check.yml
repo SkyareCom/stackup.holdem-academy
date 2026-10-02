@@ -11,6 +11,9 @@ on:
       - 'scripts/security-guard.js'
       - 'index.html'
       - 'test-layout-quality.js'
+      - 'test-layout-contract.js'
+      - 'sw.js'
+      - '.github/workflows/deploy-pages.yml'
 
 permissions:
   contents: read
@@ -31,6 +34,9 @@ jobs:
 
       - name: Validate Academy typography contract
         run: node test-layout-quality.js
+
+      - name: Validate Academy web layout contract
+        run: node test-layout-contract.js
 
       - name: Validate Android shell contract
         run: node android/test-shell-contract.js
