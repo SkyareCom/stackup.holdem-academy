@@ -98,11 +98,12 @@ jobs:
           mkdir -p android/app/build/outputs/bundle/release
           {
             echo "package=com.skyare.stackupacademy"
-            echo "versionName=2.1.6"
-            echo "versionCode=219"
+            echo "versionName=2.1.7"
+            echo "versionCode=220"
             echo "targetSdk=36"
-            echo "shell=webview"
-            echo "contentUrl=bundled:https://skyarecom.github.io/stackup.holdem-academy.pub/index.html"
+            echo "shell=webview-remote-first"
+            echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy.pub/index.html"
+            echo "fallback=bundled-assets"
             echo "signed=${STACKUP_SIGNING_READY}"
           } > android/app/build/outputs/bundle/release/RELEASE-INFO.txt
 
@@ -128,7 +129,7 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-debug-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test219'" /tmp/stackup-debug-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test220'" /tmp/stackup-debug-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-debug-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-debug-manifest.txt
           ! grep -q "com.google.androidbrowserhelper.trusted" /tmp/stackup-debug-manifest.txt
@@ -177,7 +178,7 @@ jobs:
             adb shell uiautomator dump /sdcard/stackup-window.xml || true
             adb pull /sdcard/stackup-window.xml android-diagnostics-api36/window.xml || true
             grep -E "StackUpAcademy|chromium|WebView|ERR_|FATAL" android-diagnostics-api36/logcat.txt | tail -n 240 || true
-            grep -q "LOCAL_ASSET_MAIN_FRAME=true" android-diagnostics-api36/logcat.txt
+            grep -q "REMOTE_CONTENT_ACTIVE=true" android-diagnostics-api36/logcat.txt
             grep -q "WEB_CONTENT_READY=true" android-diagnostics-api36/logcat.txt
             ! grep -q "ERR_CACHE_MISS" android-diagnostics-api36/logcat.txt
             ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" android-diagnostics-api36/logcat.txt
@@ -211,7 +212,7 @@ jobs:
             adb shell uiautomator dump /sdcard/stackup-window-api34.xml || true
             adb pull /sdcard/stackup-window-api34.xml android-diagnostics-api34/window.xml || true
             grep -E "StackUpAcademy|chromium|WebView|ERR_|FATAL" android-diagnostics-api34/logcat.txt | tail -n 240 || true
-            grep -q "LOCAL_ASSET_MAIN_FRAME=true" android-diagnostics-api34/logcat.txt
+            grep -q "REMOTE_CONTENT_ACTIVE=true" android-diagnostics-api34/logcat.txt
             grep -q "WEB_CONTENT_READY=true" android-diagnostics-api34/logcat.txt
             ! grep -q "FATAL EXCEPTION.*com.skyare.stackupacademy" android-diagnostics-api34/logcat.txt
 
