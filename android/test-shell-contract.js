@@ -20,7 +20,7 @@ assert(main.includes('LOCAL_ASSET_MAIN_FRAME=true'),'native shell must log bundl
 assert(main.includes('onReceivedHttpError'),'native shell must handle main-frame HTTP failures');
 assert(gradle.includes('androidx.webkit:webkit:1.14.0'),'WebViewAssetLoader dependency must be pinned');
 assert(gradle.includes('syncAcademyWebAssets'),'Android build must package the Academy web release');
-assert(gradle.includes('assets.srcDir(academyWebAssetsDir)'),'generated Academy web assets must be part of the APK/AAB');
+assert(gradle.includes('assets.srcDir(academyWebAssetsDir.get().asFile)'),'generated Academy web assets must be part of the APK/AAB');
 
 assert(manifest.includes('android:name="com.skyare.stackupacademy.MainActivity"'),'production launcher must be native MainActivity');
 assert(!manifest.includes('com.google.androidbrowserhelper.trusted'),'production manifest must not use old TWA launcher');
