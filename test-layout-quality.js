@@ -7,32 +7,38 @@ const auditMarker='<style id="stackup-academy-layout-audit-20260930">';
 const hotfixMarker='<style id="stackup-academy-card-alignment-20261001">';
 const descriptionMarker='<style id="stackup-academy-description-lift-20261002">';
 const practiceFrozenMarker='<style id="stackup-academy-practice-frozen-anchors-20261002">';
+const typographyMarker='<style id="stackup-academy-typography-lock-20261002">';
 
 const auditStart=index.indexOf(auditMarker);
 const hotfixStart=index.indexOf(hotfixMarker);
 const descriptionStart=index.indexOf(descriptionMarker);
 const practiceFrozenStart=index.indexOf(practiceFrozenMarker);
+const typographyStart=index.indexOf(typographyMarker);
 
 assert(auditStart>=0,'canonical UI audit style is present');
 assert(hotfixStart>auditStart,'2.1.6 card alignment hotfix must come after the canonical audit');
 assert(descriptionStart>hotfixStart,'description-only lift patch must come after the frozen card alignment hotfix');
 assert(practiceFrozenStart>descriptionStart,'Practice frozen-anchor patch must come after the global description patch');
-assert.equal(practiceFrozenStart,index.lastIndexOf('<style'),'Practice frozen-anchor patch must be the last static style block');
+assert(typographyStart>practiceFrozenStart,'global typography lock must come after layout-specific patches');
+assert.equal(typographyStart,index.lastIndexOf('<style'),'global typography lock must be the last static style block');
 assert(!index.includes('stackup-academy-practice-description-balance-20261002'),'obsolete Practice description-only patch must be removed');
 
 const auditEnd=index.indexOf('</style>',auditStart);
 const hotfixEnd=index.indexOf('</style>',hotfixStart);
 const descriptionEnd=index.indexOf('</style>',descriptionStart);
 const practiceFrozenEnd=index.indexOf('</style>',practiceFrozenStart);
+const typographyEnd=index.indexOf('</style>',typographyStart);
 assert(auditEnd>auditStart,'canonical UI audit style closes correctly');
 assert(hotfixEnd>hotfixStart,'2.1.6 alignment hotfix closes correctly');
 assert(descriptionEnd>descriptionStart,'description-only lift patch closes correctly');
 assert(practiceFrozenEnd>practiceFrozenStart,'Practice frozen-anchor patch closes correctly');
+assert(typographyEnd>typographyStart,'global typography lock closes correctly');
 
 const css=index.slice(auditStart,auditEnd);
 const hotfix=index.slice(hotfixStart,hotfixEnd);
 const descriptionCss=index.slice(descriptionStart,descriptionEnd);
 const practiceFrozenCss=index.slice(practiceFrozenStart,practiceFrozenEnd);
+const typographyCss=index.slice(typographyStart,typographyEnd);
 
 assert(css.includes('--academy-ui-x:16px')&&css.includes('--academy-ui-y:12px')&&css.includes('--academy-ui-i:8px')&&css.includes('--academy-ui-pad:14px'),
   'spacing scale is 16/12/8/14');
@@ -66,6 +72,13 @@ assert(practiceFrozenCss.includes('font-size:clamp(9px,2.6vw,10px)!important'),'
 assert(!practiceFrozenCss.includes('.hic'),'Practice frozen-anchor patch must not touch icon geometry');
 assert(!practiceFrozenCss.includes('.htx b'),'Practice frozen-anchor patch must not restyle title geometry');
 assert(!practiceFrozenCss.includes('>.tile.tcard{'),'Practice frozen-anchor patch must not change card structure');
+assert(!index.includes('Overlock Academy'),'Overlock must be completely removed from Academy');
+assert(typographyCss.includes("font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important"),'Saira Semi Condensed must be the Academy UI font');
+assert(typographyCss.includes('font-size:12px!important'),'all Academy UI text must be locked to 12px');
+assert(typographyCss.includes('.tabbar .tab span')&&typographyCss.includes('font-size:9px!important'),'footer labels are the only 9px typography exception');
+assert(!typographyCss.includes('font-size:8px!important'),'final typography lock must not use 8px');
+assert(!typographyCss.includes('font-size:10px!important'),'final typography lock must not use 10px');
+assert(!typographyCss.includes('font-size:11px!important'),'final typography lock must not use 11px');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');
