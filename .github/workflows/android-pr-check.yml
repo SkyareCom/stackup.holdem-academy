@@ -9,6 +9,9 @@ on:
       - '.github/workflows/android-pr-check.yml'
       - '.github/workflows/android-build.yml'
       - 'scripts/security-guard.js'
+      - 'index.html'
+      - 'test-layout-contract.js'
+      - 'test-layout-quality.js'
 
 permissions:
   contents: read
@@ -26,6 +29,11 @@ jobs:
 
       - name: Security repository guard
         run: node scripts/security-guard.js
+
+      - name: Validate Academy UI layout
+        run: |
+          node test-layout-contract.js
+          node test-layout-quality.js
 
       - name: Validate Android shell contract
         run: node android/test-shell-contract.js
