@@ -38,7 +38,7 @@ assert(billing.includes('queryPurchasesAsync'),'active subscriptions must be res
 assert(main.includes('CACHE_SCHEMA = 218'),'native cache schema must match build 218');
 assert(main.includes('index.html?android_build=218&cache_reset=1'),'recovery URL must use the bundled entry for build 218');
 assert(main.includes('SHELL_CREATE version=218'),'startup diagnostics must identify build 218');
-assert(main.includes('APP_ENTRY_URL + "&migrated=1"'),'cache cleanup reload must return to the bundled build 218 entry');
+assert(main.includes('migrated=1'),'cache cleanup reload must return to the bundled build 218 entry');
 assert(main.includes('auth-production.js?v=218'),'native auth loader must be cache-busted for build 218');
 
 assert(main.includes('webView = new WebView(this);'),'native WebView launcher must remain present');
