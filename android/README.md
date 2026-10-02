@@ -3,7 +3,7 @@
 Android production packaging for the StackUp Hold'em Academy web application.
 
 - Application ID: `com.skyare.stackupacademy`
-- Version: `2.1.6` (`versionCode 218`)
+- Version: `2.1.6` (`versionCode 219`)
 - `compileSdk`: 36
 - `targetSdk`: 36
 - Minimum Android: API 24
@@ -28,7 +28,7 @@ The WebView is restricted to the official Academy path. External links are opene
 - Web contents debugging is enabled only for debuggable builds.
 - Android Back uses WebView history before closing the Activity.
 - WebView renderer failure has one controlled recovery attempt.
-- Legacy cache/service-worker state is migrated for Android build 218, and HTTP 4xx/5xx main-frame failures are handled inside the native shell.
+- Legacy cache/service-worker state is migrated for Android build 219, and HTTP 4xx/5xx main-frame failures are handled inside the native shell.
 
 ## Build
 
@@ -60,7 +60,7 @@ The product is positioned as poker education and training. It does not provide r
 
 ## Current Play build
 
-Build source: Academy UI R3 + Google Play subscriptions, prepared for Play AAB `2.1.6` / `versionCode 218`.
+Build source: Academy UI R3 + Google Play subscriptions, prepared for Play AAB `2.1.6` / `versionCode 219`.
 
 ## Google Play subscriptions
 
