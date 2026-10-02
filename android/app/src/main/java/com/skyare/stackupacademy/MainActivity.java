@@ -55,11 +55,11 @@ public class MainActivity extends FragmentActivity {
     private static final String TAG = "StackUpAcademy";
     private static final String PREFS = "stackup_android_shell";
     private static final String CACHE_SCHEMA_KEY = "cache_schema";
-    private static final int CACHE_SCHEMA = 218;
+    private static final int CACHE_SCHEMA = 219;
     private static final String APP_ENTRY_URL =
-            APP_URL + "index.html?android_build=218";
+            APP_URL + "index.html?android_build=219";
     private static final String RECOVERY_URL =
-            APP_URL + "index.html?android_build=218&cache_reset=1";
+            APP_URL + "index.html?android_build=219&cache_reset=1";
 
     private WebView webView;
     private FrameLayout root;
@@ -91,7 +91,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         try {
-            Log.i(TAG, "SHELL_CREATE version=218");
+            Log.i(TAG, "SHELL_CREATE version=219");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
             Log.e(TAG, "SHELL_CREATE_FAILED", error);
@@ -324,14 +324,14 @@ public class MainActivity extends FragmentActivity {
                             "(function(){if(document.getElementById('stackup-auth-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-auth-production';" +
-                            "s.src='" + APP_URL + "auth-production.js?v=218';" +
+                            "s.src='" + APP_URL + "auth-production.js?v=219';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(authLoader, null);
                     String billingLoader =
                             "(function(){if(document.getElementById('stackup-billing-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-billing-production';" +
-                            "s.src='" + APP_URL + "billing-production.js?v=218';" +
+                            "s.src='" + APP_URL + "billing-production.js?v=219';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(billingLoader, null);
                 }
