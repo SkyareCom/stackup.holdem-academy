@@ -1601,15 +1601,35 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 }
 </style>
 
-<style id="stackup-academy-practice-description-balance-20261002">
-/* PRATICA — somente descricoes. Icones, titulos, cards e grid permanecem congelados. */
-#app #home .tower.scroll.practice-four>.tile.tcard .htx small:not(#_):not(#__):not(#___):not(#____):not(#_____){
+
+
+<style id="stackup-academy-practice-frozen-anchors-20261002">
+/* PRATICA — restaura ancoras congeladas. Nao altera cards, icones ou geometria dos titulos. */
+#app #home .tower.scroll.practice-four>.tile.tcard .htx{
+  display:grid!important;
+  grid-template-rows:30px 32px!important;
+  row-gap:4px!important;
   width:100%!important;
+  height:66px!important;
+  min-height:66px!important;
+  max-height:66px!important;
+  margin:0!important;
+  align-items:start!important;
+  justify-items:stretch!important;
+  text-align:center!important;
+}
+#app #home .tower.scroll.practice-four>.tile.tcard .htx small:not(#_):not(#__):not(#___):not(#____):not(#_____){
+  display:block!important;
+  width:100%!important;
+  height:32px!important;
+  min-height:32px!important;
+  max-height:32px!important;
   margin:0!important;
   padding:0 2px!important;
   font-size:clamp(9px,2.6vw,10px)!important;
   line-height:1.16!important;
-  transform:translateY(-5px)!important;
+  transform:translateY(-2px)!important;
+  overflow:hidden!important;
   text-align:center!important;
 }
 #app #home .tower.scroll.practice-four>.tile.tcard .d2{
