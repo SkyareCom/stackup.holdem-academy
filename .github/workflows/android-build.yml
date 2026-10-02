@@ -99,10 +99,10 @@ jobs:
           {
             echo "package=com.skyare.stackupacademy"
             echo "versionName=2.1.6"
-            echo "versionCode=216"
+            echo "versionCode=217"
             echo "targetSdk=36"
             echo "shell=webview"
-            echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy/"
+            echo "contentUrl=https://skyarecom.github.io/stackup.holdem-academy.pub/"
             echo "signed=${STACKUP_SIGNING_READY}"
           } > android/app/build/outputs/bundle/release/RELEASE-INFO.txt
 
@@ -128,7 +128,7 @@ jobs:
           APK="android/app/build/outputs/apk/debug/app-debug.apk"
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-debug-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test216'" /tmp/stackup-debug-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test217'" /tmp/stackup-debug-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-debug-badging.txt
           "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/stackup-debug-manifest.txt
           ! grep -q "com.google.androidbrowserhelper.trusted" /tmp/stackup-debug-manifest.txt
@@ -137,7 +137,7 @@ jobs:
       - name: Wait for hosted Academy 2.1.6
         run: |
           for i in $(seq 1 18); do
-            if curl --fail --location --silent --show-error https://skyarecom.github.io/stackup.holdem-academy/ > /tmp/stackup-hosted.html 2>/dev/null && \
+            if curl --fail --location --silent --show-error https://skyarecom.github.io/stackup.holdem-academy.pub/ > /tmp/stackup-hosted.html 2>/dev/null && \
                grep -q '<meta name="stackup-release" content="2.1.6">' /tmp/stackup-hosted.html; then
               echo "Hosted Academy 2.1.6 is ready."
               exit 0
