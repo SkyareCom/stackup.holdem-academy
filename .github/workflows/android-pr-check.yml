@@ -9,6 +9,8 @@ on:
       - '.github/workflows/android-pr-check.yml'
       - '.github/workflows/android-build.yml'
       - 'scripts/security-guard.js'
+      - 'index.html'
+      - 'test-layout-quality.js'
 
 permissions:
   contents: read
@@ -26,6 +28,9 @@ jobs:
 
       - name: Security repository guard
         run: node scripts/security-guard.js
+
+      - name: Validate Academy typography contract
+        run: node test-layout-quality.js
 
       - name: Validate Android shell contract
         run: node android/test-shell-contract.js
@@ -61,5 +66,5 @@ jobs:
           AAPT="$ANDROID_HOME/build-tools/36.0.0/aapt"
           test -s "$APK"
           "$AAPT" dump badging "$APK" | tee /tmp/stackup-pr-badging.txt
-          grep -q "package: name='com.skyare.stackupacademy.test219'" /tmp/stackup-pr-badging.txt
+          grep -q "package: name='com.skyare.stackupacademy.test220'" /tmp/stackup-pr-badging.txt
           grep -q "launchable-activity: name='com.skyare.stackupacademy.MainActivity'" /tmp/stackup-pr-badging.txt
