@@ -41,7 +41,7 @@ assert(main.includes('showPermanentError()'),'startup failure must degrade to in
 
 assert(index.includes('<meta name="stackup-release" content="2.1.6">'),'hosted web release must be 2.1.6');
 assert(index.includes('const APP_VERSION="2.1.6";'),'visible app version must be 2.1.6');
-assert(sw.includes('academy-v2.1.6-card-align-footer8-20261001'),'service worker hotfix cache must be active');
+assert(sw.includes('academy-v2.1.6-ui-balance-r2-20261001'),'service worker hotfix cache must be active');
 
 assert(workflow.includes('Smoke test APK on Android 14 emulator'),'CI must include Android 14 smoke test');
 assert(workflow.includes('api-level: 34'),'CI must exercise API 34');
