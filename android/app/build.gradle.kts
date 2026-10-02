@@ -96,7 +96,7 @@ android {
 
     sourceSets {
         getByName("main") {
-            assets.srcDir(academyWebAssetsDir)
+            assets.srcDir(academyWebAssetsDir.get().asFile)
         }
     }
 }
