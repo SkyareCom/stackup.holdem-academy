@@ -46,9 +46,9 @@ assert(!index.includes('alinhamento editorial: textos sempre pela esquerda'),
 assert(!index.includes('REGRA GLOBAL: textos editoriais do app alinhados pela esquerda'),
   'duplicate global alignment patch was removed');
 
-assert(index.includes('PRATICA: 3 cards horizontais iguais, um por linha.'),'Practice three-horizontal-card style must be present');
+assert(index.includes('PRATICA: 4 cards em torre 2x2, conteudo centralizado.'),'Practice 2x2 four-card style must be present');
 assert(index.includes('AJUSTES 2026-10-01: Minha Evolucao, Base e Simulador.'),'evolution/base/simulator balance hotfix must be present');
 assert(index.includes('function bindCardOrphans(txt)'),'card descriptions must protect short connector words from orphan lines');
 assert(index.includes('bindCardOrphans(txt).split(/ +/)'),'card balancing must retain non-breaking connector spaces');
-assert(index.includes('tw.classList.add("practice-three")'),'Practice must render the three horizontal cards as one full-width column');
+assert(index.includes('function practiceListH()')&&index.includes('data-open="hist"'),'Practice must render Simulator, Quiz, Math and History in the four-card grid');
 console.log('PASS UI layout quality audit: cascade, spacing, aligned cards, wrapping and 8px footer normalized.');

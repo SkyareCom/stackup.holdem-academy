@@ -20,7 +20,7 @@ assert(index.includes('grid-template-rows:30px 54px!important'),'menu card title
 assert(index.includes('-webkit-line-clamp:3!important'),'menu card descriptions must allow three aligned lines without clipping');
 assert(index.includes('function bindCardOrphans(txt)'),'menu card descriptions must bind short connector words to the next word');
 assert(index.includes('bindCardOrphans(txt).split(/ +/)'),'orphan protection must preserve non-breaking spaces during card line balancing');
-assert(index.includes('tw.classList.add("practice-three")'),'Practice root must activate the three-horizontal-card layout');
+assert(index.includes('function practiceListH()')&&index.includes('class="tower scroll practice-four"'),'Practice root must render the four-card 2x2 layout');
 assert(index.includes('#app .habit .qstats')&&index.includes('grid-template-columns:repeat(2,minmax(0,1fr))!important'),'habit summary cards must split the row evenly');
 assert(index.includes('#app .habit .goalrow')&&index.includes('grid-template-columns:minmax(86px,.9fr) repeat(3,minmax(0,1fr))!important'),'weekly goal row must use the full width');
 assert(index.includes('#app .sfilt .segb')&&index.includes('justify-content:center!important')&&index.includes('text-align:center!important'),'simulator filters must be centered');
