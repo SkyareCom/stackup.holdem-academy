@@ -1,14 +1,44 @@
 // StackUp Hold'em Academy — service worker
-const CACHE = "academy-v2.1.6-ui-balance-r2-20261001";
+const CACHE = "academy-v2.1.7-ui-balance-r2-20261001";
 const CORE = ["./", "index.html", "manifest.webmanifest", "privacy.html", "auth-production.js", "billing-production.js"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
-self.addEventListener("activate", e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
-self.addEventListener("fetch", e => {
-  const req = e.request;
-  if (req.method !== "GET" || new URL(req.url).origin !== location.origin) return;
-  if (req.mode === "navigate") {
-    e.respondWith(fetch(req).then(r => { const c = r.clone(); caches.open(CACHE).then(x => x.put("index.html", c)); return r; }).catch(() => caches.match(req, { ignoreSearch: true }).then(r => r || caches.match("index.html"))));
-    return;
-  }
-  e.respondWith(caches.match(req, { ignoreSearch: true }).then(r => r || fetch(req).then(n => { const c = n.clone(); caches.open(CACHE).then(x => x.put(req, c)); return n; })));
+
+self.addEventListener("install", event => {
+  event.waitUntil(
+    caches.open(CACHE)
+      .then(cache => cache.addAll(CORE))
+      .then(() => self.skipWaiting())
+  );
+});
+
+self.addEventListener("activate", event => {
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(() => self.clients.claim())
+  );
+});
+
+self.addEventListener("fetch", event => {
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
+  if (url.origin !== location.origin) return;
+
+  // Remote-first: when online, every deploy is visible immediately.
+  // Cached files remain only as an offline fallback.
+  event.respondWith(
+    fetch(request)
+      .then(response => {
+        if (response && response.ok) {
+          const copy = response.clone();
+          caches.open(CACHE).then(cache => cache.put(request, copy));
+        }
+        return response;
+      })
+      .catch(() =>
+        caches.match(request, { ignoreSearch: true })
+          .then(response => response || (request.mode === "navigate" ? caches.match("index.html") : undefined))
+      )
+  );
 });

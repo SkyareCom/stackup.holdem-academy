@@ -52,21 +52,27 @@ public class MainActivity extends FragmentActivity {
     private static final String APP_URL = "https://skyarecom.github.io/stackup.holdem-academy.pub/";
     private static final String APP_HOST = "skyarecom.github.io";
     private static final String APP_PATH = "/stackup.holdem-academy.pub/";
+    private static final String LOCAL_ASSET_HOST = "appassets.androidplatform.net";
+    private static final String LOCAL_ASSET_PATH = "/assets/";
+    private static final String LOCAL_ASSET_URL =
+            "https://" + LOCAL_ASSET_HOST + LOCAL_ASSET_PATH;
     private static final String TAG = "StackUpAcademy";
     private static final String PREFS = "stackup_android_shell";
     private static final String CACHE_SCHEMA_KEY = "cache_schema";
-    private static final int CACHE_SCHEMA = 219;
+    private static final int CACHE_SCHEMA = 220;
     private static final String APP_ENTRY_URL =
-            APP_URL + "index.html?android_build=219";
+            APP_URL + "index.html?android_build=220&source=remote";
     private static final String RECOVERY_URL =
-            APP_URL + "index.html?android_build=219&cache_reset=1";
+            APP_URL + "index.html?android_build=220&cache_reset=1";
+    private static final String LOCAL_ENTRY_URL =
+            LOCAL_ASSET_URL + "index.html?android_build=220&source=local";
 
     private WebView webView;
     private FrameLayout root;
     private OnBackInvokedCallback backCallback;
     private boolean webRecoveryPending;
     private boolean cleanupStarted;
-    private boolean nativeRetryAttempted;
+    private boolean localFallbackAttempted;
     private boolean rendererRecoveryAttempted;
     private BillingManager billingManager;
 
@@ -91,7 +97,7 @@ public class MainActivity extends FragmentActivity {
         }
 
         try {
-            Log.i(TAG, "SHELL_CREATE version=219");
+            Log.i(TAG, "SHELL_CREATE version=220");
             createAndLoadWebView(savedInstanceState);
         } catch (Throwable error) {
             Log.e(TAG, "SHELL_CREATE_FAILED", error);
@@ -172,8 +178,7 @@ public class MainActivity extends FragmentActivity {
         });
 
         final WebViewAssetLoader assetLoader = new WebViewAssetLoader.Builder()
-                .setDomain(APP_HOST)
-                .addPathHandler(APP_PATH, new WebViewAssetLoader.AssetsPathHandler(this))
+                .addPathHandler("/assets/", new WebViewAssetLoader.AssetsPathHandler(this))
                 .build();
 
         webView.setWebViewClient(new WebViewClient() {
@@ -183,7 +188,7 @@ public class MainActivity extends FragmentActivity {
                     WebResourceRequest request) {
                 WebResourceResponse response = assetLoader.shouldInterceptRequest(request.getUrl());
                 if (request.isForMainFrame() && response != null) {
-                    Log.i(TAG, "LOCAL_ASSET_MAIN_FRAME=true url=" + request.getUrl());
+                    Log.i(TAG, "LOCAL_FALLBACK_MAIN_FRAME=true url=" + request.getUrl());
                 }
                 return response;
             }
@@ -248,16 +253,7 @@ public class MainActivity extends FragmentActivity {
                 Log.e(TAG, "MAIN_FRAME_HTTP_ERROR status=" + statusCode
                         + " url=" + request.getUrl());
 
-                if (!nativeRetryAttempted) {
-                    nativeRetryAttempted = true;
-                    view.stopLoading();
-                    view.clearCache(true);
-                    view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                    view.loadUrl(RECOVERY_URL + "&http_retry=1");
-                    return;
-                }
-
-                showPermanentError();
+                loadLocalFallback(view, "http_" + statusCode);
             }
 
             @Override
@@ -273,22 +269,18 @@ public class MainActivity extends FragmentActivity {
                         + " description=" + error.getDescription()
                         + " url=" + request.getUrl());
 
-                if (!nativeRetryAttempted) {
-                    nativeRetryAttempted = true;
-                    view.stopLoading();
-                    view.clearCache(true);
-                    view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-                    view.loadUrl(RECOVERY_URL + "&retry=1");
-                    return;
-                }
-
-                showPermanentError();
+                loadLocalFallback(view, "network_" + error.getErrorCode());
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 Log.i(TAG, "PAGE_FINISHED url=" + url + " recovery=" + webRecoveryPending);
+                if (url != null && url.startsWith(APP_URL)) {
+                    Log.i(TAG, "REMOTE_CONTENT_ACTIVE=true url=" + url);
+                } else if (url != null && url.startsWith(LOCAL_ASSET_URL)) {
+                    Log.i(TAG, "LOCAL_FALLBACK_ACTIVE=true url=" + url);
+                }
 
                 if (webRecoveryPending
                         && !cleanupStarted
@@ -319,19 +311,25 @@ public class MainActivity extends FragmentActivity {
 
                 view.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
 
+                String scriptBase = null;
                 if (url != null && url.startsWith(APP_URL)) {
+                    scriptBase = APP_URL;
+                } else if (url != null && url.startsWith(LOCAL_ASSET_URL)) {
+                    scriptBase = LOCAL_ASSET_URL;
+                }
+                if (scriptBase != null) {
                     String authLoader =
                             "(function(){if(document.getElementById('stackup-auth-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-auth-production';" +
-                            "s.src='" + APP_URL + "auth-production.js?v=219';" +
+                            "s.src='" + scriptBase + "auth-production.js?v=220';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(authLoader, null);
                     String billingLoader =
                             "(function(){if(document.getElementById('stackup-billing-production'))return;" +
                             "var s=document.createElement('script');" +
                             "s.id='stackup-billing-production';" +
-                            "s.src='" + APP_URL + "billing-production.js?v=219';" +
+                            "s.src='" + scriptBase + "billing-production.js?v=220';" +
                             "document.head.appendChild(s);})();";
                     view.evaluateJavascript(billingLoader, null);
                 }
@@ -339,7 +337,14 @@ public class MainActivity extends FragmentActivity {
                 view.postDelayed(
                         () -> view.evaluateJavascript(
                                 "(function(){return !!(document.querySelector('#app')&&document.querySelector('.screen'));})();",
-                                value -> Log.i(TAG, "WEB_CONTENT_READY=" + value)),
+                                value -> {
+                                    Log.i(TAG, "WEB_CONTENT_READY=" + value);
+                                    if (!"true".equals(value)
+                                            && url != null
+                                            && url.startsWith(APP_URL)) {
+                                        loadLocalFallback(view, "content_not_ready");
+                                    }
+                                }),
                         1500);
             }
         });
@@ -354,6 +359,24 @@ public class MainActivity extends FragmentActivity {
         String initialUrl = webRecoveryPending ? RECOVERY_URL + "&bootstrap=1" : APP_ENTRY_URL;
         Log.i(TAG, "LOAD_URL=" + initialUrl);
         webView.loadUrl(initialUrl);
+    }
+
+    private void loadLocalFallback(WebView view, String reason) {
+        if (view == null) {
+            showPermanentError();
+            return;
+        }
+        Uri current = Uri.parse(view.getUrl() == null ? "" : view.getUrl());
+        if (LOCAL_ASSET_HOST.equalsIgnoreCase(current.getHost()) || localFallbackAttempted) {
+            showPermanentError();
+            return;
+        }
+
+        localFallbackAttempted = true;
+        Log.w(TAG, "REMOTE_LOAD_FAILED fallback=local reason=" + reason);
+        view.stopLoading();
+        view.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        view.loadUrl(LOCAL_ENTRY_URL + "&reason=" + Uri.encode(reason == null ? "unknown" : reason));
     }
 
     private void callJavascript(String javascript) {
@@ -519,12 +542,18 @@ public class MainActivity extends FragmentActivity {
     }
 
     private boolean handleNavigation(Uri uri) {
-        if (uri != null
-                && "https".equalsIgnoreCase(uri.getScheme())
-                && APP_HOST.equalsIgnoreCase(uri.getHost())
-                && uri.getPath() != null
-                && uri.getPath().startsWith(APP_PATH)) {
-            return false;
+        if (uri != null && "https".equalsIgnoreCase(uri.getScheme())) {
+            String host = uri.getHost();
+            String path = uri.getPath();
+            boolean remoteAcademy = APP_HOST.equalsIgnoreCase(host)
+                    && path != null
+                    && path.startsWith(APP_PATH);
+            boolean localFallback = LOCAL_ASSET_HOST.equalsIgnoreCase(host)
+                    && path != null
+                    && path.startsWith(LOCAL_ASSET_PATH);
+            if (remoteAcademy || localFallback) {
+                return false;
+            }
         }
 
         if (uri != null) {
