@@ -337,7 +337,14 @@ public class MainActivity extends FragmentActivity {
                 view.postDelayed(
                         () -> view.evaluateJavascript(
                                 "(function(){return !!(document.querySelector('#app')&&document.querySelector('.screen'));})();",
-                                value -> Log.i(TAG, "WEB_CONTENT_READY=" + value)),
+                                value -> {
+                                    Log.i(TAG, "WEB_CONTENT_READY=" + value);
+                                    if (!"true".equals(value)
+                                            && url != null
+                                            && url.startsWith(APP_URL)) {
+                                        loadLocalFallback(view, "content_not_ready");
+                                    }
+                                }),
                         1500);
             }
         });
