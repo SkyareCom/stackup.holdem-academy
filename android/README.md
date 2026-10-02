@@ -3,12 +3,12 @@
 Android production packaging for the StackUp Hold'em Academy web application.
 
 - Application ID: `com.skyare.stackupacademy`
-- Version: `2.1.6` (`versionCode 216`)
+- Version: `2.1.6` (`versionCode 217`)
 - `compileSdk`: 36
 - `targetSdk`: 36
 - Minimum Android: API 24
 - Architecture: native Android shell + restricted WebView
-- Content URL: `https://skyarecom.github.io/stackup.holdem-academy/`
+- Content URL: `https://skyarecom.github.io/stackup.holdem-academy.pub/`
 - Java: 17
 - Android Gradle Plugin: 9.4.0
 
@@ -60,7 +60,7 @@ The product is positioned as poker education and training. It does not provide r
 
 ## Current Play build
 
-Build source: Academy UI R3 + Google Play subscriptions, prepared for Play AAB `2.1.6` / `versionCode 216`.
+Build source: Academy UI R3 + Google Play subscriptions, prepared for Play AAB `2.1.6` / `versionCode 217`.
 
 ## Google Play subscriptions
 
