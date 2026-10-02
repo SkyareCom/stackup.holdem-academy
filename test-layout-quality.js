@@ -6,26 +6,32 @@ const index=fs.readFileSync('index.html','utf8');
 const auditMarker='<style id="stackup-academy-layout-audit-20260930">';
 const hotfixMarker='<style id="stackup-academy-card-alignment-20261001">';
 const descriptionMarker='<style id="stackup-academy-description-lift-20261002">';
+const practiceDescriptionMarker='<style id="stackup-academy-practice-description-balance-20261002">';
 
 const auditStart=index.indexOf(auditMarker);
 const hotfixStart=index.indexOf(hotfixMarker);
 const descriptionStart=index.indexOf(descriptionMarker);
+const practiceDescriptionStart=index.indexOf(practiceDescriptionMarker);
 
 assert(auditStart>=0,'canonical UI audit style is present');
 assert(hotfixStart>auditStart,'2.1.6 card alignment hotfix must come after the canonical audit');
 assert(descriptionStart>hotfixStart,'description-only lift patch must come after the frozen card alignment hotfix');
-assert.equal(descriptionStart,index.lastIndexOf('<style'),'description-only lift patch must be the last static style block');
+assert(practiceDescriptionStart>descriptionStart,'Practice description balance must come after the global description patch');
+assert.equal(practiceDescriptionStart,index.lastIndexOf('<style'),'Practice description balance must be the last static style block');
 
 const auditEnd=index.indexOf('</style>',auditStart);
 const hotfixEnd=index.indexOf('</style>',hotfixStart);
 const descriptionEnd=index.indexOf('</style>',descriptionStart);
+const practiceDescriptionEnd=index.indexOf('</style>',practiceDescriptionStart);
 assert(auditEnd>auditStart,'canonical UI audit style closes correctly');
 assert(hotfixEnd>hotfixStart,'2.1.6 alignment hotfix closes correctly');
 assert(descriptionEnd>descriptionStart,'description-only lift patch closes correctly');
+assert(practiceDescriptionEnd>practiceDescriptionStart,'Practice description balance patch closes correctly');
 
 const css=index.slice(auditStart,auditEnd);
 const hotfix=index.slice(hotfixStart,hotfixEnd);
 const descriptionCss=index.slice(descriptionStart,descriptionEnd);
+const practiceDescriptionCss=index.slice(practiceDescriptionStart,practiceDescriptionEnd);
 
 assert(css.includes('--academy-ui-x:16px')&&css.includes('--academy-ui-y:12px')&&css.includes('--academy-ui-i:8px')&&css.includes('--academy-ui-pad:14px'),
   'spacing scale is 16/12/8/14');
@@ -50,6 +56,14 @@ assert(descriptionCss.includes('#app #home .tile.tcard .d2>span'),'balanced desc
 assert(!descriptionCss.includes('.hic'),'description-only patch must not touch frozen card icons');
 assert(!descriptionCss.includes('.htx b'),'description-only patch must not touch frozen card titles');
 assert(!descriptionCss.includes('.tower .tile.tcard{'),'description-only patch must not change card structure');
+assert(practiceDescriptionCss.includes('.tower.scroll.practice-four>.tile.tcard .htx small'),'Practice balance must target only Practice card descriptions');
+assert(practiceDescriptionCss.includes('grid-template-rows:repeat(2,1.16em)!important'),'Practice descriptions must reserve two equal text lines');
+assert(practiceDescriptionCss.includes('white-space:nowrap!important'),'Practice balanced lines must not wrap into a third line');
+assert(practiceDescriptionCss.includes('font-size:clamp(9px,2.6vw,10px)!important'),'Practice descriptions must shrink slightly on narrow screens without changing titles');
+assert(practiceDescriptionCss.includes('transform:translateY(-5px)!important'),'Practice descriptions must sit closer to their frozen titles');
+assert(!practiceDescriptionCss.includes('.hic'),'Practice description balance must not touch frozen icons');
+assert(!practiceDescriptionCss.includes('.htx b'),'Practice description balance must not touch frozen titles');
+assert(!practiceDescriptionCss.includes('>.tile.tcard{'),'Practice description balance must not alter card structure');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');
