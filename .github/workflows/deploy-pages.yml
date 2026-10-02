@@ -53,12 +53,13 @@ jobs:
           test -s icons/icon-512.png
           test -s icons/icon-maskable-192.png
           test -s icons/icon-maskable-512.png
+          test -f .nojekyll
 
       - name: Prepare Pages artifact
         run: |
           rm -rf _site
           mkdir -p _site/icons
-          cp index.html privacy.html manifest.webmanifest sw.js auth-production.js billing-production.js _site/
+          cp index.html privacy.html manifest.webmanifest sw.js auth-production.js billing-production.js .nojekyll _site/
           cp icons/icon-192.png icons/icon-512.png icons/icon-maskable-192.png icons/icon-maskable-512.png _site/icons/
 
       - name: Setup Pages
