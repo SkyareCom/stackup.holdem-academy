@@ -2521,7 +2521,7 @@ $("#pass").addEventListener("keydown",e=>e.key==="Enter"&&$("#sBtn").click());
 
 // boot
 applyLang();H.rep({id:"welcome"});
-setTimeout(()=>{let s=store.get("wraps.session");if(TEST_ACCESS&&!s){s={name:"TESTADOR",method:"test",at:Date.now()};store.set("wraps.session",s);renderHome()}const first=TEST_ACCESS?"home":(s?"home":"welcome");stack=[first];
+setTimeout(()=>{let s=store.get("wraps.session");if(s&&s.method==="test"){store.del("wraps.session");s=null}const first=s?"home":"welcome";stack=[first];
  const sp=$("#splash");sp.style.transition="opacity .5s ease";$("#"+first).classList.add("on");requestAnimationFrame(()=>{sp.style.opacity=0});setTimeout(()=>{sp.classList.remove("on");sp.style.pointerEvents="none"},550)},2400);
 </script>
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}</script>
