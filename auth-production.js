@@ -137,8 +137,35 @@
     return meta.full_name || meta.name || fallback || (user && user.email ? user.email.split("@")[0] : "") || "Jogador";
   }
 
-  function finishLogin(session, method, fallbackName) {
+  async function ensureProfile(session) {
+    if (!session || !session.access_token || !session.user || !session.user.id) return;
+    const { url, anonKey } = config();
+    const user = session.user;
+    const payload = {
+      user_id: user.id,
+      display_name: displayName(user, ""),
+      email: user.email || null,
+      phone: user.phone || null,
+      preferred_language: (typeof lang === "string" && ["pt","en","es"].includes(lang)) ? lang : "pt",
+      updated_at: new Date().toISOString()
+    };
+    try {
+      await fetch(url + "/rest/v1/profiles?on_conflict=user_id", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": anonKey,
+          "Authorization": "Bearer " + session.access_token,
+          "Prefer": "resolution=merge-duplicates,return=minimal"
+        },
+        body: JSON.stringify(payload)
+      });
+    } catch (_) {}
+  }
+
+  async function finishLogin(session, method, fallbackName) {
     const user = session && session.user ? session.user : {};
+    await ensureProfile(session);
     const name = displayName(user, fallbackName);
     const extra = {
       userId: user.id || "",
@@ -156,7 +183,7 @@
         id_token: idToken
       });
       const session = saveSession(data);
-      finishLogin(session, "google", name || (email ? email.split("@")[0] : ""));
+      await finishLogin(session, "google", name || (email ? email.split("@")[0] : ""));
     } catch (error) {
       say(error.message || "Não foi possível entrar com o Google.");
     }
@@ -186,13 +213,118 @@
         bio.classList.add("ok");
       }
       if (bioTxt && typeof t === "function") bioTxt.textContent = t("bOk");
-      setTimeout(() => finishLogin(session, "biometric"), 350);
+      setTimeout(() => { finishLogin(session, "biometric"); }, 350);
     } catch (error) {
       if (bio) bio.classList.remove("on", "ok");
       if (bioTxt && typeof t === "function") bioTxt.textContent = t("bTap");
       say(error.message);
     }
   };
+
+
+  async function stackIdSignIn(email, password) {
+    const data = await request("/token?grant_type=password", { email, password });
+    const session = saveSession(data);
+    await finishLogin(session, "sid", email.split("@")[0]);
+  }
+
+  async function stackIdSignUp(email, password) {
+    const data = await request("/signup", { email, password });
+    if (data && data.access_token) {
+      const session = saveSession(data);
+      await finishLogin(session, "sid", email.split("@")[0]);
+      return true;
+    }
+    say("Stack ID criado. Confirme o e-mail para concluir o acesso.");
+    return false;
+  }
+
+  async function recoverStackId(email) {
+    await request("/recover", { email });
+    say("Enviamos as instruções de recuperação para o seu e-mail.");
+  }
+
+  function enableProductionEntry() {
+    document.querySelectorAll('[data-go="google"],[data-go="sid"]').forEach((button) => {
+      button.disabled = false;
+      button.removeAttribute("disabled");
+      button.setAttribute("aria-disabled", "false");
+      button.classList.remove("auth-off");
+    });
+
+    const stackButton = q("#sBtn");
+    const forgot = q("#forgot");
+    const emailInput = q("#email");
+    const passwordInput = q("#pass");
+    const errorBox = q("#sErr");
+
+    if (stackButton) {
+      stackButton.onclick = async () => {
+        const email = String((emailInput && emailInput.value) || "").trim().toLowerCase();
+        const password = String((passwordInput && passwordInput.value) || "");
+        if (!/^\\S+@\\S+\\.\\S+$/.test(email)) {
+          if (errorBox) errorBox.textContent = typeof t === "function" ? t("emailErr") : "E-mail inválido.";
+          return;
+        }
+        if (password.length < 6) {
+          if (errorBox) errorBox.textContent = typeof t === "function" ? t("passErr") : "Use pelo menos 6 caracteres.";
+          return;
+        }
+        if (errorBox) errorBox.textContent = "";
+        try {
+          if (typeof busy === "function") busy(stackButton, 1);
+          await stackIdSignIn(email, password);
+        } catch (error) {
+          if (errorBox) errorBox.textContent = error.message || "Não foi possível entrar com o Stack ID.";
+        } finally {
+          if (typeof busy === "function") busy(stackButton, 0);
+        }
+      };
+    }
+
+    if (forgot) {
+      forgot.onclick = async () => {
+        const email = String((emailInput && emailInput.value) || "").trim().toLowerCase();
+        if (!/^\\S+@\\S+\\.\\S+$/.test(email)) {
+          if (errorBox) errorBox.textContent = typeof t === "function" ? t("emailErr") : "E-mail inválido.";
+          return;
+        }
+        try {
+          if (errorBox) errorBox.textContent = "";
+          await recoverStackId(email);
+        } catch (error) {
+          if (errorBox) errorBox.textContent = error.message || "Não foi possível recuperar o Stack ID.";
+        }
+      };
+    }
+
+    const sidScreen = q("#sid");
+    if (sidScreen && stackButton && !q("#stackIdCreate")) {
+      const create = document.createElement("button");
+      create.id = "stackIdCreate";
+      create.type = "button";
+      create.className = "link";
+      create.textContent = "Criar Stack ID";
+      create.onclick = async () => {
+        const email = String((emailInput && emailInput.value) || "").trim().toLowerCase();
+        const password = String((passwordInput && passwordInput.value) || "");
+        if (!/^\\S+@\\S+\\.\\S+$/.test(email) || password.length < 6) {
+          if (errorBox) errorBox.textContent = "Informe um e-mail válido e uma senha com pelo menos 6 caracteres.";
+          return;
+        }
+        try {
+          if (errorBox) errorBox.textContent = "";
+          create.disabled = true;
+          await stackIdSignUp(email, password);
+        } catch (error) {
+          if (errorBox) errorBox.textContent = error.message || "Não foi possível criar o Stack ID.";
+        } finally {
+          create.disabled = false;
+        }
+      };
+      stackButton.insertAdjacentElement("beforebegin", create);
+    }
+  }
 
   function startGoogle() {
     if (!configured()) {
@@ -213,6 +345,8 @@
     event.stopImmediatePropagation();
     startGoogle();
   }, true);
+
+  enableProductionEntry();
 
   const bioBtn = q("#bioBtn");
   if (bioBtn) {
