@@ -2588,8 +2588,7 @@ $("#pass").addEventListener("keydown",e=>e.key==="Enter"&&$("#sBtn").click());
 
 // boot
 applyLang();H.rep({id:"welcome"});
-setTimeout(async()=>{let s=store.get("wraps.session");let auth=null;try{auth=window.StackUpProductionAuth&&window.StackUpProductionAuth.activeSession?await window.StackUpProductionAuth.activeSession():null}catch(_){}if(!auth){store.del("wraps.session");s=null}else if(s&&["test","quick"].includes(s.method)){store.del("wraps.session");s=null}const first=(auth&&s)?"home":"welcome";stack=[first];
- const sp=$("#splash");sp.style.transition="opacity .5s ease";$("#"+first).classList.add("on");requestAnimationFrame(()=>{sp.style.opacity=0});setTimeout(()=>{sp.classList.remove("on");sp.style.pointerEvents="none"},550)},2400);
+setTimeout(()=>{const sp=$("#splash"),wl=$("#welcome");stack=["welcome"];if(wl)wl.classList.add("on");if(sp){sp.style.transition="opacity .5s ease";requestAnimationFrame(()=>{sp.style.opacity=0});setTimeout(()=>{sp.classList.remove("on");sp.style.pointerEvents="none"},550)}},1200);
 </script>
 <script>if("serviceWorker" in navigator&&(location.protocol==="https:"||location.hostname==="localhost")){window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}</script>
 
