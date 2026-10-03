@@ -97,7 +97,13 @@ assert(uxPolishCss.includes('margin:14px 0 12px!important'),'lesson highlight mu
 assert(uxPolishCss.includes('.tabbar .tab.on'),'active footer item must have a dedicated flat-state rule');
 assert(uxPolishCss.includes('background:none!important')&&uxPolishCss.includes('border-color:transparent!important')&&uxPolishCss.includes('box-shadow:none!important'),'active footer item must not use the old capsule');
 assert(uxPolishCss.includes('.tabbar .tab.on span')&&uxPolishCss.includes('color:#9BE8B0!important'),'active footer label must use color instead of a capsule');
+// Approved welcome/login typography exceptions (2026-10-03): cards 10px, slogan 12px.
+// Keep the legacy UX-polish block frozen, but validate intentional overrides separately.
 assert(!uxPolishCss.includes('font-size:'),'UX polish must not alter typography sizes');
+assert(index.includes('#app #welcome .menu .item')&&index.includes('font-size:10px!important'),'welcome/login cards must be 10px');
+assert(index.includes('#app #welcome .tag')&&index.includes('font-size:12px!important'),'welcome slogan must be 12px');
+assert(index.includes('#app #welcome .welcome-langs')&&index.includes('grid-template-columns:repeat(3,minmax(0,1fr))!important'),'welcome language selector must expose three buttons in one row');
+assert(index.includes('#app #welcome .welcome-lang')&&index.includes('font-size:10px!important'),'welcome language buttons must be 10px');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');
