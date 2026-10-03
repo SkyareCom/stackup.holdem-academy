@@ -8,19 +8,22 @@ const hotfixMarker='<style id="stackup-academy-card-alignment-20261001">';
 const descriptionMarker='<style id="stackup-academy-description-lift-20261002">';
 const practiceFrozenMarker='<style id="stackup-academy-practice-frozen-anchors-20261002">';
 const typographyMarker='<style id="stackup-academy-typography-lock-20261002">';
+const uxPolishMarker='<style id="stackup-academy-ux-polish-20261002">';
 
 const auditStart=index.indexOf(auditMarker);
 const hotfixStart=index.indexOf(hotfixMarker);
 const descriptionStart=index.indexOf(descriptionMarker);
 const practiceFrozenStart=index.indexOf(practiceFrozenMarker);
 const typographyStart=index.indexOf(typographyMarker);
+const uxPolishStart=index.indexOf(uxPolishMarker);
 
 assert(auditStart>=0,'canonical UI audit style is present');
 assert(hotfixStart>auditStart,'2.1.6 card alignment hotfix must come after the canonical audit');
 assert(descriptionStart>hotfixStart,'description-only lift patch must come after the frozen card alignment hotfix');
 assert(practiceFrozenStart>descriptionStart,'Practice frozen-anchor patch must come after the global description patch');
 assert(typographyStart>practiceFrozenStart,'global typography lock must come after layout-specific patches');
-assert.equal(typographyStart,index.lastIndexOf('<style'),'global typography lock must be the last static style block');
+assert(uxPolishStart>typographyStart,'UX polish must come after the typography lock');
+assert.equal(uxPolishStart,index.lastIndexOf('<style'),'UX polish must be the last static style block');
 assert(!index.includes('stackup-academy-practice-description-balance-20261002'),'obsolete Practice description-only patch must be removed');
 
 const auditEnd=index.indexOf('</style>',auditStart);
@@ -28,17 +31,20 @@ const hotfixEnd=index.indexOf('</style>',hotfixStart);
 const descriptionEnd=index.indexOf('</style>',descriptionStart);
 const practiceFrozenEnd=index.indexOf('</style>',practiceFrozenStart);
 const typographyEnd=index.indexOf('</style>',typographyStart);
+const uxPolishEnd=index.indexOf('</style>',uxPolishStart);
 assert(auditEnd>auditStart,'canonical UI audit style closes correctly');
 assert(hotfixEnd>hotfixStart,'2.1.6 alignment hotfix closes correctly');
 assert(descriptionEnd>descriptionStart,'description-only lift patch closes correctly');
 assert(practiceFrozenEnd>practiceFrozenStart,'Practice frozen-anchor patch closes correctly');
 assert(typographyEnd>typographyStart,'global typography lock closes correctly');
+assert(uxPolishEnd>uxPolishStart,'UX polish closes correctly');
 
 const css=index.slice(auditStart,auditEnd);
 const hotfix=index.slice(hotfixStart,hotfixEnd);
 const descriptionCss=index.slice(descriptionStart,descriptionEnd);
 const practiceFrozenCss=index.slice(practiceFrozenStart,practiceFrozenEnd);
 const typographyCss=index.slice(typographyStart,typographyEnd);
+const uxPolishCss=index.slice(uxPolishStart,uxPolishEnd);
 
 assert(css.includes('--academy-ui-x:16px')&&css.includes('--academy-ui-y:12px')&&css.includes('--academy-ui-i:8px')&&css.includes('--academy-ui-pad:14px'),
   'spacing scale is 16/12/8/14');
@@ -84,6 +90,14 @@ assert(typographyCss.includes('#splash .sptitle')&&typographyCss.includes('font-
 assert(typographyCss.includes('#welcome .brand .sub')&&typographyCss.includes('clamp(20px,min(7vw,3.4vh),30px)'),'welcome STACKUP HOLD\'EM branding must keep its frozen size');
 assert(typographyCss.includes('#welcome .brand .title')&&typographyCss.includes('clamp(40px,min(15vw,7.2vh),70px)'),'welcome ACADEMY branding must keep its frozen size');
 assert(typographyCss.includes('#welcome .hero .logo')&&typographyCss.includes('width:min(200px,50vw,24vh)!important'),'welcome logo image size must remain frozen');
+assert(uxPolishCss.includes('.practice-four>.tile.tcard[data-open="hist"] .htx b'),'History card title must have a dedicated visual-balance rule');
+assert(uxPolishCss.includes('align-items:center!important'),'History title must be vertically centered inside its existing frozen title track');
+assert(uxPolishCss.includes('.lesson .ex'),'lesson highlight spacing must be explicitly controlled');
+assert(uxPolishCss.includes('margin:14px 0 12px!important'),'lesson highlight must have more breathing room above and below');
+assert(uxPolishCss.includes('.tabbar .tab.on'),'active footer item must have a dedicated flat-state rule');
+assert(uxPolishCss.includes('background:none!important')&&uxPolishCss.includes('border-color:transparent!important')&&uxPolishCss.includes('box-shadow:none!important'),'active footer item must not use the old capsule');
+assert(uxPolishCss.includes('.tabbar .tab.on span')&&uxPolishCss.includes('color:#9BE8B0!important'),'active footer label must use color instead of a capsule');
+assert(!uxPolishCss.includes('font-size:'),'UX polish must not alter typography sizes');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');
