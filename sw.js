@@ -1,5 +1,5 @@
 // StackUp Hold'em Academy — service worker
-const CACHE = "academy-v2.1.7-ui-balance-r2-20261001";
+const CACHE = "academy-v2.1.7-remote-refresh-r3-20261003";
 const CORE = ["./", "index.html", "manifest.webmanifest", "privacy.html", "auth-production.js", "billing-production.js"];
 
 self.addEventListener("install", event => {
