@@ -1712,6 +1712,13 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
   color:#9BE8B0!important;
   filter:drop-shadow(0 0 5px rgba(107,227,138,.28))!important;
 }
+
+/* Login UI — Academy green identity: 3 language buttons / 12px */
+#language #langList{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;width:100%!important}
+#language .lang{min-width:0!important;width:100%!important;margin:0!important;padding:12px 6px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:6px!important;text-align:center!important;border-radius:12px!important;background:rgba(4,40,18,.30)!important;border:1px solid rgba(80,200,110,.42)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 14px rgba(40,170,70,.22)!important;color:#fff!important;font-size:12px!important}
+#language .lang .flag{font-size:18px!important;line-height:1!important}
+#language .lang.sel{border-color:var(--red2)!important;background:rgba(16,78,34,.55)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 18px rgba(80,200,110,.35)!important}
+#welcome .menu .item,#welcome .menu .item *,#language .top,#language .top *,#language .lead,#language #langList,#language #langList *,#quick .top,#quick .top *,#quick .lead,#quick .bioTxt,#sid .top,#sid .top *,#sid .lead,#sid label,#sid .field,#sid .field *,#sid .err,#sid .link,#sid .btn{font-size:12px!important}
 </style>
 </head>
 <body>
@@ -1820,7 +1827,7 @@ const I18N={
   sLead:"Entra con la misma cuenta de todas las apps StackUp.",pass:"Contraseña",show:"Mostrar",hide:"Ocultar",forgot:"Olvidé mi contraseña",emailErr:"Correo inválido.",passErr:"La contraseña necesita al menos 6 caracteres.",forgotMsg:"Tu cuenta queda solo en este aparato. Para empezar de nuevo, entra otra vez con tu e-mail y una nueva contraseña.",
   hi:"Hola, ",hLead:"Todo listo para entrenar PLO.",via:"Conectado vía ",start:"Empezar",logout:"Salir",langSaved:"Idioma actualizado"}
 };
-const LANGS=[["pt","🇧🇷","Português"],["en","🇺🇸","English"],["es","🇪🇸","Español"]];
+const LANGS=[["pt","🇧🇷","PT-BR"],["en","🇺🇸","EN-US"],["es","🇪🇸","ES-ES"]];
 const MEM={};const store={get(k){try{const v=localStorage.getItem(k);if(v!==null)return JSON.parse(v)}catch(e){}return k in MEM?MEM[k]:null},set(k,v){MEM[k]=v;try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}},del(k){delete MEM[k];try{localStorage.removeItem(k)}catch(e){}}};
 const $=s=>document.querySelector(s);
 const H={push(o){try{history.pushState(o,"")}catch(e){}},rep(o){try{history.replaceState(o,"")}catch(e){}}};
