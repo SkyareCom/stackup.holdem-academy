@@ -413,3 +413,12 @@
     },true);
   })();
 })();
+/* Exact approved Academy entry overlay 2026-10-03 */
+document.addEventListener("DOMContentLoaded",()=>{if(document.getElementById("academyPremiumEntry"))return;
+ const f=document.createElement("iframe");f.id="academyPremiumEntry";f.src="academy-premium-fiel.html?v=20261003-2";f.title="STACKUP HOLD'EM ACADEMY";
+ f.style.cssText="position:fixed;inset:0;width:100%;height:100%;border:0;z-index:2147483000;background:#00170c";document.body.appendChild(f);
+ window.addEventListener("message",e=>{if(e.origin!==location.origin||!e.data||e.data.type!=="stackup-academy-entry")return;
+  const act=e.data.action;if(act==="language"){const map={"pt-BR":"pt","en-US":"en","es-ES":"es"},x=document.querySelector('[data-l="'+(map[e.data.locale]||"pt")+'"]');if(x)x.click();return}
+  if(act==="google"){const x=document.querySelector('[data-go="google"]');if(x)x.click();return}
+  f.style.display="none";if(act==="biometric"&&typeof go==="function")go("quick");if(act==="stackid"&&typeof go==="function")go("sid");
+ });});
