@@ -55,7 +55,9 @@ assert(main.includes('showPermanentError()'),'startup failure must degrade to in
 
 assert(index.includes('<meta name="stackup-release" content="2.1.7">'),'hosted web release must be 2.1.7');
 assert(index.includes('const APP_VERSION="2.1.7";'),'visible app version must be 2.1.7');
-assert(sw.includes('academy-v2.1.7-ui-balance-r2-20261001'),'service worker hotfix cache must be active');
+assert(/const CACHE = "academy-v2\.1\.7-[^"]+";/.test(sw),'service worker cache must be versioned for Academy 2.1.7');
+assert(sw.includes('fetch(request)'),'service worker must preserve remote-first delivery');
+assert(sw.includes('caches.match(request, { ignoreSearch: true })'),'service worker cache must remain an offline fallback');
 
 assert(workflow.includes('Smoke test APK on Android 14 emulator'),'CI must include Android 14 smoke test');
 assert(workflow.includes('api-level: 34'),'CI must exercise API 34');

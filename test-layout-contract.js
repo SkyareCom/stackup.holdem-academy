@@ -35,7 +35,10 @@ assert(index.includes('overflow-wrap:anywhere!important'),'long copy must have a
 assert(index.includes('const APP_VERSION="2.1.7";'),'web app version must match release 2.1.7');
 assert(index.includes('#app .tab span')&&index.includes('overflow:hidden!important'),'footer labels must not spill outside their cells');
 assert(index.includes('#app .pfopts')&&index.includes('gap:var(--academy-ui-y)!important'),'plan cards must keep vertical separation');
-assert(sw.includes('academy-v2.1.7-ui-balance-r2-20261001'),'service-worker cache must match the cleaned frontend release');
+assert(/const CACHE = "academy-v2\.1\.7-[^"]+";/.test(sw),'service-worker cache must be versioned for the current Academy release');
+assert(sw.includes('fetch(request)'),'service worker must fetch remote content before using cache');
+assert(sw.includes('caches.match(request, { ignoreSearch: true })'),'service worker cache must remain offline fallback only');
+assert(sw.indexOf('fetch(request)') < sw.indexOf('caches.match(request, { ignoreSearch: true })'),'remote-first order must be preserved');
 assert(sw.includes('"auth-production.js"')&&sw.includes('"billing-production.js"'),'runtime auth/billing scripts must be cached');
 
 const removedLegacy=[
