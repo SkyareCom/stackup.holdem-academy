@@ -74,11 +74,16 @@ assert(!practiceFrozenCss.includes('.htx b'),'Practice frozen-anchor patch must 
 assert(!practiceFrozenCss.includes('>.tile.tcard{'),'Practice frozen-anchor patch must not change card structure');
 assert(!index.includes('Overlock Academy'),'Overlock must be completely removed from Academy');
 assert(typographyCss.includes("font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important"),'Saira Semi Condensed must be the Academy UI font');
-assert(typographyCss.includes('font-size:12px!important'),'all Academy UI text must be locked to 12px');
+assert(typographyCss.includes('font-size:12px!important'),'Academy UI text must be locked to 12px by default');
+assert(typographyCss.includes('.tile.tcard .htx small')&&typographyCss.includes('font-size:10px!important'),'card descriptions must be exactly 10px');
 assert(typographyCss.includes('.tabbar .tab span')&&typographyCss.includes('font-size:9px!important'),'footer labels are the only 9px typography exception');
 assert(!typographyCss.includes('font-size:8px!important'),'final typography lock must not use 8px');
-assert(!typographyCss.includes('font-size:10px!important'),'final typography lock must not use 10px');
 assert(!typographyCss.includes('font-size:11px!important'),'final typography lock must not use 11px');
+assert(typographyCss.includes('#splash .spsub')&&typographyCss.includes('font-size:24px!important'),'splash STACKUP HOLD\'EM branding must keep its frozen size');
+assert(typographyCss.includes('#splash .sptitle')&&typographyCss.includes('font-size:58px!important'),'splash ACADEMY branding must keep its frozen size');
+assert(typographyCss.includes('#welcome .brand .sub')&&typographyCss.includes('clamp(20px,min(7vw,3.4vh),30px)'),'welcome STACKUP HOLD\'EM branding must keep its frozen size');
+assert(typographyCss.includes('#welcome .brand .title')&&typographyCss.includes('clamp(40px,min(15vw,7.2vh),70px)'),'welcome ACADEMY branding must keep its frozen size');
+assert(typographyCss.includes('#welcome .hero .logo')&&typographyCss.includes('width:min(200px,50vw,24vh)!important'),'welcome logo image size must remain frozen');
 assert(index.includes('const TABS=["home","fund","mod","prat","perfil"];'),'footer fifth route is Profile');
 assert(css.includes('#app .view li+li')&&css.includes('margin-top:var(--academy-ui-i)!important'),
   'list item vertical rhythm is normalized');

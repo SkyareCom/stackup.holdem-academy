@@ -1648,11 +1648,25 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 </style>
 
 <style id="stackup-academy-typography-lock-20261002">
-/* PADRAO FINAL ACADEMY — Saira Semi Condensed, 12px em todo texto de interface; rodape 9px. */
+/* PADRAO FINAL ACADEMY:
+   - Saira Semi Condensed 12px por padrao;
+   - descricoes dos cards 10px;
+   - rodape 9px;
+   - branding/logo da entrada preservado exatamente como antes. */
 #app *:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(.card):not(.pc):not(.rank):not(.suit):not(.fv-rank):not(.fv-suit){
   font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important;
   font-size:12px!important;
 }
+
+/* Descricoes dos cards: unica excecao interna, 10px. */
+#app #home .tile.tcard .htx small:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________),
+#app #home .tile.tcard .d2:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________),
+#app #home .tile.tcard .d2>span:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important;
+  font-size:10px!important;
+}
+
+/* Glifos de cartas continuam com face neutra. */
 #app .card *,
 #app .pc,
 #app .pc *,
@@ -1675,9 +1689,45 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 #app .card b{
   font-size:calc(var(--w)*.5)!important;
 }
+
+/* Rodape: 9px. */
 #app .tabbar .tab span:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
   font-family:'Saira Semi Condensed','Saira Condensed',sans-serif!important;
   font-size:9px!important;
+}
+
+/* ENTRADA/SPLASH: branding congelado; nao participa da escala 12/10/9. */
+#app #splash .spsub:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  font-family:'Saira Condensed',sans-serif!important;
+  font-weight:800!important;
+  font-size:24px!important;
+  letter-spacing:2.5px!important;
+}
+#app #splash .sptitle:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  font-family:'Saira Stencil One',sans-serif!important;
+  font-weight:400!important;
+  font-size:58px!important;
+  letter-spacing:3px!important;
+}
+#app #splash .spcore .logo:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  width:180px!important;
+  border-radius:50%!important;
+}
+#app #welcome .brand .sub:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  font-family:'Saira Condensed',sans-serif!important;
+  font-weight:800!important;
+  font-size:clamp(20px,min(7vw,3.4vh),30px)!important;
+  letter-spacing:2.5px!important;
+}
+#app #welcome .brand .title:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  font-family:'Saira Stencil One',sans-serif!important;
+  font-weight:400!important;
+  font-style:normal!important;
+  font-size:clamp(40px,min(15vw,7.2vh),70px)!important;
+  letter-spacing:3px!important;
+}
+#app #welcome .hero .logo:not(#_):not(#__):not(#___):not(#____):not(#_____):not(#______):not(#_______):not(#________):not(#_________){
+  width:min(200px,50vw,24vh)!important;
 }
 </style>
 </head>
