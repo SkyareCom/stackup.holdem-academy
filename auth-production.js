@@ -90,7 +90,7 @@
     }
   }
 
-  api.saveAcademyCoachPreference = async (preference) => {
+  api.activeSession = activeSession;\n\n  api.saveAcademyCoachPreference = async (preference) => {
     const session = await activeSession();
     if (!session || !session.access_token || !session.user || !session.user.id) {
       return { synced: false, reason: "no_session" };
