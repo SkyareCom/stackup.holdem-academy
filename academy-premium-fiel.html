@@ -29,7 +29,6 @@ function layout(){
  const w=screen.clientWidth,h=screen.clientHeight,dpr=window.devicePixelRatio||1;
  canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);
  const ctx=canvas.getContext('2d');ctx.setTransform(dpr,0,0,dpr,0,0);
- const cover=Math.max(w/709,h/1536);ctx.drawImage(source,(w-709*cover)/2,(h-1536*cover)/2,709*cover,1536*cover);
  const scale=Math.min(w/709,h/1259),natural=1536*scale;
  let deficit=Math.max(0,natural-h);
  const bottomTrim=Math.min(116*scale,deficit/2);deficit-=bottomTrim;
