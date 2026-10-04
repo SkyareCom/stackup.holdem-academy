@@ -1729,20 +1729,34 @@ a.qb.pflink{display:flex;align-items:center;justify-content:center;text-decorati
 #app #welcome .welcome-lang{height:42px!important;padding:0 6px!important;border-radius:12px!important;border:1px solid rgba(80,200,110,.42)!important;background:rgba(4,40,18,.30)!important;color:#fff!important;font-family:Saira,sans-serif!important;font-size:10px!important;font-weight:700!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.10),0 0 14px rgba(40,170,70,.22)!important}
 #app #welcome .welcome-lang[aria-pressed="true"]{border-color:#6BE38A!important;background:rgba(16,78,34,.55)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 0 18px rgba(80,200,110,.35)!important}
 
-/* Welcome mobile fit 2026-10-03 — corrected without replacing card rotation transforms. */
-#app #welcome{overflow:hidden!important;padding-bottom:0!important}
-#app #welcome .hero{gap:0!important;margin-bottom:0!important}
-#app #welcome .tag{margin-top:4px!important;min-height:38px!important;padding:6px 12px!important}
-#app #welcome .menu{gap:8px!important;padding-top:10px!important;padding-bottom:4px!important}
-#app #welcome .menu .item{min-height:54px!important;height:54px!important;padding:5px 14px!important}
-#app #welcome .menu .item .txt b,#app #welcome .menu .item .txt small{font-size:10px!important;line-height:1.15!important}
+/* Welcome presentation 2026-10-04 — reuse splash brand hierarchy, compact login layout. */
+#app #welcome{overflow:hidden!important;padding:18px 16px max(12px,env(safe-area-inset-bottom))!important;display:flex!important;flex-direction:column!important}
+#app #welcome .hero{flex:0 0 auto!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-start!important;gap:0!important;margin:0!important;padding-top:4px!important}
+#app #welcome .hero [data-logo]{display:flex!important;justify-content:center!important;align-items:center!important}
+#app #welcome .hero .logo{width:min(156px,39vw,18vh)!important;height:auto!important;margin:0 auto!important}
+#app #welcome .brand{display:flex!important;flex-direction:column!important;align-items:center!important;margin-top:2px!important}
+#app #welcome .brand .sub{font-size:18px!important;line-height:1!important;letter-spacing:.07em!important;text-align:center!important}
+#app #welcome .brand .title{font-size:clamp(38px,11vw,52px)!important;line-height:.9!important;text-align:center!important}
+#app #welcome .tag{margin-top:8px!important;min-height:36px!important;padding:6px 12px!important;width:min(100%,450px)!important}
+#app #welcome .menu{flex:1 1 auto!important;min-height:0!important;width:100%!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;gap:8px!important;padding:12px 0 0!important;margin:0!important}
 #app #welcome .welcome-langs{gap:8px!important;margin:0!important}
-#app #welcome .welcome-lang{height:38px!important;font-size:10px!important}
+#app #welcome .welcome-lang{height:42px!important;font-size:12px!important}
+#app #welcome .menu .item{min-height:60px!important;height:60px!important;padding:7px 14px!important;margin:0!important}
+#app #welcome .menu .item .txt b,#app #welcome .menu .item .txt small{font-size:12px!important;line-height:1.15!important}
 #app .screen>.cards,#app .screen>.cards.dim,#app #splash .spcards{display:block!important;visibility:visible!important}
 #app .screen>.cards .card,#app .screen>.cards.dim .card,#app #splash .spcards .card{--w:min(145vw,66vh,610px)!important;visibility:visible!important}
 #app #welcome>.cards{opacity:1!important}
-#app #welcome>.cards .card{opacity:.42!important}
-@media (max-height:760px){#app #welcome .menu .item{min-height:50px!important;height:50px!important}#app #welcome .menu{gap:6px!important;padding-top:6px!important}}
+#app #welcome>.cards .card{opacity:.30!important}
+@media (max-height:760px){
+ #app #welcome{padding-top:10px!important}
+ #app #welcome .hero .logo{width:min(132px,34vw,16vh)!important}
+ #app #welcome .brand .sub{font-size:16px!important}
+ #app #welcome .brand .title{font-size:34px!important}
+ #app #welcome .tag{margin-top:5px!important;min-height:32px!important;padding:4px 10px!important}
+ #app #welcome .menu{gap:6px!important;padding-top:8px!important}
+ #app #welcome .welcome-lang{height:36px!important}
+ #app #welcome .menu .item{min-height:52px!important;height:52px!important;padding:5px 12px!important}
+}
 </style>
 </head>
 <body>
